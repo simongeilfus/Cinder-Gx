@@ -1,0 +1,457 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Blocks">
+      <UniqueIdentifier>{2432640A-C037-4EA6-AF09-E7D5234CC524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx">
+      <UniqueIdentifier>{7E9D61F4-8146-4B4C-8C4A-1E40CAD02370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\src">
+      <UniqueIdentifier>{586EA076-5882-4469-8675-5B06000F372F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\src\cinder">
+      <UniqueIdentifier>{0A684B53-7009-4035-9B60-EBF887F3D8F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\src\cinder\app">
+      <UniqueIdentifier>{A52AEAE1-96E7-4B6A-A06B-3FAACD94EE06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\src\cinder\graphics">
+      <UniqueIdentifier>{5A0A8472-7BCB-4A93-A265-D0F6D1A46741}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\include">
+      <UniqueIdentifier>{BE052224-C0A8-481C-B94F-5AB270FD8FF5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\include\cinder">
+      <UniqueIdentifier>{555DAD99-6ABB-49E6-8221-65BFAAE46424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\include\cinder\app">
+      <UniqueIdentifier>{D91C5CA5-86BA-4E82-97E4-57DB8F9444A8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\include\cinder\graphics">
+      <UniqueIdentifier>{40D48F65-C41A-41CD-80B7-14554BB4B714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party">
+      <UniqueIdentifier>{9071433D-15CC-477D-8167-118559A3DA74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore">
+      <UniqueIdentifier>{DBB5EC75-2670-474B-91A4-B4F509AEF934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics">
+      <UniqueIdentifier>{3A86CC8B-0C81-45AD-8901-2526F6558722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories">
+      <UniqueIdentifier>{C19C80FA-9194-476C-BB7D-4CB9279636E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface">
+      <UniqueIdentifier>{0E2BD3DC-6D12-479B-AB4D-A91074258AAD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine">
+      <UniqueIdentifier>{D328107F-009F-422D-915D-9EE77BC0F56C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface">
+      <UniqueIdentifier>{88B1C98D-0483-43DD-B300-AEAB02E00B70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools">
+      <UniqueIdentifier>{79E033C6-7574-455A-B3B8-87E345DCF494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface">
+      <UniqueIdentifier>{BA635E30-F3E2-4933-A88E-8755E1168850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Common">
+      <UniqueIdentifier>{A99FA5B5-29CE-4E23-936C-31FB832CA06B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface">
+      <UniqueIdentifier>{9E14366A-59F7-4DCA-94F7-F274DB607448}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Primitives">
+      <UniqueIdentifier>{C6999E15-E3FF-406C-A88E-68DD85172F74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface">
+      <UniqueIdentifier>{2C4D1556-76B5-4465-A2A8-E22CC284AD68}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\GlslApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\GlslApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\CinderDiligentImGui.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\app\RendererGx.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\graphics\Buffer.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\graphics\PipelineState.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\graphics\Shader.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\graphics\Texture.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\cinder\graphics\wrapper.cpp">
+      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\include\cinder\CinderDiligentImGui.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\app\RendererGx.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\BlendState.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\Buffer.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\DepthStencilState.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\DeviceContext.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\GraphicsTypes.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\InputLayout.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\PipelineState.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\platform.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\Query.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\RasterizerState.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\Shader.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\Texture.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cinder\graphics\wrapper.h">
+      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\ColorConversion.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\DynamicAtlasManager.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\GraphicsAccessories.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\GraphicsTypesOutputInserters.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\ResourceReleaseQueue.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\RingBuffer.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\SRBMemoryAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\VariableSizeAllocationsManager.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\VariableSizeGPUAllocationsManager.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsAccessories\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\APIInfo.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BlendState.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BottomLevelAS.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Buffer.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BufferView.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\CommandList.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Constants.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DepthStencilState.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DeviceContext.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DeviceObject.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\EngineFactory.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Fence.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Framebuffer.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\GraphicsTypes.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\InputLayout.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\LoadEngineDll.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\PipelineState.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Query.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RasterizerState.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RenderDevice.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RenderPass.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ResourceMapping.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Sampler.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Shader.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderBindingTable.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderResourceBinding.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderResourceVariable.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\SwapChain.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Texture.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\TextureView.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\TopLevelAS.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsEngine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\BufferSuballocator.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\CommonlyUsedStates.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DynamicTextureAtlas.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\GraphicsUtilities.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DurationQueryHelper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DynamicBuffer.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\MapHelper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ScopedQueryHelper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ScreenCapture.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ShaderMacroHelper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\StreamingBuffer.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploader.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderBase.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderD3D11.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderD3D12_Vk.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderGL.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Graphics\GraphicsTools\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\AdvancedMath.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\Align.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\BasicFileStream.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\BasicMath.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DataBlobImpl.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DefaultRawMemoryAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DynamicLinearAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FastRand.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FileWrapper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FilteringTools.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FixedBlockMemoryAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FixedLinearAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\HashUtils.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\LockHelper.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\MemoryFileStream.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ObjectBase.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\RefCntAutoPtr.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\RefCountedObjectImpl.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\STDAllocator.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringDataBlobImpl.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringPool.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringTools.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ThreadSignal.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\Timer.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\UniqueIdentifier.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ValidatedCast.hpp">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Common\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\BasicTypes.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\CommonDefinitions.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DataBlob.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DebugOutput.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DefineGlobalFuncHelperMacros.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DefineInterfaceHelperMacros.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\FileStream.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\FlagEnum.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\InterfaceID.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\MemoryAllocator.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\Object.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\ReferenceCounters.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\UndefGlobalFuncHelperMacros.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\UndefInterfaceHelperMacros.h">
+      <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
