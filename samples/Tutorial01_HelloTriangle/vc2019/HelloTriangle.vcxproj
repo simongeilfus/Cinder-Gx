@@ -1,0 +1,235 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{15355D8D-AB4F-4A58-A699-55B333228E0A}</ProjectGuid>
+    <RootNamespace>HelloTriangle</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\..\..\include";..\..\..\include;..\..\..\third_party</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\..\..\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\build\third_party\DiligentCore\Common\$(Configuration)\Diligent-Common.lib;..\..\..\build\third_party\DiligentCore\Primitives\$(Configuration)\Diligent-Primitives.lib;..\..\..\build\third_party\DiligentCore\Platforms\Basic\$(Configuration)\Diligent-BasicPlatform.lib;..\..\..\build\third_party\DiligentCore\Platforms\Win32\$(Configuration)\Diligent-Win32Platform.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngine\$(Configuration)\Diligent-GraphicsEngine.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineVulkan\$(Configuration)\GraphicsEngineVk_64d.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D11\$(Configuration)\GraphicsEngineD3D11_64d.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D12\$(Configuration)\GraphicsEngineD3D12_64d.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineOpenGL\$(Configuration)\GraphicsEngineOpenGL_64d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\..\..\lib\msw\$(PlatformTarget)";"..\..\..\..\..\lib\msw\$(PlatformTarget)\$(Configuration)\$(PlatformToolset)"</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineVulkan\$(Configuration)\GraphicsEngineVk_64d.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D11\$(Configuration)\GraphicsEngineD3D11_64d.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D12\$(Configuration)\GraphicsEngineD3D12_64d.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineOpenGL\$(Configuration)\GraphicsEngineOpenGL_64d.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\..\..\include";..\..\..\include;..\..\..\third_party</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\..\..\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder.lib;OpenGL32.lib;%(AdditionalDependencies);..\..\..\build\third_party\DiligentCore\Common\$(Configuration)\Diligent-Common.lib;..\..\..\build\third_party\DiligentCore\Primitives\$(Configuration)\Diligent-Primitives.lib;..\..\..\build\third_party\DiligentCore\Platforms\Basic\$(Configuration)\Diligent-BasicPlatform.lib;..\..\..\build\third_party\DiligentCore\Platforms\Win32\$(Configuration)\Diligent-Win32Platform.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngine\$(Configuration)\Diligent-GraphicsEngine.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineVulkan\$(Configuration)\GraphicsEngineVk_64r.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D11\$(Configuration)\GraphicsEngineD3D11_64r.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D12\$(Configuration)\GraphicsEngineD3D12_64r.lib;..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineOpenGL\$(Configuration)\GraphicsEngineOpenGL_64r.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\..\..\lib\msw\$(PlatformTarget)";"..\..\..\..\..\lib\msw\$(PlatformTarget)\$(Configuration)\$(PlatformToolset)"</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding />
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineVulkan\$(Configuration)\GraphicsEngineVk_64r.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D11\$(Configuration)\GraphicsEngineD3D11_64r.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineD3D12\$(Configuration)\GraphicsEngineD3D12_64r.dll" "$(OutDir)"
+xcopy /y "..\..\..\build\third_party\DiligentCore\Graphics\GraphicsEngineOpenGL\$(Configuration)\GraphicsEngineOpenGL_64r.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\cinder\graphics\Buffer.cpp" />
+    <ClCompile Include="..\..\..\src\cinder\graphics\PipelineState.cpp" />
+    <ClCompile Include="..\..\..\src\cinder\graphics\Shader.cpp" />
+    <ClCompile Include="..\src\HelloTriangleApp.cpp" />
+    <ClCompile Include="..\..\..\src\cinder\app\RendererGx.cpp" />
+    <ClCompile Include="..\..\..\src\cinder\graphics\wrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\cinder\app\RendererGx.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\BlendState.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\Buffer.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\DepthStencilState.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\InputLayout.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\PipelineState.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\platform.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\RasterizerState.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\Shader.h" />
+    <ClInclude Include="..\..\..\include\cinder\graphics\wrapper.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\ColorConversion.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\DynamicAtlasManager.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\GraphicsAccessories.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\GraphicsTypesOutputInserters.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\ResourceReleaseQueue.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\RingBuffer.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\SRBMemoryAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\VariableSizeAllocationsManager.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsAccessories\interface\VariableSizeGPUAllocationsManager.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\APIInfo.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BlendState.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BottomLevelAS.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Buffer.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\BufferView.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\CommandList.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Constants.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DepthStencilState.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DeviceContext.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\DeviceObject.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\EngineFactory.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Fence.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Framebuffer.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\GraphicsTypes.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\InputLayout.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\LoadEngineDll.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\PipelineState.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Query.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RasterizerState.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RenderDevice.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\RenderPass.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ResourceMapping.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Sampler.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Shader.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderBindingTable.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderResourceBinding.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\ShaderResourceVariable.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\SwapChain.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\Texture.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\TextureView.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsEngine\interface\TopLevelAS.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\BufferSuballocator.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\CommonlyUsedStates.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DynamicTextureAtlas.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\GraphicsUtilities.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DurationQueryHelper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\DynamicBuffer.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\MapHelper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ScopedQueryHelper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ScreenCapture.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\ShaderMacroHelper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\StreamingBuffer.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploader.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderBase.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderD3D11.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderD3D12_Vk.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Graphics\GraphicsTools\interface\TextureUploaderGL.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\AdvancedMath.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\Align.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\BasicFileStream.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\BasicMath.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DataBlobImpl.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DefaultRawMemoryAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\DynamicLinearAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FastRand.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FileWrapper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FilteringTools.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FixedBlockMemoryAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\FixedLinearAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\HashUtils.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\LockHelper.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\MemoryFileStream.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ObjectBase.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\RefCntAutoPtr.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\RefCountedObjectImpl.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\STDAllocator.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringDataBlobImpl.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringPool.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\StringTools.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ThreadSignal.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\Timer.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\UniqueIdentifier.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Common\interface\ValidatedCast.hpp" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\BasicTypes.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\CommonDefinitions.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DataBlob.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DebugOutput.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DefineGlobalFuncHelperMacros.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\DefineInterfaceHelperMacros.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\FileStream.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\FlagEnum.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\InterfaceID.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\MemoryAllocator.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\Object.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\ReferenceCounters.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\UndefGlobalFuncHelperMacros.h" />
+    <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\UndefInterfaceHelperMacros.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
