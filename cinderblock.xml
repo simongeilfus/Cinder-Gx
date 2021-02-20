@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block name="Cinder-Gx" author="Simon Geilfus" id="org.libcinder.gx">
+	<sourcePattern>src/cinder/*.cpp</sourcePattern>
+	<sourcePattern>src/cinder/app/*.cpp</sourcePattern>
+	<sourcePattern>src/cinder/graphics/*.cpp</sourcePattern>
+	<headerPattern>include/cinder/*.h</headerPattern>
+	<headerPattern>include/cinder/app/*.h</headerPattern>
+	<headerPattern>include/cinder/graphics/*.h</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/GraphicsAccessories/interface/*.h</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/GraphicsAccessories/interface/*.hpp</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/GraphicsEngine/interface/*.h</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/GraphicsTools/interface/*.h</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/GraphicsTools/interface/*.hpp</headerPattern>
+	<headerPattern>third_party/DiligentCore/Graphics/ShaderTools/include/*.h</headerPattern>
+	<headerPattern>third_party/DiligentCore/Common/interface/*.hpp</headerPattern>
+	<headerPattern>third_party/DiligentCore/Primitives/interface/*.h</headerPattern>
+	<includePath>include</includePath>
+	<includePath>third_party</includePath>
+	<platform os="msw">
+    	<staticLibrary>build/third_party/DiligentCore/Common/$(Configuration)/Diligent-Common.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Primitives/$(Configuration)/Diligent-Primitives.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Platforms/Basic/$(Configuration)/Diligent-BasicPlatform.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Platforms/Win32/$(Configuration)/Diligent-Win32Platform.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngine/$(Configuration)/Diligent-GraphicsEngine.lib</staticLibrary>
+    </platform>
+	<platform os="msw" config="debug">
+		<preprocessorDefine>DILIGENT_DEBUG</preprocessorDefine>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineVulkan/$(Configuration)/GraphicsEngineVk_64d.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D11/$(Configuration)/GraphicsEngineD3D11_64d.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D12/$(Configuration)/GraphicsEngineD3D12_64d.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineOpenGL/$(Configuration)/GraphicsEngineOpenGL_64d.lib</staticLibrary>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineVulkan/$(Configuration)/GraphicsEngineVk_64d.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D11/$(Configuration)/GraphicsEngineD3D11_64d.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D12/$(Configuration)/GraphicsEngineD3D12_64d.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineOpenGL/$(Configuration)/GraphicsEngineOpenGL_64d.dll</buildCopy>
+    </platform>
+	<platform os="msw" config="release">
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineVulkan/$(Configuration)/GraphicsEngineVk_64r.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D11/$(Configuration)/GraphicsEngineD3D11_64r.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D12/$(Configuration)/GraphicsEngineD3D12_64r.lib</staticLibrary>
+		<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngineOpenGL/$(Configuration)/GraphicsEngineOpenGL_64r.lib</staticLibrary>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineVulkan/$(Configuration)/GraphicsEngineVk_64r.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D11/$(Configuration)/GraphicsEngineD3D11_64r.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineD3D12/$(Configuration)/GraphicsEngineD3D12_64r.dll</buildCopy>
+		<buildCopy>build/third_party/DiligentCore/Graphics/GraphicsEngineOpenGL/$(Configuration)/GraphicsEngineOpenGL_64r.dll</buildCopy>
+    </platform>
+	<preprocessorDefine>GLM_FORCE_LEFT_HANDED</preprocessorDefine>
+</block>
+<template>templates/Cinder-Gx/template.xml</template>
+</cinder>
