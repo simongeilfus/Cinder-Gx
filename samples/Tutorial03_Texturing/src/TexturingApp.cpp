@@ -63,12 +63,12 @@ void TexturingApp::createPipelineState()
         // Pipeline state name is used by the engine to report issues. It is always a good idea to give objects descriptive names.
         .name( "Cube PSO" )
         // Define vertex shader input layout
-        .inputLayout( gx::InputLayoutDesc( {
+        .inputLayout( {
             // Attribute 0 - vertex position
             { 0, 0, 3, gx::VT_FLOAT32, false },
             // Attribute 1 - texture coordinates
             { 1, 0, 2, gx::VT_FLOAT32, false }
-         } ) )
+         } )
         // Create a vertex shader
         .vertexShader( gx::createShader( gx::ShaderCreateInfo()
             .name( "Cube VS" )
@@ -90,12 +90,9 @@ void TexturingApp::createPipelineState()
             .filePath( getAssetPath( "cube.psh" ) )
         ) )
         // Define variable type that will be used by default
-        .resourceLayout( gx::PipelineResourceLayoutDesc()
-            // Shader variables should typically be mutable, which means they are expected to change on a per-instance basis
-            .variables( { { gx::SHADER_TYPE_PIXEL, "g_Texture", gx::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE }, { gx::SHADER_TYPE_VERTEX, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_STATIC } } )
-            // Define immutable sampler for g_Texture. Immutable samplers should be used whenever possible
-            .immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SamplerDesc() } } )
-        )
+        .variables( { { gx::SHADER_TYPE_PIXEL, "g_Texture", gx::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE } } )
+        // Define immutable sampler for g_Texture. Immutable samplers should be used whenever possible
+        .immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SamplerDesc() } } )
     );
 
     // Since we did not explcitly specify the type for 'Constants' variable, default
