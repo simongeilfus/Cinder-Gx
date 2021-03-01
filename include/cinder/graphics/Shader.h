@@ -26,6 +26,8 @@
 #include "cinder/Filesystem.h"
 #include "cinder/graphics/wrapper.h"
 
+#include "DiligentCore/Graphics/GraphicsTools/interface/ShaderMacroHelper.hpp"
+
 namespace cinder { namespace graphics {
 
 struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {

@@ -47,8 +47,6 @@ GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::operator=( Gra
 
 void GraphicsPipelineStateCreateInfo::copy( const GraphicsPipelineStateCreateInfo &other )
 {
-	using std::swap;
-
 	PSODesc = other.PSODesc;
 	Flags = other.Flags;
 	GraphicsPipeline = other.GraphicsPipeline;

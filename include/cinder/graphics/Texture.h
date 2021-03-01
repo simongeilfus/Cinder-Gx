@@ -40,6 +40,8 @@ namespace cinder { namespace graphics {
 struct TextureDesc : public Diligent::TextureDesc {
     //! Texture type. See Diligent::RESOURCE_DIMENSION for details.
     TextureDesc& type( RESOURCE_DIMENSION type ) { Type = type; return *this; }
+    //! Texture width and height, in pixels.
+    TextureDesc& size( const ivec2 &size ) { Width = size.x; Height = size.y; return *this; }
     //! Texture width, in pixels.
     TextureDesc& width( uint32_t width ) { Width = width; return *this; }
     //! Texture height, in pixels.
@@ -66,6 +68,7 @@ struct TextureDesc : public Diligent::TextureDesc {
     TextureDesc& clearValue( OptimizedClearValue clearValue ) { ClearValue = clearValue; return *this; }
     //! Defines which command queues this texture can be used with
     TextureDesc& commandQueueMask( uint64_t commandQueueMask ) { CommandQueueMask = commandQueueMask; return *this; }
+    TextureDesc() : Diligent::TextureDesc() {}
     TextureDesc( const Diligent::TextureDesc &other ) : Diligent::TextureDesc( other ) {}
 };
 
