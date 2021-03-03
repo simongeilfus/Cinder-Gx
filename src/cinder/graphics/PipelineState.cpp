@@ -26,7 +26,96 @@
 
 namespace cinder { namespace graphics {
 
-GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo() noexcept
+ShaderResourceVariableDesc::ShaderResourceVariableDesc( SHADER_TYPE shaderStages, const std::string &name, SHADER_RESOURCE_VARIABLE_TYPE type ) 
+	: mName( name ), 
+	Diligent::ShaderResourceVariableDesc( shaderStages, mName.c_str(), type ) 
+{
+	updatePtrs();
+}
+
+ShaderResourceVariableDesc::ShaderResourceVariableDesc( const ShaderResourceVariableDesc &other )
+	: mName( other.mName ),
+	Diligent::ShaderResourceVariableDesc( other.ShaderStages, other.Name, other.Type )
+{
+	updatePtrs();
+}
+
+ShaderResourceVariableDesc::ShaderResourceVariableDesc( ShaderResourceVariableDesc &&other ) noexcept
+	: ShaderResourceVariableDesc()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+ShaderResourceVariableDesc& ShaderResourceVariableDesc::operator=( const ShaderResourceVariableDesc &other )
+{
+	ShaderResourceVariableDesc( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+ShaderResourceVariableDesc& ShaderResourceVariableDesc::operator=( ShaderResourceVariableDesc &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void ShaderResourceVariableDesc::updatePtrs() noexcept
+{
+	if( ! mName.empty() ) Name = mName.c_str();
+}
+
+void ShaderResourceVariableDesc::swap( ShaderResourceVariableDesc &other ) noexcept
+{
+	std::swap( mName, other.mName );
+	std::swap( ShaderStages, other.ShaderStages );
+	std::swap( Name, other.Name );
+	std::swap( Type, other.Type );
+}
+
+ImmutableSamplerDesc::ImmutableSamplerDesc( const ImmutableSamplerDesc &other )
+	: mSamplerOrTextureName( other.mSamplerOrTextureName ),
+	Diligent::ImmutableSamplerDesc( other.ShaderStages, other.SamplerOrTextureName, other.Desc )
+{
+	updatePtrs();
+}
+
+ImmutableSamplerDesc::ImmutableSamplerDesc( ImmutableSamplerDesc &&other ) noexcept
+	: ImmutableSamplerDesc()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+ImmutableSamplerDesc& ImmutableSamplerDesc::operator=( const ImmutableSamplerDesc &other )
+{
+	ImmutableSamplerDesc( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+ImmutableSamplerDesc& ImmutableSamplerDesc::operator=( ImmutableSamplerDesc &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void ImmutableSamplerDesc::updatePtrs() noexcept
+{
+	if( ! mSamplerOrTextureName.empty() ) SamplerOrTextureName = mSamplerOrTextureName.c_str();
+}
+
+void ImmutableSamplerDesc::swap( ImmutableSamplerDesc &other ) noexcept
+{
+	std::swap( mSamplerOrTextureName, other.mSamplerOrTextureName );
+	std::swap( ShaderStages, other.ShaderStages );
+	std::swap( SamplerOrTextureName, other.SamplerOrTextureName );
+	std::swap( Desc, other.Desc );
+}
+
+GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo()
 {
 	PSODesc.PipelineType = Diligent::PIPELINE_TYPE_GRAPHICS;
 	GraphicsPipeline.RTVFormats[0] = app::getSwapChainColorFormat();
@@ -34,55 +123,157 @@ GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo() noexcept
 	GraphicsPipeline.NumRenderTargets = 1;
 }
 
-GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo( const GraphicsPipelineStateCreateInfo &other ) noexcept
-{
-	copy( other );
-}
-
-GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::operator=( GraphicsPipelineStateCreateInfo other ) noexcept
-{
-	copy( other );
-	return *this;
-}
-
-void GraphicsPipelineStateCreateInfo::copy( const GraphicsPipelineStateCreateInfo &other )
+GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo( const GraphicsPipelineStateCreateInfo &other )
+	: mName( other.mName ),
+	mVS( other.mVS ),
+	mPS( other.mPS ),
+	mDS( other.mDS ),
+	mHS( other.mHS ),
+	mGS( other.mGS ),
+	mAS( other.mAS ),
+	mMS( other.mMS ),
+	mLayoutElements( other.mLayoutElements ),
+	mVariables( other.mVariables ),
+	mImmutableSamplers( other.mImmutableSamplers )
 {
 	PSODesc = other.PSODesc;
 	Flags = other.Flags;
 	GraphicsPipeline = other.GraphicsPipeline;
-	mVS = other.mVS;
-	mPS = other.mPS;
-	mDS = other.mDS;
-	mHS = other.mHS;
-	mGS = other.mGS;
-	mAS = other.mAS;
-	mMS = other.mMS;
-	mLayoutElements = other.mLayoutElements;
-	mVariables = other.mVariables;
-	mImmutableSamplers = other.mImmutableSamplers;
+	pVS = other.pVS;
+	pPS = other.pPS;
+	pDS = other.pDS;
+	pHS = other.pHS;
+	pGS = other.pGS;
+	pAS = other.pAS;
+	pMS = other.pMS;
 
-	pVS = mVS ? mVS : other.pVS;
-	pPS = mPS ? mPS : other.pPS;
-	pDS = mDS ? mDS : other.pDS;
-	pHS = mHS ? mHS : other.pHS;
-	pGS = mGS ? mGS : other.pGS;
-	pAS = mAS ? mAS : other.pAS;
-	pMS = mMS ? mMS : other.pMS;
+	updatePtrs();
+}
+
+GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo( GraphicsPipelineStateCreateInfo &&other ) noexcept
+	: GraphicsPipelineStateCreateInfo()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::operator=( const GraphicsPipelineStateCreateInfo &other )
+{
+	GraphicsPipelineStateCreateInfo( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::operator=( GraphicsPipelineStateCreateInfo &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void GraphicsPipelineStateCreateInfo::updatePtrs() noexcept
+{
+	if( mVS ) pVS = mVS;
+	if( mPS ) pPS = mPS;
+	if( mDS ) pDS = mDS;
+	if( mHS ) pHS = mHS;
+	if( mGS ) pGS = mGS;
+	if( mAS ) pAS = mAS;
+	if( mMS ) pMS = mMS;
+	if( ! mName.empty() ) PSODesc.Name = mName.c_str();
 
 	if( ! mLayoutElements.empty() ) {
 		GraphicsPipeline.InputLayout.LayoutElements = mLayoutElements.data();
-		GraphicsPipeline.InputLayout.NumElements = mLayoutElements.size();
+		GraphicsPipeline.InputLayout.NumElements = static_cast<uint32_t>( mLayoutElements.size() );
 	}
 
 	if( ! mVariables.empty() ) {
-		PSODesc.ResourceLayout.Variables = mVariables.data();
-		PSODesc.ResourceLayout.NumVariables = mVariables.size();
+		mVariablesBase.resize( mVariables.size() );
+		for( size_t i = 0; i < mVariables.size(); ++i ) {
+			mVariablesBase[i] = mVariables[i];
+		}
+		PSODesc.ResourceLayout.Variables = mVariablesBase.data();
+		PSODesc.ResourceLayout.NumVariables = static_cast<uint32_t>( mVariablesBase.size() );
 	}
 
 	if( ! mImmutableSamplers.empty() ) {
-		PSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplers.data();
-		PSODesc.ResourceLayout.NumImmutableSamplers = mImmutableSamplers.size();
+		mImmutableSamplersBase.resize( mImmutableSamplers.size() );
+		for( size_t i = 0; i < mImmutableSamplers.size(); ++i ) {
+			mImmutableSamplersBase[i] = mImmutableSamplers[i];
+		}
+		PSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplersBase.data();
+		PSODesc.ResourceLayout.NumImmutableSamplers = static_cast<uint32_t>( mImmutableSamplersBase.size() );
 	}
+}
+
+GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::inputLayout( const std::vector<LayoutElement> &elements ) 
+{ 
+	mLayoutElements = elements; 
+	GraphicsPipeline.InputLayout.LayoutElements = mLayoutElements.data(); 
+	GraphicsPipeline.InputLayout.NumElements = static_cast<Diligent::Uint32>( mLayoutElements.size() ); 
+	return *this; 
+}
+
+GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::variables( const std::vector<ShaderResourceVariableDesc> &variables ) 
+{ 
+	mVariables = variables;
+	mVariablesBase.resize( mVariables.size() );
+	for( size_t i = 0; i < mVariables.size(); ++i ) {
+		mVariablesBase[i] = mVariables[i];
+	}
+	PSODesc.ResourceLayout.Variables = mVariablesBase.data();
+	PSODesc.ResourceLayout.NumVariables = static_cast<uint32_t>( mVariablesBase.size() );
+	return *this; 
+}
+
+GraphicsPipelineStateCreateInfo& GraphicsPipelineStateCreateInfo::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers ) 
+{ 
+	mImmutableSamplers = immutableSamplers;
+	mImmutableSamplersBase.resize( mImmutableSamplers.size() );
+	for( size_t i = 0; i < mImmutableSamplers.size(); ++i ) {
+		mImmutableSamplersBase[i] = mImmutableSamplers[i];
+	}
+	PSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplersBase.data();
+	PSODesc.ResourceLayout.NumImmutableSamplers = static_cast<uint32_t>( mImmutableSamplersBase.size() );
+	return *this; 
+}
+
+void GraphicsPipelineStateCreateInfo::swap( GraphicsPipelineStateCreateInfo &other ) noexcept
+{
+	std::swap( PSODesc, other.PSODesc );
+	std::swap( Flags, other.Flags );
+	std::swap( GraphicsPipeline, other.GraphicsPipeline );
+	std::swap( pVS, other.pVS );
+	std::swap( pPS, other.pPS );
+	std::swap( pDS, other.pDS );
+	std::swap( pHS, other.pHS );
+	std::swap( pGS, other.pGS );
+	std::swap( pAS, other.pAS );
+	std::swap( pMS, other.pMS );
+
+	std::swap( mName, other.mName );
+	std::swap( mVS, other.mVS );
+	std::swap( mPS, other.mPS );
+	std::swap( mDS, other.mDS );
+	std::swap( mHS, other.mHS );
+	std::swap( mGS, other.mGS );
+	std::swap( mAS, other.mAS );
+	std::swap( mMS, other.mMS );
+	std::swap( mLayoutElements, other.mLayoutElements );
+	std::swap( mVariables, other.mVariables );
+	std::swap( mImmutableSamplers, other.mImmutableSamplers );
+}
+
+PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineStateCreateInfo &createInfo )
+{
+	return createGraphicsPipelineState( app::getRenderDevice(), createInfo );
+}
+
+PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineStateCreateInfo &createInfo )
+{
+	PipelineStateRef pipelineState;
+	device->CreateGraphicsPipelineState( createInfo, &pipelineState );
+	return pipelineState;
 }
 
 }

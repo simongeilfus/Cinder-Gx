@@ -116,7 +116,6 @@
   <ItemGroup />
   <ItemGroup>
     <ClCompile Include="..\..\..\src\cinder\graphics\DrawContext.cpp" />
-    <ClCompile Include="..\..\..\src\cinder\graphics\ImmediateMode.cpp" />
     <ClCompile Include="..\src\SolidRectApp.cpp" />
     <ClCompile Include="..\..\..\src\cinder\CinderDiligentImGui.cpp" />
     <ClCompile Include="..\..\..\src\cinder\app\RendererGx.cpp" />
@@ -135,7 +134,6 @@
     <ClInclude Include="..\..\..\include\cinder\graphics\DepthStencilState.h" />
     <ClInclude Include="..\..\..\include\cinder\graphics\DeviceContext.h" />
     <ClInclude Include="..\..\..\include\cinder\graphics\GraphicsTypes.h" />
-    <ClInclude Include="..\..\..\include\cinder\graphics\ImmediateMode.h" />
     <ClInclude Include="..\..\..\include\cinder\graphics\InputLayout.h" />
     <ClInclude Include="..\..\..\include\cinder\graphics\PipelineState.h" />
     <ClInclude Include="..\..\..\include\cinder\graphics\platform.h" />

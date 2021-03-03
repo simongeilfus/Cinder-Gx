@@ -32,27 +32,25 @@ namespace cinder { namespace graphics {
 
 struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     //! Source file path. If source file path is provided, Source and ByteCode members must be null
-    ShaderCreateInfo& filePath( const char* filePath ) { FilePath = filePath; return *this; }
-    //! Source file path. If source file path is provided, Source and ByteCode members must be null
     ShaderCreateInfo& filePath( const ci::fs::path &filePath ) { mFilePath = filePath.string(); FilePath = mFilePath.c_str(); return *this; }
     //! Pointer to the shader source input stream factory. The factory is used to load the shader source file if FilePath is not null. It is also used to create additional input streams for shader include files
     ShaderCreateInfo& shaderSourceStreamFactory( Diligent::IShaderSourceInputStreamFactory* shaderSourceStreamFactory ) { pShaderSourceStreamFactory = shaderSourceStreamFactory; return *this; }
     /// HLSL->GLSL conversion stream
     ShaderCreateInfo& conversionStream( struct Diligent::IHLSL2GLSLConversionStream** conversionStream ) { ppConversionStream = conversionStream; return *this; }
     //! Shader source. If shader source is provided, FilePath and ByteCode members must be null
-    ShaderCreateInfo& source( const char* source ) { Source = source; return *this; }
+    ShaderCreateInfo& source( const std::string &source ) { mSource = source; Source = mSource.c_str(); return *this; }
     //! Compiled shader bytecode.  If shader byte code is provided, FilePath and Source members must be null
     ShaderCreateInfo& byteCode( const void* byteCode ) { ByteCode = byteCode; return *this; }
     //! Size of the compiled shader bytecode. Byte code size (in bytes) must be provided if ByteCode is not null
     ShaderCreateInfo& byteCodeSize( size_t byteCodeSize ) { ByteCodeSize = byteCodeSize; return *this; }
     //! Shader entry point. This member is ignored if ByteCode is not null
-    ShaderCreateInfo& entryPoint( const char* entryPoint ) { EntryPoint = entryPoint; return *this; }
+    ShaderCreateInfo& entryPoint( const std::string &entryPoint ) { mEntryPoint = entryPoint; EntryPoint = mEntryPoint.c_str(); return *this; }
     //! Shader macros. This member is ignored if ByteCode is not null
     ShaderCreateInfo& macros( const Diligent::ShaderMacro* macros ) { Macros = macros; return *this; }
     //! If set to true, textures will be combined with texture samplers.
     ShaderCreateInfo& useCombinedTextureSamplers( bool useCombinedTextureSamplers ) { UseCombinedTextureSamplers = useCombinedTextureSamplers; return *this; }
     //! If UseCombinedTextureSamplers is true, defines the suffix added to the texture variable name to get corresponding sampler name. For example, for default value "_sampler", a texture named "tex" will be combined with sampler named "tex_sampler". If UseCombinedTextureSamplers is false, this member is ignored.
-    ShaderCreateInfo& combinedSamplerSuffix( const char* combinedSamplerSuffix ) { CombinedSamplerSuffix = combinedSamplerSuffix; return *this; }
+    ShaderCreateInfo& combinedSamplerSuffix( const std::string &combinedSamplerSuffix ) { mCombinedSamplerSuffix = combinedSamplerSuffix; CombinedSamplerSuffix = mCombinedSamplerSuffix.c_str(); return *this; }
     //! Shader type. See Diligent::SHADER_TYPE.
     ShaderCreateInfo& shaderType( SHADER_TYPE shaderType ) { Desc.ShaderType = shaderType; return *this; }
     //! Shader source language. See Diligent::SHADER_SOURCE_LANGUAGE.
@@ -68,11 +66,23 @@ struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     //! Memory address where pointer to the compiler messages data blob will be written
     ShaderCreateInfo& compilerOutput( struct Diligent::IDataBlob** compilerOutput ) { ppCompilerOutput = compilerOutput; return *this; }
     //! Speficies the object's name.
-    ShaderCreateInfo& name( const char* name ) { Desc.Name = name; return *this; }
+    ShaderCreateInfo& name( const std::string &name ) { mName = name; Desc.Name = mName.c_str(); return *this; }
 
     ShaderCreateInfo();
+    ShaderCreateInfo( const ShaderCreateInfo &other );
+    ShaderCreateInfo( ShaderCreateInfo &&other ) noexcept;
+    ShaderCreateInfo& operator=( const ShaderCreateInfo &other );
+    ShaderCreateInfo& operator=( ShaderCreateInfo &&other ) noexcept;
+    virtual ~ShaderCreateInfo() = default;
 protected:
+    void updatePtrs() noexcept;
+    void swap( ShaderCreateInfo &other ) noexcept;
+
     std::string mFilePath;
+    std::string mSource;
+    std::string mEntryPoint;
+    std::string mCombinedSamplerSuffix;
+    std::string mName;
 };
 
 //! Creates a new shader object using the default RenderDevice

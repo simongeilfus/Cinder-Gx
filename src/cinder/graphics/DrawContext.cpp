@@ -86,23 +86,75 @@ DrawContext::DrawContext()
 
 DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device, const State &state )
 {
-	Diligent::ShaderResourceVariableDesc resources[] = {
-		{ gx::SHADER_TYPE_PIXEL, "rTexture", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC },
-		{ gx::SHADER_TYPE_VERTEX, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC }
-	};
-	Diligent::ImmutableSamplerDesc immutableSamplers[] = { { gx::SHADER_TYPE_PIXEL, "rTexture", Diligent::SamplerDesc() } };
-	Diligent::PipelineResourceLayoutDesc resourcesLayout;
-	resourcesLayout.Variables = resources;
-	resourcesLayout.NumVariables = 2;
-	resourcesLayout.ImmutableSamplers = immutableSamplers;
-	resourcesLayout.NumImmutableSamplers = 1;
-
 	gx::ShaderMacroHelper bindlessMacro;
 	bindlessMacro.AddShaderMacro( "BINDLESS_RESOURCES", 1 );
 	bindlessMacro.AddShaderMacro( "NUM_TEXTURES", mMaxBindlessTextures );
 
+	string vertexShader = R"(
+		struct Constant {
+			float4x4 transform;
+		};
+
+		cbuffer Constants {
+			Constant constants[];
+		};
+ 
+		struct VSInput {
+			float3 position : ATTRIB0;
+			float2 uv		: ATTRIB1;
+			float4 color    : ATTRIB2;
+			uint constant	: ATTRIB3;
+			uint textureId	: ATTRIB4;
+		};
+
+		struct PSInput { 
+			float4 position : SV_POSITION; 
+			float4 color    : COLOR0; 
+			float2 uv		: TEX_COORD;
+			uint textureId	: TEX_ARRAY_INDEX;
+		};
+ 
+		void main( in VSInput input, out PSInput output ) 
+		{
+			const float4x4 transform = constants[input.constant].transform;
+			output.position  = mul( float4( input.position, 1.0f ), transform );
+			output.color     = input.color;
+			output.uv		 = input.uv;
+			output.textureId = input.textureId;
+		}
+	)";
+
+	string pixelShader = R"(
+		#ifdef BINDLESS_RESOURCES
+			Texture2D    rTexture[NUM_TEXTURES];
+		#else
+			Texture2D    rTexture;
+		#endif
+			SamplerState rTexture_sampler;
+
+			struct PSInput { 
+				float4 position : SV_POSITION; 
+				float4 color    : COLOR0; 
+				float2 uv		: TEX_COORD;
+				uint textureId	: TEX_ARRAY_INDEX;
+			};
+
+			struct PSOutput { 
+				float4 color : SV_TARGET; 
+			};
+                
+			void main( in PSInput input, out PSOutput output ) 
+			{
+		#ifdef BINDLESS_RESOURCES
+				output.color = rTexture[input.textureId].Sample( rTexture_sampler, input.uv ) * input.color;
+		#else
+				output.color = rTexture.Sample( rTexture_sampler, input.uv ) * input.color;
+		#endif
+			}
+    )";
+
 	Pipeline pipeline;
-	gx::GraphicsPipelineStateCreateInfo createInfo = gx::GraphicsPipelineStateCreateInfo()
+	pipeline.pso = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
 		.name( "DrawContext Color Pipeline" )
 		.inputLayout( {
 			// Attribute 0 - vertex position
@@ -116,95 +168,35 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 			// Attribute 0 - primitive texture index
 			gx::LayoutElement{ 4, 0, 1, gx::VT_UINT32, false },
 			} )
-		.vertexShader( gx::createShader( gx::ShaderCreateInfo()
-			.name( "DrawContext Color VS" )
-			.sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL )
-			.shaderType( gx::SHADER_TYPE_VERTEX )
-			.useCombinedTextureSamplers( true )
-			.source( R"(
-				struct Constant {
-					float4x4 transform;
-				};
-
-				cbuffer Constants {
-					Constant constants[];
-				};
- 
-				struct VSInput {
-					float3 position : ATTRIB0;
-					float2 uv		: ATTRIB1;
-					float4 color    : ATTRIB2;
-					uint constant	: ATTRIB3;
-					uint textureId	: ATTRIB4;
-				};
-
-				struct PSInput { 
-					float4 position : SV_POSITION; 
-					float4 color    : COLOR0; 
-					float2 uv		: TEX_COORD;
-					uint textureId	: TEX_ARRAY_INDEX;
-				};
- 
-				void main( in VSInput input, out PSInput output ) 
-				{
-					const float4x4 transform = constants[input.constant].transform;
-					output.position  = mul( float4( input.position, 1.0f ), transform );
-					output.color     = input.color;
-					output.uv		 = input.uv;
-					output.textureId = input.textureId;
-				}
-				)" )
-		) )
+			.vertexShader( gx::createShader( gx::ShaderCreateInfo()
+				.name( "DrawContext Color VS" )
+				.sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL )
+				.shaderType( gx::SHADER_TYPE_VERTEX )
+				.useCombinedTextureSamplers( true )
+				.source( vertexShader )
+			) )
 		.pixelShader( gx::createShader( gx::ShaderCreateInfo()
 			.name( "DrawContext Color PS" )
 			.sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL )
 			.shaderType( gx::SHADER_TYPE_PIXEL )
 			.useCombinedTextureSamplers( true )
 			.macros( mBindlessResources ? static_cast<const ShaderMacro*>( bindlessMacro ) : nullptr )
-			.source( R"(
-			#ifdef BINDLESS_RESOURCES
-				Texture2D    rTexture[NUM_TEXTURES];
-			#else
-				Texture2D    rTexture;
-			#endif
-				SamplerState rTexture_sampler;
-
-				struct PSInput { 
-					float4 position : SV_POSITION; 
-					float4 color    : COLOR0; 
-					float2 uv		: TEX_COORD;
-					uint textureId	: TEX_ARRAY_INDEX;
-				};
-
-				struct PSOutput { 
-					float4 color : SV_TARGET; 
-				};
-                
-				void main( in PSInput input, out PSOutput output ) 
-				{
-			#ifdef BINDLESS_RESOURCES
-					output.color = rTexture[input.textureId].Sample( rTexture_sampler, input.uv ) * input.color;
-			#else
-					output.color = rTexture.Sample( rTexture_sampler, input.uv ) * input.color;
-			#endif
-				}
-            )" )
+			.source( pixelShader )
 		) )
-		/*.variables( { 
-			{ gx::SHADER_TYPE_PIXEL, "rTexture", gx::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE },
-			{ gx::SHADER_TYPE_VERTEX, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC } 
-		} )*/
-		//.immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "rTexture", Diligent::SamplerDesc() } } )
-		.resourceLayout( resourcesLayout )
+		.variables( {
+			{ gx::SHADER_TYPE_PIXEL, "rTexture", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC },
+			{ gx::SHADER_TYPE_VERTEX, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC }
+			} )
+		.immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "rTexture", Diligent::SamplerDesc() } } )
 		.depthStencilDesc( DepthStencilStateDesc()
 			.depthEnable( state.depthEnable )
 			.depthWriteEnable( state.depthWriteEnable )
-			.depthFunc( state.depthFunc ) 
+			.depthFunc( state.depthFunc )
 		)
 		.rasterizerStateDesc( RasterizerStateDesc()
 			.scissorEnable( true )
 			.fillMode( state.fillMode )
-			.cullMode( state.cullMode ) 
+			.cullMode( state.cullMode )
 		)
 		.primitiveTopology( state.primitiveTopology )
 		.blendStateDesc( BlendStateDesc()
@@ -218,10 +210,7 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 				.destBlendAlpha( state.destBlendAlpha )
 				.blendOpAlpha( state.blendOpAlpha )
 			)
-		);
-
-	device->CreateGraphicsPipelineState( createInfo, &pipeline.pso );
-
+		) );
 	pipeline.pso->CreateShaderResourceBinding( &pipeline.srb, true );
 
 	return pipeline;
@@ -478,7 +467,9 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 		mPSOsValid = true;
 	}
 
-	// Should merge commands here
+	// Merge subsequent commands
+	// TODO: Only merges two subsequent commands, should probably switch to a double for-loop to be 
+	//		 able to merge more than two in a row.
 	for( size_t i = 1; i < mCommands.size(); i++ ) {
 		// when bindless resources are available commands that differ only 
 		// by their texture index can be merged into a single command
@@ -746,6 +737,7 @@ void DrawContext::flush()
 	mIndex = mIndices.data();
 	mConstantIndex = 0;
 	mConstantCount = 1;
+	mTextureCount = 1;
 
 	mCommands.clear();
 }

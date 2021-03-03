@@ -58,12 +58,17 @@ struct ShaderResourceVariableDesc : public Diligent::ShaderResourceVariableDesc 
     ShaderResourceVariableDesc& type( SHADER_RESOURCE_VARIABLE_TYPE type ) { Type = type; return *this; }
 
     ShaderResourceVariableDesc() = default;
-    ShaderResourceVariableDesc( SHADER_TYPE shaderStages, const std::string &name, SHADER_RESOURCE_VARIABLE_TYPE type ) noexcept
-        : mName( name ), Diligent::ShaderResourceVariableDesc( shaderStages, mName.data(), type ) {}
-    ShaderResourceVariableDesc( const ShaderResourceVariableDesc &other ) noexcept
-        : mName( other.mName ), Diligent::ShaderResourceVariableDesc( other.ShaderStages, nullptr, other.Type ) { Name = mName.data(); }
-    ShaderResourceVariableDesc& operator=( const ShaderResourceVariableDesc &other ) { mName = other.mName; ShaderStages = other.ShaderStages; Name = mName.data(); Type = other.Type; return *this; }
+    ShaderResourceVariableDesc( SHADER_TYPE shaderStages, const std::string &name, SHADER_RESOURCE_VARIABLE_TYPE type );
+    
+    ShaderResourceVariableDesc( const ShaderResourceVariableDesc &other );
+    ShaderResourceVariableDesc( ShaderResourceVariableDesc &&other ) noexcept;
+    ShaderResourceVariableDesc& operator=( const ShaderResourceVariableDesc &other );
+    ShaderResourceVariableDesc& operator=( ShaderResourceVariableDesc &&other ) noexcept;
+    ~ShaderResourceVariableDesc() = default;
 protected:
+    void updatePtrs() noexcept;
+    void swap( ShaderResourceVariableDesc &other ) noexcept;
+
     std::string mName;
 };
 
@@ -78,10 +83,19 @@ struct ImmutableSamplerDesc : public Diligent::ImmutableSamplerDesc {
 
     ImmutableSamplerDesc( SHADER_TYPE shaderStages, const std::string &samplerOrTextureName, const SamplerDesc& desc ) noexcept
         : mSamplerOrTextureName( samplerOrTextureName ), Diligent::ImmutableSamplerDesc( shaderStages, mSamplerOrTextureName.data(), desc ) {}
-    ImmutableSamplerDesc( const ImmutableSamplerDesc &other ) noexcept
-        : mSamplerOrTextureName( other.mSamplerOrTextureName ), Diligent::ImmutableSamplerDesc( other.ShaderStages, nullptr, other.Desc ) { SamplerOrTextureName = mSamplerOrTextureName.data(); }
-    ImmutableSamplerDesc& operator=( const ImmutableSamplerDesc &other ) noexcept { mSamplerOrTextureName = other.mSamplerOrTextureName; ShaderStages = other.ShaderStages; SamplerOrTextureName = mSamplerOrTextureName.data(); Desc = other.Desc; return *this; }
+    //ImmutableSamplerDesc( const ImmutableSamplerDesc &other ) noexcept
+    //    : mSamplerOrTextureName( other.mSamplerOrTextureName ), Diligent::ImmutableSamplerDesc( other.ShaderStages, nullptr, other.Desc ) { SamplerOrTextureName = mSamplerOrTextureName.data(); }
+    //ImmutableSamplerDesc& operator=( const ImmutableSamplerDesc &other ) noexcept { mSamplerOrTextureName = other.mSamplerOrTextureName; ShaderStages = other.ShaderStages; SamplerOrTextureName = mSamplerOrTextureName.data(); Desc = other.Desc; return *this; }
+
+    ImmutableSamplerDesc() = default;
+    ImmutableSamplerDesc( const ImmutableSamplerDesc &other );
+    ImmutableSamplerDesc( ImmutableSamplerDesc &&other ) noexcept;
+    ImmutableSamplerDesc& operator=( const ImmutableSamplerDesc &other );
+    ImmutableSamplerDesc& operator=( ImmutableSamplerDesc &&other ) noexcept;
+    ~ImmutableSamplerDesc() = default;
 protected:
+    void updatePtrs() noexcept;
+    void swap( ImmutableSamplerDesc &other ) noexcept;
     std::string mSamplerOrTextureName;
 };
 
@@ -100,7 +114,7 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     //! Input layout, ignored in a mesh pipeline.
     GraphicsPipelineStateCreateInfo& inputLayout( const Diligent::InputLayoutDesc &inputLayout ) { GraphicsPipeline.InputLayout = inputLayout; return *this; }
     //! Input layout, ignored in a mesh pipeline.
-    GraphicsPipelineStateCreateInfo& inputLayout( const std::vector<LayoutElement> &elements ) { mLayoutElements = elements; GraphicsPipeline.InputLayout.LayoutElements = mLayoutElements.data(); GraphicsPipeline.InputLayout.NumElements = static_cast<Diligent::Uint32>( mLayoutElements.size() ); return *this; }
+    GraphicsPipelineStateCreateInfo& inputLayout( const std::vector<LayoutElement> &elements );
     //! Primitive topology type, ignored in a mesh pipeline.
     GraphicsPipelineStateCreateInfo& primitiveTopology( PRIMITIVE_TOPOLOGY primitiveTopology ) { GraphicsPipeline.PrimitiveTopology = primitiveTopology; return *this; }
     //! The number of viewports used by this pipeline
@@ -123,31 +137,31 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     //! Vertex shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& vertexShader( Shader* vertexShader ) { pVS = vertexShader; return *this; }
     //! Vertex shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& vertexShader( ShaderRef &vertexShader ) { pVS = mVS = vertexShader; return *this; }
+    GraphicsPipelineStateCreateInfo& vertexShader( const ShaderRef &vertexShader ) { mVS = vertexShader; pVS = mVS; return *this; }
     //! Pixel shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& pixelShader( Shader* pixelShader ) { pPS = pixelShader; return *this; }
     //! Pixel shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& pixelShader( ShaderRef &pixelShader ) { pPS = mPS = pixelShader; return *this; }
+    GraphicsPipelineStateCreateInfo& pixelShader( const ShaderRef &pixelShader ) { mPS = pixelShader; pPS = mPS; return *this; }
     //! Domain shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& domainShader( Shader* domainShader ) { pDS = domainShader; return *this; }
     //! Domain shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& domainShader( ShaderRef &domainShader ) { pDS = mDS = domainShader; return *this; }
+    GraphicsPipelineStateCreateInfo& domainShader( const ShaderRef &domainShader ) { mDS = domainShader; pDS = mDS; return *this; }
     //! Hull shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& hullShader( Shader* hullShader ) { pHS = hullShader; return *this; }
     //! Hull shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& hullShader( ShaderRef &hullShader ) { pHS = mHS = hullShader; return *this; }
+    GraphicsPipelineStateCreateInfo& hullShader( const ShaderRef &hullShader ) { mHS = hullShader; pHS = mHS; return *this; }
     //! Geometry shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& geometryShader( Shader* geometryShader ) { pGS = geometryShader; return *this; }
     //! Geometry shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& geometryShader( ShaderRef &geometryShader ) { pGS = mGS = geometryShader; return *this; }
+    GraphicsPipelineStateCreateInfo& geometryShader( const ShaderRef &geometryShader ) { mGS = geometryShader; pGS = mGS; return *this; }
     //! Amplification shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& amplificationShader( Shader* amplificationShader ) { pAS = amplificationShader; return *this; }
     //! Amplification shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& amplificationShader( ShaderRef &amplificationShader ) { pAS = mAS = amplificationShader; return *this; }
+    GraphicsPipelineStateCreateInfo& amplificationShader( const ShaderRef &amplificationShader ) { mAS = amplificationShader; pAS = mAS; return *this; }
     //! Mesh shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& meshShader( Shader* meshShader ) { pMS = meshShader; return *this; }
     //! Mesh shader to be used with the pipeline.
-    GraphicsPipelineStateCreateInfo& meshShader( ShaderRef &meshShader ) { pMS = mMS = meshShader; return *this; }
+    GraphicsPipelineStateCreateInfo& meshShader( const ShaderRef &meshShader ) { mMS = meshShader; pMS = mMS; return *this; }
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
     GraphicsPipelineStateCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { PSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
@@ -159,22 +173,37 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     //! Default shader resource variable type. This type will be used if shader variable description is not found in the Variables array or if Variables == nullptr
     GraphicsPipelineStateCreateInfo& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { PSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
     //! Array of shader resource variable descriptions               
-    GraphicsPipelineStateCreateInfo& variables( const std::vector<ShaderResourceVariableDesc> &variables ) { mVariables = variables; PSODesc.ResourceLayout.Variables = mVariables.data(); PSODesc.ResourceLayout.NumVariables = static_cast<Diligent::Uint32>( mVariables.size() ); return *this; }
+    GraphicsPipelineStateCreateInfo& variables( const std::vector<ShaderResourceVariableDesc> &variables );
     //! Array of immutable sampler descriptions                
-    GraphicsPipelineStateCreateInfo& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers ) { mImmutableSamplers = immutableSamplers; PSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplers.data(); PSODesc.ResourceLayout.NumImmutableSamplers = static_cast<Diligent::Uint32>( mImmutableSamplers.size() ); return *this; }
+    GraphicsPipelineStateCreateInfo& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
 
     //! Speficies the object's name.
-    GraphicsPipelineStateCreateInfo& name( const char* name ) { PSODesc.Name = name; return *this; }
-    GraphicsPipelineStateCreateInfo() noexcept;
-    GraphicsPipelineStateCreateInfo( const GraphicsPipelineStateCreateInfo &other ) noexcept;
-    GraphicsPipelineStateCreateInfo& operator=( GraphicsPipelineStateCreateInfo other ) noexcept;
+    GraphicsPipelineStateCreateInfo& name( const std::string &name ) { mName = name; PSODesc.Name = mName.c_str(); return *this; }
+
+    GraphicsPipelineStateCreateInfo();
+    GraphicsPipelineStateCreateInfo( const GraphicsPipelineStateCreateInfo &other );
+    GraphicsPipelineStateCreateInfo( GraphicsPipelineStateCreateInfo &&other ) noexcept;
+    GraphicsPipelineStateCreateInfo& operator=( const GraphicsPipelineStateCreateInfo &other );
+    GraphicsPipelineStateCreateInfo& operator=( GraphicsPipelineStateCreateInfo &&other ) noexcept;
+    ~GraphicsPipelineStateCreateInfo() = default;
+
 protected:
-    void copy( const GraphicsPipelineStateCreateInfo &other );
+    void updatePtrs() noexcept;
+    void swap( GraphicsPipelineStateCreateInfo &other ) noexcept;
+
+    std::string mName;
     ShaderRef mVS, mPS, mDS, mHS, mGS, mAS, mMS;
     std::vector<LayoutElement> mLayoutElements;
     std::vector<ShaderResourceVariableDesc> mVariables;
     std::vector<ImmutableSamplerDesc> mImmutableSamplers;
+
+    std::vector<Diligent::ShaderResourceVariableDesc> mVariablesBase;
+    std::vector<Diligent::ImmutableSamplerDesc> mImmutableSamplersBase;
 };
+
+
+PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineStateCreateInfo &createInfo );
+PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineStateCreateInfo &createInfo );
 
 }
 

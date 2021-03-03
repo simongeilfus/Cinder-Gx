@@ -443,9 +443,6 @@
     <ClInclude Include="..\..\..\third_party\DiligentCore\Primitives\interface\UndefInterfaceHelperMacros.h">
       <Filter>Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\cinder\graphics\ImmediateMode.cpp">
-      <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\cinder\graphics\DrawContext.cpp">
       <Filter>Blocks\Cinder-Gx\src\cinder\graphics</Filter>
     </ClCompile>
@@ -456,9 +453,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\cinder\graphics\ImmediateMode.h">
-      <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\cinder\graphics\DrawContext.h">
       <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
     </ClInclude>

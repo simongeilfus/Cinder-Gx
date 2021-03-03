@@ -166,15 +166,17 @@ void SolidRectApp::draw()
 		ctx.popModelMatrix();
 	}
 
+	ctx.submit( false );
 
-	int pipelines = mDrawContext.mPipelines.size();
-	int drawCalls = mDrawContext.mCommands.size();
+	//int pipelines = mDrawContext.mPipelines.size();
+	//int drawCalls = mDrawContext.mCommands.size();
 
-	ImGui::Value( "Pipelines", pipelines );
-	ImGui::Value( "drawCalls", drawCalls );
-	ImGui::Value( "ConstantCount", mDrawContext.mConstantCount );
-	ImGui::Checkbox( "GeomBuffersImmutable", &mDrawContext.mGeomBuffersImmutable );
-	ctx.submit( redraw );
+	//ImGui::Value( "Pipelines", pipelines );
+	//ImGui::Value( "drawCalls", drawCalls );
+	//ImGui::Value( "ConstantCount", mDrawContext.mConstantCount );
+	//ImGui::Checkbox( "GeomBuffersImmutable", &mDrawContext.mGeomBuffersImmutable );
+
+	if( redraw ) ctx.flush();
 
 
 
