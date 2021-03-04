@@ -33,6 +33,12 @@
 
 //#define IMGUI_DEGUG
 
+// TODO:
+//
+// [ ] Make the bindless resource mode use batches of textures to overcome current limit
+// [ ] Check issue with D3D11 Textures
+// [ ] Detach transform only on the next commit to make sure to use all following transforms after the call to "detachTransform"
+
 namespace cinder { namespace graphics {
 
 class CI_API DrawContext {

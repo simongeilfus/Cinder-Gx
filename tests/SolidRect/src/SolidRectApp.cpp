@@ -30,7 +30,8 @@ void SolidRectApp::prepareEngine( gx::RENDER_DEVICE_TYPE deviceType, gx::EngineC
 {
 #if VULKAN_SUPPORTED
 	if( deviceType == gx::RENDER_DEVICE_TYPE_VULKAN ) {
-		gx::EngineVkCreateInfo* vkAttrs = static_cast<gx::EngineVkCreateInfo*>( engineCreateInfo );
+		gx::EngineVkCreateInfo* vkCreateInfo = static_cast<gx::EngineVkCreateInfo*>( engineCreateInfo );
+		vkCreateInfo->DynamicHeapSize = gx::EngineVkCreateInfo{}.DynamicHeapSize * 2;
 	}
 #endif
 }
@@ -80,11 +81,11 @@ void SolidRectApp::draw()
 	}
 
 	static vec3 rectangle0 = vec3( 0.0f );
-	ImGui::DragFloat3( "rectangle0", &rectangle0[0] );
+	ImGui::DragFloat2( "rectangle0", &rectangle0[0] );
 	static vec3 rectangle1 = vec3( 0.0f );
-	ImGui::DragFloat3( "rectangle1", &rectangle1[0] );
+	ImGui::DragFloat2( "rectangle1", &rectangle1[0] );
 	static vec3 rectangle2 = vec3( 0.0f );
-	ImGui::DragFloat3( "rectangle2", &rectangle2[0] );
+	ImGui::DragFloat2( "rectangle2", &rectangle2[0] );
 
 
 	gx::clear( ColorA( 0.350f, 0.350f, 0.350f, 1.0f ) );
@@ -144,6 +145,11 @@ void SolidRectApp::draw()
 		ctx.setMatricesWindow( getWindowSize() );
 		ctx.viewport( getWindowSize() );
 
+		//for( int i = 0; i < 10000; ++i ) {
+		//	ctx.color( ColorA::gray( randFloat() ) );
+		//	vec2 pos = vec2( randFloat(), randFloat() ) * vec2( getWindowSize() );
+		//	ctx.drawSolidRect( Rectf( pos, pos + vec2( 10 ) ) );
+		//}
 
 		ctx.color( ColorA::white() );
 		ctx.pushMatrices();
@@ -164,6 +170,12 @@ void SolidRectApp::draw()
 		ctx.draw( geom::RoundedRect( Rectf( 300, 50, 400, 150 ), 5.0f ) );
 		ctx.color( ColorA( 1.0f, 0.0f, 0.0f, 0.4f ) );
 		ctx.drawSolidRect( Rectf( 150, 150, 250, 250 ) );
+
+		/*for( int i = 0; i < 10000; ++i ) {
+			ctx.color( ColorA::gray( randFloat() ) );
+			vec2 pos = vec2( randFloat(), randFloat( 0.5f, 1.0f ) ) * vec2( getWindowSize() );
+			ctx.drawSolidRect( Rectf( pos, pos + vec2( 10 ) ) );
+		}*/
 
 		ctx.enableDepthRead( true );
 		ctx.enableDepthWrite( true );
