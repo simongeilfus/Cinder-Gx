@@ -79,6 +79,13 @@ void SolidRectApp::draw()
 		ImGui::EndCombo();
 	}
 
+	static vec3 rectangle0 = vec3( 0.0f );
+	ImGui::DragFloat3( "rectangle0", &rectangle0[0] );
+	static vec3 rectangle1 = vec3( 0.0f );
+	ImGui::DragFloat3( "rectangle1", &rectangle1[0] );
+	static vec3 rectangle2 = vec3( 0.0f );
+	ImGui::DragFloat3( "rectangle2", &rectangle2[0] );
+
 
 	gx::clear( ColorA( 0.350f, 0.350f, 0.350f, 1.0f ) );
 
@@ -139,12 +146,17 @@ void SolidRectApp::draw()
 
 
 		ctx.color( ColorA::white() );
+		ctx.pushMatrices();
+		ctx.setTransform( ctx["rectangle0"] );
 		ctx.bindTexture( mTexture[1] );
 		ctx.drawSolidRect( Rectf( 0, 0, 100, 100 ) );
+		ctx.setTransform( ctx["rectangle1"] );
 		ctx.bindTexture( mTexture[2] );
 		ctx.drawSolidRect( Rectf( 50, 50, 150, 150 ) );
+		ctx.setTransform( ctx["rectangle2"] );
 		ctx.bindTexture( mTexture[3] );
 		ctx.drawSolidRect( Rectf( 100, 100, 200, 200 ) );
+		ctx.popMatrices();
 		ctx.unbindTexture();
 
 		ctx.color( ColorA::white() );
@@ -164,6 +176,11 @@ void SolidRectApp::draw()
 		ctx.draw( geom::Cube() );
 		ctx.unbindTexture();
 		ctx.popModelMatrix();
+	}
+	else {
+		ctx["rectangle0"] = glm::translate( rectangle0 );
+		ctx["rectangle1"] = glm::translate( rectangle1 );
+		ctx["rectangle2"] = glm::translate( rectangle2 );
 	}
 
 	ctx.submit( false );

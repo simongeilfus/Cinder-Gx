@@ -270,12 +270,33 @@ public:
     //! Sets the current active color
     void				setCurrentColor( const ColorAf &color );
 
+    //! Sets the current active TextureView
     void bindTexture( TextureViewRef &texture );
+    //! Resets the active TextureView to the default
     void unbindTexture();
 
+    //! Returns whether the DrawContext has any commands
     bool empty() const { return mCommands.empty(); }
 
-//protected:
+    //! Dynamic Transform prototype
+    class Transform {
+    public:
+        void operator=( const ci::mat4 &transform );
+    protected:
+        std::string mName;
+        uint32_t mTargetIndex;
+        ci::mat4 mParentTransform;
+        ci::mat4 mTransform;
+        DrawContext* mParent;
+        friend class DrawContext;
+    };
+
+    //! Returns the dynamic Transform associated with the \a name
+    Transform& operator[]( const std::string &name );
+    //! Inserts a dynamic transform in the current transform stack. Children of the current position in the stack won't be affected by changes to the dynamic transform.
+    void setTransform( Transform &transform, const ci::mat4 &initialValue = {} );
+
+protected:
     //! Returns \c true if \a value is different from the previous top of the stack
     template<typename T>
     bool		pushStackState( std::vector<T> &stack, T value );
@@ -345,6 +366,9 @@ public:
 
     uint32_t getTextureIndex( TextureViewRef &texture );
     IDeviceObject* getTextureAt( uint32_t index ) const;
+
+    Transform& getTransform( const std::string &name );
+    std::unordered_map<std::string, Transform> mTransforms;
 
     struct State {
         FILL_MODE           fillMode               = FILL_MODE_SOLID;

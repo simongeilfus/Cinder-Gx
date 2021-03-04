@@ -440,6 +440,12 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 				.sizeInBytes( mConstantCount * sizeof( Constants ) ),
 				constantsImmutable ? &data : nullptr, &mConstantsBuffer );
 		}
+		{
+			for( const auto &namedTransform : mTransforms ) {
+				const Transform& transform = namedTransform.second;
+				mConstants[transform.mTargetIndex].transform = glm::transpose( transform.mParentTransform * transform.mTransform );
+			}
+		}
 		// Copy constant data
 		if( ! constantsImmutable ) {
 			MapHelper<Constants> constants( context, mConstantsBuffer, MAP_WRITE, MAP_FLAG_DISCARD );
@@ -715,6 +721,37 @@ uint32_t DrawContext::getTextureIndex( TextureViewRef &texture )
 IDeviceObject* DrawContext::getTextureAt( uint32_t index ) const
 {
 	return mTextures[index];
+}
+
+DrawContext::Transform& DrawContext::operator[]( const std::string &name )
+{
+	Transform& transform = getTransform( name );
+	return transform;
+}
+
+DrawContext::Transform& DrawContext::getTransform( const std::string &name )
+{
+	if( ! mTransforms.count( name ) ) {
+		Transform transform;
+		transform.mName = name;
+		transform.mParent = this;
+		mTransforms.insert( { name, transform } );
+	}
+
+	return mTransforms[name];
+}
+
+void DrawContext::setTransform( Transform &transform, const ci::mat4 &initialValue )
+{
+	multModelMatrix( initialValue );
+	transform.mParentTransform = getModelViewProjection();
+	transform.mTargetIndex = mConstantIndex + 1;
+}
+
+void DrawContext::Transform::operator=( const ci::mat4 &transform )
+{
+	mTransform = transform;
+	mParent->invalidateTransform();
 }
 
 gx::CommandListRef DrawContext::bake( DeviceContext* context )
