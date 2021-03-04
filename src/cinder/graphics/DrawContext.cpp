@@ -443,7 +443,9 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 		{
 			for( const auto &namedTransform : mTransforms ) {
 				const Transform& transform = namedTransform.second;
-				mConstants[transform.mTargetIndex].transform = glm::transpose( transform.mParentTransform * transform.mTransform );
+				if( transform.mActive ) {
+					mConstants[transform.mTargetIndex].transform = glm::transpose( transform.mParentTransform * transform.mTransform );
+				}
 			}
 		}
 		// Copy constant data
@@ -741,11 +743,17 @@ DrawContext::Transform& DrawContext::getTransform( const std::string &name )
 	return mTransforms[name];
 }
 
-void DrawContext::setTransform( Transform &transform, const ci::mat4 &initialValue )
+DrawContext::Transform::Transform()
+	: mActive( false )
+{
+}
+
+void DrawContext::detachTransform( Transform &transform, const ci::mat4 &initialValue )
 {
 	multModelMatrix( initialValue );
 	transform.mParentTransform = getModelViewProjection();
 	transform.mTargetIndex = mConstantIndex + 1;
+	transform.mActive = true;
 }
 
 void DrawContext::Transform::operator=( const ci::mat4 &transform )

@@ -147,13 +147,14 @@ void SolidRectApp::draw()
 
 		ctx.color( ColorA::white() );
 		ctx.pushMatrices();
-		ctx.setTransform( ctx["rectangle0"] );
+		ctx.detachTransform( ctx["rectangle0"] );
+		ctx.translate( vec2( -25 ) );
 		ctx.bindTexture( mTexture[1] );
 		ctx.drawSolidRect( Rectf( 0, 0, 100, 100 ) );
-		ctx.setTransform( ctx["rectangle1"] );
+		ctx.detachTransform( ctx["rectangle1"] );
 		ctx.bindTexture( mTexture[2] );
 		ctx.drawSolidRect( Rectf( 50, 50, 150, 150 ) );
-		ctx.setTransform( ctx["rectangle2"] );
+		ctx.detachTransform( ctx["rectangle2"] );
 		ctx.bindTexture( mTexture[3] );
 		ctx.drawSolidRect( Rectf( 100, 100, 200, 200 ) );
 		ctx.popMatrices();

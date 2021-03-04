@@ -281,8 +281,10 @@ public:
     //! Dynamic Transform prototype
     class Transform {
     public:
+        Transform();
         void operator=( const ci::mat4 &transform );
     protected:
+        bool mActive;
         std::string mName;
         uint32_t mTargetIndex;
         ci::mat4 mParentTransform;
@@ -293,8 +295,10 @@ public:
 
     //! Returns the dynamic Transform associated with the \a name
     Transform& operator[]( const std::string &name );
-    //! Inserts a dynamic transform in the current transform stack. Children of the current position in the stack won't be affected by changes to the dynamic transform.
-    void setTransform( Transform &transform, const ci::mat4 &initialValue = {} );
+    //! Inserts a dynamic transform in the current transform stack. 
+    //! Note: Children of the current position in the stack won't be affected by changes to the dynamic transform. 
+    //! Any other transform between this and the next call to a draw function will be overriden by modification to the Transform.
+    void detachTransform( Transform &transform, const ci::mat4 &initialValue = {} );
 
 protected:
     //! Returns \c true if \a value is different from the previous top of the stack
