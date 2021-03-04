@@ -90,14 +90,13 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 	bindlessMacro.AddShaderMacro( "BINDLESS_RESOURCES", 1 );
 	bindlessMacro.AddShaderMacro( "NUM_TEXTURES", mMaxBindlessTextures );
 
-	string vertexShader = R"(
+	string vertexShader = R"( #line 94
+
 		struct Constant {
 			float4x4 transform;
 		};
 
-		cbuffer Constants {
-			Constant constants[];
-		};
+		StructuredBuffer<Constant> constantBuffer;
  
 		struct VSInput {
 			float3 position : ATTRIB0;
@@ -114,17 +113,18 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 			uint textureId	: TEX_ARRAY_INDEX;
 		};
  
-		void main( in VSInput input, out PSInput output ) 
+		void main( in VSInput vsIn, out PSInput psIn ) 
 		{
-			const float4x4 transform = constants[input.constant].transform;
-			output.position  = mul( float4( input.position, 1.0f ), transform );
-			output.color     = input.color;
-			output.uv		 = input.uv;
-			output.textureId = input.textureId;
+			const float4x4 transform = constantBuffer[vsIn.constant].transform;
+			psIn.position  = mul( float4( vsIn.position, 1.0f ), transform );
+			psIn.color     = vsIn.color;
+			psIn.uv		 = vsIn.uv;
+			psIn.textureId = vsIn.textureId;
 		}
 	)";
 
-	string pixelShader = R"(
+	string pixelShader = R"( #line 127
+
 		#ifdef BINDLESS_RESOURCES
 			Texture2D    rTexture[NUM_TEXTURES];
 		#else
@@ -143,12 +143,12 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 				float4 color : SV_TARGET; 
 			};
                 
-			void main( in PSInput input, out PSOutput output ) 
+			void main( in PSInput psIn, out PSOutput psOut ) 
 			{
 		#ifdef BINDLESS_RESOURCES
-				output.color = rTexture[input.textureId].Sample( rTexture_sampler, input.uv ) * input.color;
+				psOut.color = rTexture[psIn.textureId].Sample( rTexture_sampler, psIn.uv ) * psIn.color;
 		#else
-				output.color = rTexture.Sample( rTexture_sampler, input.uv ) * input.color;
+				psOut.color = rTexture.Sample( rTexture_sampler, psIn.uv ) * psIn.color;
 		#endif
 			}
     )";
@@ -185,7 +185,7 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
 		) )
 		.variables( {
 			{ gx::SHADER_TYPE_PIXEL, "rTexture", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC },
-			{ gx::SHADER_TYPE_VERTEX, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC }
+			{ gx::SHADER_TYPE_VERTEX, "constantBuffer", gx::SHADER_RESOURCE_VARIABLE_TYPE_DYNAMIC }
 			} )
 		.immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "rTexture", Diligent::SamplerDesc() } } )
 		.depthStencilDesc( DepthStencilStateDesc()
@@ -435,10 +435,13 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 			device->CreateBuffer( BufferDesc()
 				.name( "DrawContext constants buffer" )
 				.usage( constantsImmutable ? USAGE_IMMUTABLE : USAGE_DYNAMIC )
-				.bindFlags( BIND_UNIFORM_BUFFER )
+				.bindFlags( BIND_SHADER_RESOURCE )
+				.mode( BUFFER_MODE_STRUCTURED )
 				.cpuAccessFlags( constantsImmutable ? CPU_ACCESS_NONE : CPU_ACCESS_WRITE )
-				.sizeInBytes( mConstantCount * sizeof( Constants ) ),
+				.sizeInBytes( mConstantCount * sizeof( Constants ) )
+				.elementByteStride( sizeof( Constants ) ),
 				constantsImmutable ? &data : nullptr, &mConstantsBuffer );
+			mConstantsBufferSRV = mConstantsBuffer->GetDefaultView( BUFFER_VIEW_SHADER_RESOURCE );
 		}
 		{
 			for( const auto &namedTransform : mTransforms ) {
@@ -504,7 +507,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 		size_t stateHash = command.state.hash();
 		if( i == 0 || stateHash != mCommands[i-1].state.hash() ) {
 			Pipeline &pipeline = mPipelines[stateHash];
-			pipeline.srb->GetVariableByName( SHADER_TYPE_VERTEX, "Constants" )->Set( mConstantsBuffer );
+			pipeline.srb->GetVariableByName( SHADER_TYPE_VERTEX, "constantBuffer" )->Set( mConstantsBufferSRV );
 			if( ! mBindlessResources ) {
 				pipeline.srb->GetVariableByName( SHADER_TYPE_PIXEL, "rTexture" )->Set( getTextureAt( command.resources.textureIndex ) );
 			}

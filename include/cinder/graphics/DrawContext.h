@@ -317,6 +317,7 @@ protected:
     BufferRef                mIndexBuffer;
     BufferRef                mVertexBuffer;
     BufferRef                mConstantsBuffer;
+    BufferView*              mConstantsBufferSRV;
 
     uint32_t                 mIndexBufferSize;
     uint32_t                 mVertexBufferSize;

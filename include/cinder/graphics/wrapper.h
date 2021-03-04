@@ -48,6 +48,7 @@ using SwapChain = Diligent::ISwapChain;
 using SwapChainRef = Diligent::RefCntAutoPtr<Diligent::ISwapChain>;
 using Buffer = Diligent::IBuffer;
 using BufferRef = Diligent::RefCntAutoPtr<Diligent::IBuffer>;
+using BufferView = Diligent::IBufferView;
 using Texture = Diligent::ITexture;
 using TextureRef = Diligent::RefCntAutoPtr<Diligent::ITexture>;
 using TextureView = Diligent::ITextureView;

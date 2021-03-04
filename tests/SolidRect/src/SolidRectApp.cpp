@@ -178,12 +178,11 @@ void SolidRectApp::draw()
 		ctx.unbindTexture();
 		ctx.popModelMatrix();
 	}
-	else {
-		ctx["rectangle0"] = glm::translate( rectangle0 );
-		ctx["rectangle1"] = glm::translate( rectangle1 );
-		ctx["rectangle2"] = glm::translate( rectangle2 );
-	}
-
+	
+	ctx["rectangle0"] = glm::translate( rectangle0 );
+	ctx["rectangle1"] = glm::translate( rectangle1 );
+	ctx["rectangle2"] = glm::translate( rectangle2 );
+	
 	ctx.submit( false );
 
 	//int pipelines = mDrawContext.mPipelines.size();
