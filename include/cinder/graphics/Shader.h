@@ -67,6 +67,9 @@ struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     ShaderCreateInfo& compilerOutput( struct Diligent::IDataBlob** compilerOutput ) { ppCompilerOutput = compilerOutput; return *this; }
     //! Speficies the object's name.
     ShaderCreateInfo& name( const std::string &name ) { mName = name; Desc.Name = mName.c_str(); return *this; }
+    //! Adds a ShaderMacro definition
+    template <typename DefintionType>
+    ShaderCreateInfo& macro( const char* name, DefintionType definition ) { mMacros->AddShaderMacro( name, definition ); Macros = *mMacros; return *this; }
 
     ShaderCreateInfo();
     ShaderCreateInfo( const ShaderCreateInfo &other );
@@ -83,6 +86,7 @@ protected:
     std::string mEntryPoint;
     std::string mCombinedSamplerSuffix;
     std::string mName;
+    std::shared_ptr<ShaderMacroHelper> mMacros;
 };
 
 //! Creates a new shader object using the default RenderDevice

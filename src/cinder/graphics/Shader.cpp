@@ -30,6 +30,7 @@ using namespace ci::app;
 namespace cinder { namespace graphics {
 
 ShaderCreateInfo::ShaderCreateInfo()
+	: mMacros( make_shared<ShaderMacroHelper>() )
 {
 	pShaderSourceStreamFactory = app::getDefaultShaderSourceStreamFactory();
 }
@@ -39,7 +40,8 @@ ShaderCreateInfo::ShaderCreateInfo( const ShaderCreateInfo &other )
 	mSource( other.mSource ),
 	mEntryPoint( other.mEntryPoint ),
 	mCombinedSamplerSuffix( other.mCombinedSamplerSuffix ),
-	mName( other.mName )
+	mName( other.mName ),
+	mMacros( other.mMacros )
 {
     FilePath = other.FilePath;
     pShaderSourceStreamFactory = other.pShaderSourceStreamFactory;
@@ -90,6 +92,7 @@ void ShaderCreateInfo::swap( ShaderCreateInfo &other ) noexcept
 	std::swap( mEntryPoint, other.mEntryPoint );
 	std::swap( mCombinedSamplerSuffix, other.mCombinedSamplerSuffix );
 	std::swap( mName, other.mName );
+	std::swap( mMacros, other.mMacros );
 	
     std::swap( FilePath, other.FilePath );
     std::swap( pShaderSourceStreamFactory, other.pShaderSourceStreamFactory );
@@ -117,6 +120,7 @@ void ShaderCreateInfo::updatePtrs() noexcept
 	if( ! mEntryPoint.empty() ) EntryPoint = mEntryPoint.c_str();
 	if( ! mCombinedSamplerSuffix.empty() ) CombinedSamplerSuffix = mCombinedSamplerSuffix.c_str();
 	if( ! mName.empty() ) Desc.Name = mName.c_str();
+	if( mMacros ) Macros = *mMacros;
 }
 
 ShaderRef createShader( const Diligent::ShaderCreateInfo &shaderCI )
