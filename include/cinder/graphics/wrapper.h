@@ -32,6 +32,7 @@
 #include "DiligentCore/Graphics/GraphicsEngine/interface/DeviceContext.h"
 #include "DiligentCore/Graphics/GraphicsEngine/interface/SwapChain.h"
 #include "DiligentCore/Graphics/GraphicsTools/interface/MapHelper.hpp"
+#include "DiligentCore/Graphics/GraphicsTools/interface/CommonlyUsedStates.h"
 #include "DiligentCore/Common/interface/RefCntAutoPtr.hpp"
 	
 namespace cinder { namespace graphics {
