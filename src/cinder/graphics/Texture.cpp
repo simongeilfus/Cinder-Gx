@@ -30,6 +30,49 @@ using namespace ci::app;
 namespace cinder {
 namespace graphics {
 
+TextureDesc::TextureDesc() 
+	: Diligent::TextureDesc() 
+{
+}
+
+TextureDesc::TextureDesc( const TextureDesc &other ) 
+	: Diligent::TextureDesc( other ),
+	mName( other.mName )
+{
+	updatePtrs();
+}
+
+TextureDesc::TextureDesc( TextureDesc &&other ) noexcept
+	: TextureDesc()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+TextureDesc& TextureDesc::operator=( const TextureDesc &other )
+{
+	TextureDesc( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+TextureDesc& TextureDesc::operator=( TextureDesc &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void TextureDesc::swap( TextureDesc &other ) noexcept
+{
+	std::swap( mName, other.mName );
+}
+
+void TextureDesc::updatePtrs() noexcept
+{
+	if( ! mName.empty() ) Name = mName.c_str();
+}
+
 TextureRef createTexture( const Diligent::TextureDesc &texDesc, const Diligent::TextureData* data )
 {
 	TextureRef texture;

@@ -74,8 +74,20 @@ struct TextureDesc : public Diligent::TextureDesc {
     TextureDesc& clearValue( OptimizedClearValue clearValue ) { ClearValue = clearValue; return *this; }
     //! Defines which command queues this texture can be used with
     TextureDesc& commandQueueMask( uint64_t commandQueueMask ) { CommandQueueMask = commandQueueMask; return *this; }
-    TextureDesc() : Diligent::TextureDesc() {}
-    TextureDesc( const Diligent::TextureDesc &other ) : Diligent::TextureDesc( other ) {}
+    //! Speficies the object's name.
+    TextureDesc& name( const std::string &name ) { mName = name; Name = mName.c_str(); return *this; }
+
+    TextureDesc();
+    TextureDesc( const TextureDesc &other );
+    TextureDesc( TextureDesc &&other ) noexcept;
+    TextureDesc& operator=( const TextureDesc &other );
+    TextureDesc& operator=( TextureDesc &&other ) noexcept;
+    virtual ~TextureDesc() = default;
+protected:
+    void updatePtrs() noexcept;
+    void swap( TextureDesc &other ) noexcept;
+
+    std::string mName;
 };
 
 //! Constructs a Texture based on the contents of \a data.
