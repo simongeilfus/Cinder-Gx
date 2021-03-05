@@ -2,7 +2,7 @@
 
 This tutorial shows how to record command lists in parallel from multiple threads.
 
-![](Animation_Large.gif)
+![](https://github.com/DiligentGraphics/DiligentSamples/blob/master/Tutorials/Tutorial06_Multithreading/Animation_Large.gif)
 
 This tutorial generates the same output as Tutorial05, but renders every cube using individual draw call.
 It shows how recording commands can be split between multiple threads. Note that this tutorial illustrates
