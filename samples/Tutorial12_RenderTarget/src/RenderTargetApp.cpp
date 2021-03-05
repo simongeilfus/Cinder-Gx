@@ -11,6 +11,8 @@
 #include "TexturedCube.h"
 #include "Utils.h"
 
+// TODO / NOTES: Still need to add the pre-transform process for mobile. See lines 239-140 
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
