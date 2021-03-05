@@ -34,6 +34,12 @@
 #include "DiligentCore/Graphics/GraphicsEngine/interface/Texture.h"
 #include "DiligentCore/Graphics/GraphicsEngine/interface/TextureView.h"
 
+// TODO:
+//
+// [ ] Check issue with D3D11 Textures
+// [ ] Mipmapping support
+// [ ] Add isSRGB argument to create* functions
+
 namespace cinder { namespace graphics {
 
 //! Texture description

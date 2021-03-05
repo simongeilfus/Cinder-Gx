@@ -36,7 +36,7 @@
 // TODO:
 //
 // [ ] Make the bindless resource mode use batches of textures to overcome current limit
-// [ ] Check issue with D3D11 Textures
+// [ ] Move color to Constants buffer instead of per-vertex attribute
 // [ ] Detach transform only on the next commit to make sure to use all following transforms after the call to "detachTransform"
 
 namespace cinder { namespace graphics {
