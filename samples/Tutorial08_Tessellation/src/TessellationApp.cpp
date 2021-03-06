@@ -150,13 +150,6 @@ void TessellationApp::createPipelineStates()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Terrain PSO" )
-        // Define vertex shader input layout
-        //.inputLayout( {
-        //    // Attribute 0 - vertex position
-        //    gx::LayoutElement{ 0, 0, 3, gx::VT_FLOAT32, false },
-        //    // Attribute 1 - vertex uv
-        //    gx::LayoutElement{ 1, 0, 2, gx::VT_FLOAT32, false }
-        //    } )
         // Create a vertex shader
         .vertexShader( pVS )
         // Create a hull shader
