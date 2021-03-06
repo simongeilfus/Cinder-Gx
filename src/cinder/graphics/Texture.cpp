@@ -231,11 +231,19 @@ namespace {
 	{
 		mData = malloc( imageSource->getRowBytes() * imageSource->getHeight() );
 
+		int64_t componentSize;
+		if( imageSource->getDataType() == ImageIo::DataType::UINT8 ) {
+			componentSize = sizeof( uint8_t );
+		}
+		else if( imageSource->getDataType() == ImageIo::DataType::UINT16 ) {
+			componentSize = sizeof( uint16_t );
+		}
+
 		if( imageSource->getColorModel() == ImageIo::ColorModel::CM_GRAY ) {
-			mRowInc = imageSource->getWidth() * ( imageSource->hasAlpha() ? 2 : 1 );
+			mRowInc = componentSize * static_cast<int64_t>( imageSource->getWidth() ) * ( imageSource->hasAlpha() ? 2 : 1 );
 		}
 		else {
-			mRowInc = imageSource->getWidth() * ( imageSource->hasAlpha() ? 4 : 3 );
+			mRowInc = componentSize * static_cast<int64_t>( imageSource->getWidth() ) * ( imageSource->hasAlpha() ? 4 : 3 );
 		}
 		setSize( imageSource->getWidth(), imageSource->getHeight() );
 		setDataType( imageSource->getDataType() );
