@@ -35,7 +35,7 @@ namespace cinder { namespace graphics {
 struct CI_API QueryDesc : public Diligent::QueryDesc {
 	//! Specifies the Query type, see Diligent::QUERY_TYPE.
 	QueryDesc& type( QUERY_TYPE type ) { Type = type; return *this; }
-    //! Speficies the object's name.
+    //! Specifies the object's name.
 	QueryDesc& name( const char* name ) { Name = name; return *this; }
 
 	explicit QueryDesc( QUERY_TYPE type, const char* name = nullptr ) noexcept 

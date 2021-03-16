@@ -65,7 +65,7 @@ struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     ShaderCreateInfo& glesslVersion( ShaderVersion glesslVersion ) { GLESSLVersion = glesslVersion; return *this; }
     //! Memory address where pointer to the compiler messages data blob will be written
     ShaderCreateInfo& compilerOutput( struct Diligent::IDataBlob** compilerOutput ) { ppCompilerOutput = compilerOutput; return *this; }
-    //! Speficies the object's name.
+    //! Specifies the object's name.
     ShaderCreateInfo& name( const std::string &name ) { mName = name; Desc.Name = mName.c_str(); return *this; }
     //! Adds a ShaderMacro definition
     template <typename DefintionType>
