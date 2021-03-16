@@ -78,6 +78,7 @@ using Shader = Diligent::IShader;
 using ShaderRef = Diligent::RefCntAutoPtr<Diligent::IShader>;
 using ShaderBindingTable = Diligent::IShaderBindingTable;
 using ShaderBindingTableRef = Diligent::RefCntAutoPtr<Diligent::IShaderBindingTable>;
+using ShaderResourceVariable = Diligent::IShaderResourceVariable;
 using ShaderResourceBinding = Diligent::IShaderResourceBinding;
 using ShaderResourceBindingRef = Diligent::RefCntAutoPtr<Diligent::IShaderResourceBinding>;
 using ShaderSourceInputStreamFactory = Diligent::IShaderSourceInputStreamFactory;
