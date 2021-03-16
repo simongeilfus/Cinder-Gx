@@ -44,12 +44,26 @@ struct CI_API BufferDesc : public Diligent::BufferDesc {
     BufferDesc& elementByteStride( uint32_t elementByteStride ) { ElementByteStride = elementByteStride; return *this; }
     //! Defines which command queues this buffer can be used with
     BufferDesc& commandQueueMask( uint64_t commandQueueMask ) { CommandQueueMask = commandQueueMask; return *this; }
-    //! Speficies the object's name.
+    //! Specifies the object's name.
     BufferDesc& name( const char* name ) { Name = name; return *this; }
+
+    BufferDesc();
+    BufferDesc( const BufferDesc &other );
+    BufferDesc( BufferDesc &&other ) noexcept;
+    BufferDesc& operator=( const BufferDesc &other );
+    BufferDesc& operator=( BufferDesc &&other ) noexcept;
+    virtual ~BufferDesc() = default;
+protected:
+    void updatePtrs() noexcept;
+    void swap( BufferDesc &other ) noexcept;
+
+    std::string mName;
 };
 
 //! Creates a new buffer object using the default RenderDevice
 CI_API BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const Diligent::BufferData* buffData = nullptr );
+//! Creates a new buffer object using the default RenderDevice
+CI_API BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const void* data, uint32_t dataSize );
 
 }
 

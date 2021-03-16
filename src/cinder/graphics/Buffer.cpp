@@ -29,11 +29,77 @@ using namespace ci::app;
 
 namespace cinder { namespace graphics {
 
+BufferDesc::BufferDesc()
+	: Diligent::BufferDesc()
+{
+}
+
+BufferDesc::BufferDesc( const BufferDesc &other )
+	: mName( other.mName )
+{
+	uiSizeInBytes = other.uiSizeInBytes;
+	BindFlags = other.BindFlags;
+	Usage = other.Usage;
+	CPUAccessFlags = other.CPUAccessFlags;
+	Mode = other.Mode;
+	ElementByteStride = other.ElementByteStride;
+	CommandQueueMask = other.CommandQueueMask;
+
+	updatePtrs();
+}
+
+BufferDesc::BufferDesc( BufferDesc &&other ) noexcept
+	: BufferDesc()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+BufferDesc& BufferDesc::operator=( const BufferDesc &other )
+{
+	BufferDesc( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+BufferDesc& BufferDesc::operator=( BufferDesc &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void BufferDesc::swap( BufferDesc &other ) noexcept
+{
+	std::swap( uiSizeInBytes, other.uiSizeInBytes );
+	std::swap( BindFlags, other.BindFlags );
+	std::swap( Usage, other.Usage );
+	std::swap( CPUAccessFlags, other.CPUAccessFlags );
+	std::swap( Mode, other.Mode );
+	std::swap( ElementByteStride, other.ElementByteStride );
+	std::swap( CommandQueueMask, other.CommandQueueMask );
+
+	std::swap( mName, other.mName );
+}
+
+void BufferDesc::updatePtrs() noexcept
+{
+	if( ! mName.empty() ) Name = mName.c_str();
+}
+
+
 BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const Diligent::BufferData* buffData )
 {
 	BufferRef buffer;
 	getRenderDevice()->CreateBuffer( buffDesc, buffData, &buffer );
 	return buffer;
+}
+
+//! Creates a new buffer object using the default RenderDevice
+BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const void* data, uint32_t dataSize )
+{
+	BufferData bufferData{ data, dataSize };
+	return createBuffer( buffDesc, &bufferData );
 }
 
 }
