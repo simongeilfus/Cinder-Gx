@@ -138,30 +138,44 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     GraphicsPipelineStateCreateInfo& vertexShader( Shader* vertexShader ) { pVS = vertexShader; return *this; }
     //! Vertex shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& vertexShader( const ShaderRef &vertexShader ) { mVS = vertexShader; pVS = mVS; return *this; }
+    //! Vertex shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& vertexShader( const ShaderCreateInfo &shaderCreateInfo )  { mVSCreateInfo = shaderCreateInfo; mVSCreateInfo.Desc.ShaderType = SHADER_TYPE_VERTEX; return *this; }
     //! Pixel shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& pixelShader( Shader* pixelShader ) { pPS = pixelShader; return *this; }
     //! Pixel shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& pixelShader( const ShaderRef &pixelShader ) { mPS = pixelShader; pPS = mPS; return *this; }
+    //! Pixel shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& pixelShader( const ShaderCreateInfo &shaderCreateInfo )  { mPSCreateInfo = shaderCreateInfo; mPSCreateInfo.Desc.ShaderType = SHADER_TYPE_PIXEL; return *this; }
     //! Domain shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& domainShader( Shader* domainShader ) { pDS = domainShader; return *this; }
     //! Domain shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& domainShader( const ShaderRef &domainShader ) { mDS = domainShader; pDS = mDS; return *this; }
+    //! Domain shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& domainShader( const ShaderCreateInfo &shaderCreateInfo )  { mDSCreateInfo = shaderCreateInfo; mDSCreateInfo.Desc.ShaderType = SHADER_TYPE_DOMAIN; return *this; }
     //! Hull shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& hullShader( Shader* hullShader ) { pHS = hullShader; return *this; }
     //! Hull shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& hullShader( const ShaderRef &hullShader ) { mHS = hullShader; pHS = mHS; return *this; }
+    //! Hull shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& hullShader( const ShaderCreateInfo &shaderCreateInfo )  { mHSCreateInfo = shaderCreateInfo; mHSCreateInfo.Desc.ShaderType = SHADER_TYPE_HULL; return *this; }
     //! Geometry shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& geometryShader( Shader* geometryShader ) { pGS = geometryShader; return *this; }
     //! Geometry shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& geometryShader( const ShaderRef &geometryShader ) { mGS = geometryShader; pGS = mGS; return *this; }
+    //! Geometry shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& geometryShader( const ShaderCreateInfo &shaderCreateInfo )  { mGSCreateInfo = shaderCreateInfo; mGSCreateInfo.Desc.ShaderType = SHADER_TYPE_GEOMETRY; return *this; }
     //! Amplification shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& amplificationShader( Shader* amplificationShader ) { pAS = amplificationShader; return *this; }
     //! Amplification shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& amplificationShader( const ShaderRef &amplificationShader ) { mAS = amplificationShader; pAS = mAS; return *this; }
+    //! Amplification shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& amplificationShader( const ShaderCreateInfo &shaderCreateInfo )  { mASCreateInfo = shaderCreateInfo; mASCreateInfo.Desc.ShaderType = SHADER_TYPE_AMPLIFICATION; return *this; }
     //! Mesh shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& meshShader( Shader* meshShader ) { pMS = meshShader; return *this; }
     //! Mesh shader to be used with the pipeline.
     GraphicsPipelineStateCreateInfo& meshShader( const ShaderRef &meshShader ) { mMS = meshShader; pMS = mMS; return *this; }
+    //! Mesh shader to be used with the pipeline.
+    GraphicsPipelineStateCreateInfo& meshShader( const ShaderCreateInfo &shaderCreateInfo )  { mMSCreateInfo = shaderCreateInfo; mMSCreateInfo.Desc.ShaderType = SHADER_TYPE_MESH; return *this; }
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
     GraphicsPipelineStateCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { PSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
@@ -177,7 +191,7 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     //! Array of immutable sampler descriptions                
     GraphicsPipelineStateCreateInfo& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
 
-    //! Speficies the object's name.
+    //! Specifies the object's name.
     GraphicsPipelineStateCreateInfo& name( const std::string &name ) { mName = name; PSODesc.Name = mName.c_str(); return *this; }
 
     GraphicsPipelineStateCreateInfo();
@@ -187,18 +201,26 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     GraphicsPipelineStateCreateInfo& operator=( GraphicsPipelineStateCreateInfo &&other ) noexcept;
     ~GraphicsPipelineStateCreateInfo() = default;
 
+    const std::vector<LayoutElement>& getLayoutElements() const { return mLayoutElements; }
+    const std::vector<ShaderResourceVariableDesc>& getVariables() const { return mVariables; }
+    const std::vector<ImmutableSamplerDesc>& getImmutableSamplers() const { return mImmutableSamplers; }
+    const std::vector<Diligent::ShaderResourceVariableDesc>& getVariablesBase() const { return mVariablesBase; }
+    const std::vector<Diligent::ImmutableSamplerDesc>& getImmutableSamplersBase() const { return mImmutableSamplersBase; }
 protected:
     void updatePtrs() noexcept;
     void swap( GraphicsPipelineStateCreateInfo &other ) noexcept;
 
     std::string mName;
     ShaderRef mVS, mPS, mDS, mHS, mGS, mAS, mMS;
+    ShaderCreateInfo mVSCreateInfo, mPSCreateInfo, mDSCreateInfo, mHSCreateInfo, mGSCreateInfo, mASCreateInfo, mMSCreateInfo;
     std::vector<LayoutElement> mLayoutElements;
     std::vector<ShaderResourceVariableDesc> mVariables;
     std::vector<ImmutableSamplerDesc> mImmutableSamplers;
 
     std::vector<Diligent::ShaderResourceVariableDesc> mVariablesBase;
     std::vector<Diligent::ImmutableSamplerDesc> mImmutableSamplersBase;
+
+    friend PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineStateCreateInfo &createInfo );
 };
 
 

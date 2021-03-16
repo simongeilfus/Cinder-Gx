@@ -132,6 +132,13 @@ GraphicsPipelineStateCreateInfo::GraphicsPipelineStateCreateInfo( const Graphics
 	mGS( other.mGS ),
 	mAS( other.mAS ),
 	mMS( other.mMS ),
+	mVSCreateInfo( other.mVSCreateInfo ),
+	mPSCreateInfo( other.mPSCreateInfo ),
+	mDSCreateInfo( other.mDSCreateInfo ),
+	mHSCreateInfo( other.mHSCreateInfo ),
+	mGSCreateInfo( other.mGSCreateInfo ),
+	mASCreateInfo( other.mASCreateInfo ),
+	mMSCreateInfo( other.mMSCreateInfo ),
 	mLayoutElements( other.mLayoutElements ),
 	mVariables( other.mVariables ),
 	mImmutableSamplers( other.mImmutableSamplers )
@@ -259,6 +266,13 @@ void GraphicsPipelineStateCreateInfo::swap( GraphicsPipelineStateCreateInfo &oth
 	std::swap( mGS, other.mGS );
 	std::swap( mAS, other.mAS );
 	std::swap( mMS, other.mMS );
+	std::swap( mVSCreateInfo, other.mVSCreateInfo );
+	std::swap( mPSCreateInfo, other.mPSCreateInfo );
+	std::swap( mDSCreateInfo, other.mDSCreateInfo );
+	std::swap( mHSCreateInfo, other.mHSCreateInfo );
+	std::swap( mGSCreateInfo, other.mGSCreateInfo );
+	std::swap( mASCreateInfo, other.mASCreateInfo );
+	std::swap( mMSCreateInfo, other.mMSCreateInfo );
 	std::swap( mLayoutElements, other.mLayoutElements );
 	std::swap( mVariables, other.mVariables );
 	std::swap( mImmutableSamplers, other.mImmutableSamplers );
@@ -272,7 +286,41 @@ PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineStateCre
 PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineStateCreateInfo &createInfo )
 {
 	PipelineStateRef pipelineState;
-	device->CreateGraphicsPipelineState( createInfo, &pipelineState );
+
+	// not sure if there's a way to avoid a copy here?
+	gx::GraphicsPipelineStateCreateInfo pipelineCreateInfo = createInfo;
+
+	// initialize shaders if no pointer is present but a ShaderCreateInfo is available
+	if( ! pipelineCreateInfo.pVS && pipelineCreateInfo.mVSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mVSCreateInfo, &pipelineCreateInfo.mVS );
+		pipelineCreateInfo.pVS = pipelineCreateInfo.mVS;
+	}
+	if( ! pipelineCreateInfo.pPS && pipelineCreateInfo.mPSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mPSCreateInfo, &pipelineCreateInfo.mPS );
+		pipelineCreateInfo.pPS = pipelineCreateInfo.mPS;
+	}
+	if( ! pipelineCreateInfo.pDS && pipelineCreateInfo.mDSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mDSCreateInfo, &pipelineCreateInfo.mDS );
+		pipelineCreateInfo.pDS = pipelineCreateInfo.mDS;
+	}
+	if( ! pipelineCreateInfo.pHS && pipelineCreateInfo.mHSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mHSCreateInfo, &pipelineCreateInfo.mHS );
+		pipelineCreateInfo.pHS = pipelineCreateInfo.mHS;
+	}
+	if( ! pipelineCreateInfo.pGS && pipelineCreateInfo.mGSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mGSCreateInfo, &pipelineCreateInfo.mGS );
+		pipelineCreateInfo.pGS = pipelineCreateInfo.mGS;
+	}
+	if( ! pipelineCreateInfo.pAS && pipelineCreateInfo.mASCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mASCreateInfo, &pipelineCreateInfo.mAS );
+		pipelineCreateInfo.pAS = pipelineCreateInfo.mAS;
+	}
+	if( ! pipelineCreateInfo.pMS && pipelineCreateInfo.mMSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineCreateInfo.mMSCreateInfo, &pipelineCreateInfo.mMS );
+		pipelineCreateInfo.pMS = pipelineCreateInfo.mMS;
+	}
+
+	device->CreateGraphicsPipelineState( pipelineCreateInfo, &pipelineState );
 	return pipelineState;
 }
 
