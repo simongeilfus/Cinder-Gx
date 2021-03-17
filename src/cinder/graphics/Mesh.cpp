@@ -452,26 +452,40 @@ InputLayoutDesc Mesh::getInputLayoutDesc() const
 	return { mVertexLayoutElements.data(), static_cast<uint32_t>( mVertexLayoutElements.size() ) };
 }
 
-void Mesh::draw( DRAW_FLAGS flags ) const
+void Mesh::draw( const DrawAttribs &attribs ) const
 {
-	draw( app::getImmediateContext(), flags );
+	draw( app::getImmediateContext(), attribs );
 }
 
-void Mesh::draw( DeviceContext* context, DRAW_FLAGS flags ) const
+void Mesh::draw( DeviceContext* context, const DrawAttribs &attribs ) const
 {
 	uint32_t offset = 0;
 	vector<gx::Buffer*> buffers;
 	for( auto buffer : getVertexBuffers() ) {
 		buffers.push_back( buffer );
 	}
-	context->SetVertexBuffers( 0, buffers.size(), &buffers[0], &offset, RESOURCE_STATE_TRANSITION_MODE_TRANSITION, SET_VERTEX_BUFFERS_FLAG_RESET );
+	context->SetVertexBuffers( 0, static_cast<uint32_t>( buffers.size() ), &buffers[0], &offset, attribs.mVertexBuffersTransitionMode, attribs.mVertexBuffersFlags );
 
 	if( getNumIndices() ) {
-		context->SetIndexBuffer( getIndexBuffer(), 0, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
-		context->DrawIndexed( gx::DrawIndexedAttribs().indexType( getIndexDataType() ).numIndices( getNumIndices() ).flags( flags ) );
+		context->SetIndexBuffer( getIndexBuffer(), 0, attribs.mIndexBufferTransitionMode );
+		context->DrawIndexed( gx::DrawIndexedAttribs()
+			.indexType( getIndexDataType() )
+			.numIndices( getNumIndices() )
+			.flags( attribs.mDrawFlags )
+			.numInstances( attribs.mNumInstances )
+			.firstInstanceLocation( attribs.mFirstInstanceLocation ) 
+			.baseVertex( attribs.mBaseVertex )
+			.firstIndexLocation( attribs.mFirstIndexLocation )
+		);
 	}
 	else {
-		context->Draw( gx::DrawAttribs().numVertices( getNumVertices() ).flags( flags ) );
+		context->Draw( gx::DrawAttribs()
+			.numVertices( getNumVertices() )
+			.flags( attribs.mDrawFlags )
+			.numInstances( attribs.mNumInstances )
+			.firstInstanceLocation( attribs.mFirstInstanceLocation ) 
+			.startVertexLocation( attribs.mStartVertexLocation )
+		);
 	}
 }
 

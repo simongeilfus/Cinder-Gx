@@ -121,8 +121,48 @@ public:
 	//! Builds and returns a InputLayoutDesc from the Mesh vertex LayoutElements
 	InputLayoutDesc					  getInputLayoutDesc() const;
 
-	void draw( DRAW_FLAGS flags = DRAW_FLAG_NONE ) const;
-	void draw( DeviceContext* context, DRAW_FLAGS flags = DRAW_FLAG_NONE ) const;
+	//! Describes the draw call attributes and the buffer transition modes
+	class DrawAttribs {
+	public:
+		DrawAttribs() : mNumInstances( 1 ), mFirstIndexLocation( 0 ), mBaseVertex( 0 ), mFirstInstanceLocation( 0 ), mStartVertexLocation( 0 ),	mDrawFlags( DRAW_FLAG_NONE ), 
+			mVertexBuffersTransitionMode( RESOURCE_STATE_TRANSITION_MODE_TRANSITION ), mIndexBufferTransitionMode( RESOURCE_STATE_TRANSITION_MODE_TRANSITION ),	mVertexBuffersFlags( SET_VERTEX_BUFFERS_FLAG_RESET ) {}
+
+	   //! Specifies the Number of instances to draw. If more than one instance is specified, instanced draw call will be performed.
+		DrawAttribs& numInstances( uint32_t numInstances ) { mNumInstances = numInstances; return *this; }
+		//! Specifies the LOCATION (or INDEX, but NOT the byte offset) in the vertex buffer to start reading instance data from.
+		DrawAttribs& firstInstanceLocation( uint32_t firstInstanceLocation ) { mFirstInstanceLocation = firstInstanceLocation; return *this; }
+		//! Specifies the LOCATION (NOT the byte offset) of the first index in the index buffer to start reading indices from. Ignored if the mesh is non-indexed.
+		DrawAttribs& firstIndexLocation( uint32_t firstIndexLocation ) { mFirstIndexLocation = firstIndexLocation; return *this; }
+		//! Specifies the  constant which is added to each index before accessing the vertex buffer. Ignored if the mesh is non-indexed.
+		DrawAttribs& baseVertex( uint32_t baseVertex ) { mBaseVertex = baseVertex; return *this; }
+		//! Specifies the LOCATION (or INDEX, but NOT the byte offset) of the first vertex in the vertex buffer to start reading vertices from. Ignored if the mesh is indexed
+		DrawAttribs& startVertexLocation( uint32_t startVertexLocation ) { mStartVertexLocation = startVertexLocation; return *this; }
+		//! Draw command flags
+		DrawAttribs& drawFlags( DRAW_FLAGS drawFlags ) { mDrawFlags = drawFlags; return *this; }
+		//! Specifies the State transition mode for buffers being set( see Diligent::RESOURCE_STATE_TRANSITION_MODE ).
+		DrawAttribs& vertexBuffersTransitionMode( RESOURCE_STATE_TRANSITION_MODE vertexBuffersTransitionMode ) { mVertexBuffersTransitionMode = vertexBuffersTransitionMode; return *this; }
+		//! Specifies the State transition mode for buffers being set( see Diligent::RESOURCE_STATE_TRANSITION_MODE ).
+		DrawAttribs& indexBufferTransitionMode( RESOURCE_STATE_TRANSITION_MODE indexBufferTransitionMode ) { mIndexBufferTransitionMode = indexBufferTransitionMode; return *this; }
+		//! Additional flags. See Diligent::SET_VERTEX_BUFFERS_FLAGS for a list of allowed values.
+		DrawAttribs& vertexBuffersFlags( SET_VERTEX_BUFFERS_FLAGS vertexBuffersFlags ) { mVertexBuffersFlags = vertexBuffersFlags; return *this; }
+	protected:
+		uint32_t mNumInstances;
+		uint32_t mFirstIndexLocation;
+		uint32_t mBaseVertex;
+		uint32_t mFirstInstanceLocation;
+		uint32_t mStartVertexLocation;
+
+		DRAW_FLAGS mDrawFlags;
+		RESOURCE_STATE_TRANSITION_MODE mVertexBuffersTransitionMode;
+		RESOURCE_STATE_TRANSITION_MODE mIndexBufferTransitionMode;
+		SET_VERTEX_BUFFERS_FLAGS mVertexBuffersFlags;
+		friend class Mesh;
+	};
+
+	//! Draws the mesh using the default DeviceContext
+	void draw( const DrawAttribs &attribs = {} ) const;
+	//! Draws the mesh on the specified DeviceContext
+	void draw( DeviceContext* context, const DrawAttribs &attribs = {} ) const;
 	
 protected:
 	uint32_t					mNumVertices;
