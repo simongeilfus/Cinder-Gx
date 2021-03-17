@@ -121,7 +121,7 @@ public:
 	//! Builds and returns a InputLayoutDesc from the Mesh vertex LayoutElements
 	InputLayoutDesc					  getInputLayoutDesc() const;
 
-	//! Describes the draw call attributes and the buffer transition modes
+	//! Describes the draw call attributes and the buffer transition modes. Also allows to specifies a set of geom attributes
 	class DrawAttribs {
 	public:
 		DrawAttribs() : mNumInstances( 1 ), mFirstIndexLocation( 0 ), mBaseVertex( 0 ), mFirstInstanceLocation( 0 ), mStartVertexLocation( 0 ),	mDrawFlags( DRAW_FLAG_NONE ), 
@@ -145,6 +145,8 @@ public:
 		DrawAttribs& indexBufferTransitionMode( RESOURCE_STATE_TRANSITION_MODE indexBufferTransitionMode ) { mIndexBufferTransitionMode = indexBufferTransitionMode; return *this; }
 		//! Additional flags. See Diligent::SET_VERTEX_BUFFERS_FLAGS for a list of allowed values.
 		DrawAttribs& vertexBuffersFlags( SET_VERTEX_BUFFERS_FLAGS vertexBuffersFlags ) { mVertexBuffersFlags = vertexBuffersFlags; return *this; }
+		//! Specifies a set of Attribs to determine which vertex buffers will be bound before drawing the mesh
+		DrawAttribs& attribs( const geom::AttribSet &attribs ) { mAttribs = attribs; return *this; }
 	protected:
 		uint32_t mNumInstances;
 		uint32_t mFirstIndexLocation;
@@ -156,6 +158,8 @@ public:
 		RESOURCE_STATE_TRANSITION_MODE mVertexBuffersTransitionMode;
 		RESOURCE_STATE_TRANSITION_MODE mIndexBufferTransitionMode;
 		SET_VERTEX_BUFFERS_FLAGS mVertexBuffersFlags;
+
+		geom::AttribSet mAttribs;
 		friend class Mesh;
 	};
 

@@ -461,9 +461,28 @@ void Mesh::draw( DeviceContext* context, const DrawAttribs &attribs ) const
 {
 	uint32_t offset = 0;
 	vector<gx::Buffer*> buffers;
-	for( auto buffer : getVertexBuffers() ) {
-		buffers.push_back( buffer );
+	if( attribs.mAttribs.empty() ) {
+		for( auto buffer : getVertexBuffers() ) {
+			buffers.push_back( buffer );
+		}
 	}
+	else {
+		size_t i = 0;
+		for( auto buffer : getVertexBuffers() ) {
+			bool allowed = false;
+			for( const auto &attrib : attribs.mAttribs ) {
+				if( mVertexBuffersInfos[i].hasAttrib( attrib ) ) {
+					allowed = true;
+					break;
+				}
+			}
+			if( allowed ) {
+				buffers.push_back( buffer );
+			}
+			i++;
+		}
+	}
+
 	context->SetVertexBuffers( 0, static_cast<uint32_t>( buffers.size() ), &buffers[0], &offset, attribs.mVertexBuffersTransitionMode, attribs.mVertexBuffersFlags );
 
 	if( getNumIndices() ) {

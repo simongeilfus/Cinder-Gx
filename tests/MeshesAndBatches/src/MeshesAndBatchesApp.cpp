@@ -60,6 +60,7 @@ class MeshesAndBatchesApp : public App {
 	void initializeMeshBuffers();
 	void initializeMeshIndexedVertices();
 	void initializeMeshVertices();
+	void initializeMeshSeparate();
 	void initializeBatch();
 	void initializeConstantsBuffer();
 
@@ -73,7 +74,7 @@ class MeshesAndBatchesApp : public App {
 	CameraPersp mCamera;
 	CameraUi mCameraUi;
 
-	bool mDrawBatch;
+	int mDrawType;
 };
 
 void MeshesAndBatchesApp::setup()
@@ -89,7 +90,7 @@ void MeshesAndBatchesApp::setup()
 	initializeMeshSource();
 	initializeBatch();
 
-	mDrawBatch = true;
+	mDrawType = 0;
 }
 
 void MeshesAndBatchesApp::initializeConstantsBuffer()
@@ -302,6 +303,109 @@ void MeshesAndBatchesApp::initializeMeshVertices()
 	mMeshPipeline->CreateShaderResourceBinding( &mMeshSRB, true );
 }
 
+void MeshesAndBatchesApp::initializeMeshSeparate()
+{
+	vec3 positions[] = {
+		vec3( -1,-1,-1 ),
+		vec3( -1,+1,-1 ),
+		vec3( +1,+1,-1 ),
+		vec3( +1,-1,-1 ),
+		vec3( -1,-1,+1 ),
+		vec3( -1,+1,+1 ),
+		vec3( +1,+1,+1 ),
+		vec3( +1,-1,+1 )
+	};
+	
+	vec4 colors[] = {
+		vec4( 1,0,0,1 ),
+		vec4( 0,1,0,1 ),
+		vec4( 0,0,1,1 ),
+		vec4( 1,1,1,1 ),
+		vec4( 1,1,0,1 ),
+		vec4( 0,1,1,1 ),
+		vec4( 1,0,1,1 ),
+		vec4( 0.2f,0.2f,0.2f,1 )
+	};
+
+	gx::BufferRef positionBuffer = gx::createBuffer( gx::BufferDesc()
+		.name( "Position buffer" )
+		.usage( gx::USAGE_IMMUTABLE )
+		.bindFlags( gx::BIND_VERTEX_BUFFER )
+		.sizeInBytes( sizeof( positions ) ),
+		&positions, sizeof( positions )
+	);
+
+	gx::BufferRef colorBuffer = gx::createBuffer( gx::BufferDesc()
+		.name( "Color buffer" )
+		.usage( gx::USAGE_IMMUTABLE )
+		.bindFlags( gx::BIND_VERTEX_BUFFER )
+		.sizeInBytes( sizeof( colors ) ),
+		&colors, sizeof( colors )
+	);
+
+	uint32_t indices[] ={
+		2,0,1, 2,3,0,
+		4,6,5, 4,7,6,
+		0,7,4, 0,3,7,
+		1,0,4, 1,4,5,
+		1,5,2, 5,6,2,
+		3,6,7, 3,2,6
+	};
+
+	gx::BufferRef indexBuffer = gx::createBuffer( gx::BufferDesc()
+		.name( "Cube index buffer" )
+		.usage( gx::USAGE_IMMUTABLE )
+		.bindFlags( gx::BIND_INDEX_BUFFER )
+		.sizeInBytes( sizeof( indices ) ),
+		&indices, sizeof( indices )
+	);
+
+
+	std::vector<std::pair<gx::Mesh::BufferInfo, gx::BufferRef>> vertexBuffers = {
+		{ gx::Mesh::BufferInfo( { { geom::POSITION, 3, sizeof( vec3 ), 0 } } ), positionBuffer },
+		{ gx::Mesh::BufferInfo( { { geom::COLOR, 3, sizeof( vec4 ), 0 } } ), colorBuffer }
+	};
+
+	mMesh = gx::Mesh( vertexBuffers, 36, indexBuffer, gx::VT_UINT32, geom::TRIANGLES );
+	
+	const string vertexShader = R"( #line 308
+		layout(set = 0, binding = 0, std140) uniform ConstantBuffer
+		{
+			layout(row_major) mat4 transform;
+		} vConstants;
+
+		layout(location = 0) in vec3 aPosition;
+		layout(location = 0) out vec3 vPosition;
+
+		void main()
+		{
+			gl_Position = vConstants.transform * vec4( aPosition, 1.0 );
+			vPosition = gl_Position.xyz;
+		}
+	)";
+
+	const string pixelShader = R"( #line 325
+		layout(location = 0) out vec4 oColor;
+		layout(location = 0) in vec3 vPosition;
+
+		void main()
+		{
+			oColor = vec4( vec3( length( vPosition ) * 0.05f ), 1.0f );
+		}
+	)";
+
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
+		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) )
+		// manually specify the inputLayout because the shader and drawcall only uses geom::POSITION instead of both geom::POSITIOn and geom::COLOR
+		.inputLayout( { gx::LayoutElement{ 0, 0, 3, gx::VT_FLOAT32, false } } )
+		.primitiveTopology( mMesh.getPrimitiveTopology() )
+	);
+
+	mMeshPipeline->GetStaticVariableByName( gx::SHADER_TYPE_VERTEX, "ConstantBuffer" )->Set( mMeshConstants );
+	mMeshPipeline->CreateShaderResourceBinding( &mMeshSRB, true );
+}
+
 void MeshesAndBatchesApp::initializeBatch()
 {
 	const string vertexShader = R"( #line 308
@@ -343,11 +447,21 @@ void MeshesAndBatchesApp::update()
 {
 	utils::updateWindowTitle();
 
-	ImGui::Checkbox( "DrawBatch", &mDrawBatch );
-	if( ImGui::Button( "initializeMeshSource" ) ) initializeMeshSource();
-	if( ImGui::Button( "initializeMeshBuffers" ) ) initializeMeshBuffers();
-	if( ImGui::Button( "initializeMeshIndexedVertices" ) ) initializeMeshIndexedVertices();
-	if( ImGui::Button( "initializeMeshVertices" ) ) initializeMeshVertices();
+	const char* options[] = { "Batch", "Mesh", "PositionOnlyMesh" };
+	if( ImGui::BeginCombo( "Options", options[mDrawType] ) ) {
+		for( size_t i = 0; i < 3; ++i ) {
+			if( ImGui::Selectable( options[i], i == mDrawType ) ) {
+				mDrawType = i;
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	if( ImGui::Button( "initializeMeshSource" ) ) { initializeMeshSource(); mDrawType = 0; }
+	if( ImGui::Button( "initializeMeshBuffers" ) ) { initializeMeshBuffers(); mDrawType = 1; }
+	if( ImGui::Button( "initializeMeshIndexedVertices" ) ) { initializeMeshIndexedVertices(); mDrawType = 1; }
+	if( ImGui::Button( "initializeMeshVertices" ) ) { initializeMeshVertices(); mDrawType = 1; }
+	if( ImGui::Button( "initializeMeshSeparate" ) ) { initializeMeshSeparate(); mDrawType = 2; }
 }
 
 void MeshesAndBatchesApp::draw()
@@ -363,14 +477,20 @@ void MeshesAndBatchesApp::draw()
 		*constants = glm::transpose( proj * view );
 	}
 
-	if( mDrawBatch ) {
+	if( mDrawType == 0 ) {
 		mBatch.draw();
 	}
-	else {
+	else if( mDrawType == 1 ) {
 		// Set the mesh pipeline and resources and draw it
 		gx::setPipelineState( mMeshPipeline );
 		gx::commitShaderResources( mMeshSRB, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
-		mMesh.draw();
+		mMesh.draw( gx::Mesh::DrawAttribs().drawFlags( gx::DRAW_FLAG_VERIFY_ALL ) );
+	}
+	else if( mDrawType == 2 ) {
+		// Set the mesh pipeline and resources and draw it
+		gx::setPipelineState( mMeshPipeline );
+		gx::commitShaderResources( mMeshSRB, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
+		mMesh.draw( gx::Mesh::DrawAttribs().attribs( { geom::POSITION } ) );
 	}
 }
 
