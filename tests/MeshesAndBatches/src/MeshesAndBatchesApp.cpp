@@ -69,7 +69,6 @@ class MeshesAndBatchesApp : public App {
 	gx::ShaderResourceBindingRef mMeshSRB;
 
 	gx::Batch mBatch;
-	gx::ShaderResourceBindingRef mBatchSRB;
 
 	CameraPersp mCamera;
 	CameraUi mCameraUi;
@@ -213,15 +212,15 @@ void MeshesAndBatchesApp::initializeMeshIndexedVertices()
 	};
 
 	Vertex vertices[] = {
-		{ vec3( -1,-1,-1 ), vec4( 1,0,0,1 ) },
-		{ vec3( -1,+1,-1 ), vec4( 0,1,0,1 ) },
-		{ vec3( +1,+1,-1 ), vec4( 0,0,1,1 ) },
+		{ vec3( -1,-1,-1 ), vec4( 1,1,1,1 ) },
+		{ vec3( -1,+1,-1 ), vec4( 1,1,1,1 ) },
+		{ vec3( +1,+1,-1 ), vec4( 1,1,1,1 ) },
 		{ vec3( +1,-1,-1 ), vec4( 1,1,1,1 ) },
 
-		{ vec3( -1,-1,+1 ), vec4( 1,1,0,1 ) },
-		{ vec3( -1,+1,+1 ), vec4( 0,1,1,1 ) },
-		{ vec3( +1,+1,+1 ), vec4( 1,0,1,1 ) },
-		{ vec3( +1,-1,+1 ), vec4( 0,0,0,1 ) },
+		{ vec3( -1,-1,+1 ), vec4( 1,1,1,1 ) },
+		{ vec3( -1,+1,+1 ), vec4( 1,1,1,1 ) },
+		{ vec3( +1,+1,+1 ), vec4( 1,1,1,1 ) },
+		{ vec3( +1,-1,+1 ), vec4( 1,1,1,1 ) },
 	};
 
 	uint16_t indices[] = {
@@ -305,16 +304,38 @@ void MeshesAndBatchesApp::initializeMeshVertices()
 
 void MeshesAndBatchesApp::initializeBatch()
 {
-	mBatch = gx::Batch( { geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } }, gx::GraphicsPipelineStateCreateInfo()
-		.vertexShader( gx::ShaderCreateInfo()
-			.sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL )
-			.source( vertexShader )
-		)
-		.pixelShader( gx::ShaderCreateInfo()
-			.sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL )
-			.source( pixelShader )
-		) );
-	mBatch.setStaticVariable( gx::SHADER_TYPE_VERTEX, "Constants", mMeshConstants );
+	const string vertexShader = R"( #line 308
+		layout(set = 0, binding = 0, std140) uniform ConstantBuffer
+		{
+			layout(row_major) mat4 transform;
+		} vConstants;
+
+		layout(location = 0) in vec3 aPosition;
+		layout(location = 1) in vec3 aColor;
+		layout(location = 0) out vec4 vColor;
+
+		void main()
+		{
+			gl_Position = vConstants.transform * vec4( aPosition, 1.0 );
+			vColor = vec4( aColor, 1.0 );
+		}
+	)";
+
+	const string pixelShader = R"( #line 327
+		layout(location = 0) in vec4 vColor;
+		layout(location = 0) out vec4 oColor;
+
+		void main()
+		{
+			oColor = vColor;
+		}
+	)";
+
+	gx::Mesh mesh = { geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } };
+	mBatch = gx::Batch( mesh, gx::GraphicsPipelineStateCreateInfo()
+		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
+		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) ) );
+	mBatch.setStaticVariable( gx::SHADER_TYPE_VERTEX, "ConstantBuffer", mMeshConstants );
 }
 
 void MeshesAndBatchesApp::update()

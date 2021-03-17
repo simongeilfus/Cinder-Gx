@@ -206,6 +206,7 @@ struct CI_API GraphicsPipelineStateCreateInfo : public Diligent::GraphicsPipelin
     const std::vector<ImmutableSamplerDesc>& getImmutableSamplers() const { return mImmutableSamplers; }
     const std::vector<Diligent::ShaderResourceVariableDesc>& getVariablesBase() const { return mVariablesBase; }
     const std::vector<Diligent::ImmutableSamplerDesc>& getImmutableSamplersBase() const { return mImmutableSamplersBase; }
+
 protected:
     void updatePtrs() noexcept;
     void swap( GraphicsPipelineStateCreateInfo &other ) noexcept;
