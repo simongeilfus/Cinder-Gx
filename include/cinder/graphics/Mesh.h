@@ -35,8 +35,8 @@ public:
 	//! BufferInfo describes both the layout of a vertex buffer and its initial format
 	class CI_API BufferInfo : public geom::BufferLayout {
 	public:
-		BufferInfo() : mBindFlags( BIND_VERTEX_BUFFER ), mUsage( USAGE_IMMUTABLE ), mCPUAccessFlags( CPU_ACCESS_NONE ), mMode( BUFFER_MODE_UNDEFINED ) {}
-		BufferInfo( const std::vector<geom::AttribInfo> &attribs ) : geom::BufferLayout( attribs ), mBindFlags( BIND_VERTEX_BUFFER ), mUsage( USAGE_IMMUTABLE ), mCPUAccessFlags( CPU_ACCESS_NONE ), mMode( BUFFER_MODE_UNDEFINED ) {}
+		BufferInfo() : mBindFlags( BIND_VERTEX_BUFFER ), mUsage( USAGE_IMMUTABLE ), mCPUAccessFlags( CPU_ACCESS_NONE ), mMode( BUFFER_MODE_UNDEFINED ), mIsNormalized( false ) {}
+		BufferInfo( const std::vector<geom::AttribInfo> &attribs ) : geom::BufferLayout( attribs ), mBindFlags( BIND_VERTEX_BUFFER ), mUsage( USAGE_IMMUTABLE ), mCPUAccessFlags( CPU_ACCESS_NONE ), mMode( BUFFER_MODE_UNDEFINED ), mIsNormalized( false ) {}
 
 		//! Appends a new attribute to the layout
 		BufferInfo& attrib( const geom::Attrib &attrib, uint8_t dims, size_t stride, size_t offset, uint32_t instanceDivisor = 0 ) { append( attrib, dims, stride, offset, instanceDivisor ); return *this; }
@@ -63,7 +63,7 @@ public:
 		CPU_ACCESS_FLAGS	getCPUAccessFlags() const { return mCPUAccessFlags; }
 		//! Returns Buffer mode, see Diligent::BUFFER_MODE
 		BUFFER_MODE			getMode() const { return mMode; }
-		//! Returns 
+		//! For signed and unsigned integer value types indicates if the value should be normalized to [-1,+1] or [0, 1] range respectively. For floating point types, this member is ignored.
 		bool				getIsNormalized() const { return mIsNormalized; }
 		//! Returns the Buffer name
 		std::string			getName() const { return mName; }
