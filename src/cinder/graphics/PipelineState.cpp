@@ -199,6 +199,67 @@ void GraphicsPipelineDesc::updatePtrs() noexcept
 	}
 }
 
+GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending()
+{
+	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
+		alphaBlending( i );
+	}
+	return *this;
+}
+
+GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending( size_t renderTargetIndex )
+{
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_SRC_ALPHA;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlend = BLEND_FACTOR_INV_SRC_ALPHA;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOp = BLEND_OPERATION_ADD;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlendAlpha = BLEND_FACTOR_ONE;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlendAlpha = BLEND_FACTOR_ZERO;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOpAlpha = BLEND_OPERATION_ADD;
+			
+	return *this;
+}
+
+GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult()
+{
+	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
+		alphaBlendingPremult( i );
+	}
+	return *this;
+}
+
+GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult( size_t renderTargetIndex )
+{
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_ONE;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlend = BLEND_FACTOR_INV_SRC_ALPHA;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOp = BLEND_OPERATION_ADD;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlendAlpha = BLEND_FACTOR_ONE;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlendAlpha = BLEND_FACTOR_ZERO;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOpAlpha = BLEND_OPERATION_ADD;
+	return *this;
+}
+
+GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending()
+{
+	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
+		additiveBlending( i );
+	}
+	return *this;
+}
+
+GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending( size_t renderTargetIndex )
+{
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_SRC_ALPHA;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlend = BLEND_FACTOR_ONE;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOp = BLEND_OPERATION_ADD;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlendAlpha = BLEND_FACTOR_ONE;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].DestBlendAlpha = BLEND_FACTOR_ZERO;
+	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendOpAlpha = BLEND_OPERATION_ADD;
+	return *this;
+}
+
 GraphicsPipelineDesc& GraphicsPipelineDesc::inputLayout( const std::vector<LayoutElement> &elements ) 
 { 
 	mLayoutElements = elements; 

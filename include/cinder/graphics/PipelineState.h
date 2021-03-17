@@ -105,6 +105,19 @@ struct CI_API GraphicsPipelineDesc {
     GraphicsPipelineDesc& blendStateDesc( const Diligent::BlendStateDesc &blendDesc ) { mGraphicsPipeline.BlendDesc = blendDesc; return *this; }
     //! Blend state description.
     GraphicsPipelineDesc& blendState( bool alphaToCoverageEnable, bool independentBlendEnable = false, const Diligent::RenderTargetBlendDesc& RT0 = {} ) { mGraphicsPipeline.BlendDesc = { alphaToCoverageEnable, independentBlendEnable, RT0 }; return *this; }
+    //! Enables blending and sets the blend function to unpremultiplied alpha blending
+    GraphicsPipelineDesc& alphaBlending();
+    //! Enables blending and sets the blend function to unpremultiplied alpha blending
+    GraphicsPipelineDesc& alphaBlending( size_t renderTargetIndex );
+    //! Enables blending and sets the blend function to premultiplied alpha blending
+    GraphicsPipelineDesc& alphaBlendingPremult();
+    //! Enables blending and sets the blend function to premultiplied alpha blending
+    GraphicsPipelineDesc& alphaBlendingPremult( size_t renderTargetIndex );
+    //! Enables \c GL_BLEND and sets the blend function to additive blending
+    GraphicsPipelineDesc& additiveBlending();
+    //! Enables \c GL_BLEND and sets the blend function to additive blending
+    GraphicsPipelineDesc& additiveBlending( size_t renderTargetIndex );
+
     //! 32-bit sample mask that determines which samples get updated in all the active render targets. A sample mask is always applied; it is independent of whether multisampling is enabled, and does not depend on whether an application uses multisample render targets.
     GraphicsPipelineDesc& sampleMask( uint32_t sampleMask ) { mGraphicsPipeline.SampleMask = sampleMask; return *this; }
     //! Rasterizer state description.
@@ -117,6 +130,7 @@ struct CI_API GraphicsPipelineDesc {
     GraphicsPipelineDesc& inputLayout( const std::vector<LayoutElement> &elements );
     //! Primitive topology type, ignored in a mesh pipeline.
     GraphicsPipelineDesc& primitiveTopology( PRIMITIVE_TOPOLOGY primitiveTopology ) { mGraphicsPipeline.PrimitiveTopology = primitiveTopology; return *this; }
+
     //! The number of viewports used by this pipeline
     GraphicsPipelineDesc& numViewports( uint8_t numViewports ) { mGraphicsPipeline.NumViewports = numViewports; return *this; }
     //! The number of render targets in the RTVFormats array. Must be 0 when pRenderPass is not null.
