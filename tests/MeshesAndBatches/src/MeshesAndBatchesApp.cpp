@@ -74,7 +74,7 @@ class MeshesAndBatchesApp : public App {
 	CameraPersp mCamera;
 	CameraUi mCameraUi;
 
-	int mDrawType;
+	int mPipelineType;
 };
 
 void MeshesAndBatchesApp::setup()
@@ -90,7 +90,7 @@ void MeshesAndBatchesApp::setup()
 	initializeMeshSource();
 	initializeBatch();
 
-	mDrawType = 0;
+	mPipelineType = 0;
 }
 
 void MeshesAndBatchesApp::initializeConstantsBuffer()
@@ -374,7 +374,7 @@ void MeshesAndBatchesApp::initializeMeshSeparate()
 #ifdef COLOR_PASS
 			oColor = vColor;
 #else
-			oColor = vec4( vec3( length( vPosition ) * 0.05f ), 1.0f );
+			oColor = vec4( vec3( min( 0.35f, length( vPosition ) * 0.05f ) ), 1.0f );
 #endif
 		}
 	)";
@@ -440,21 +440,21 @@ void MeshesAndBatchesApp::update()
 {
 	utils::updateWindowTitle();
 
-	const char* options[] = { "Batch", "ColorMesh", "PositionOnlyMesh" };
-	if( ImGui::BeginCombo( "Options", options[mDrawType] ) ) {
+	const char* pipeline[] = { "Batch", "ColorMesh", "PositionOnlyMesh" };
+	if( ImGui::BeginCombo( "Pipeline", pipeline[mPipelineType] ) ) {
 		for( size_t i = 0; i < 3; ++i ) {
-			if( ImGui::Selectable( options[i], i == mDrawType ) ) {
-				mDrawType = i;
+			if( ImGui::Selectable( pipeline[i], i == mPipelineType ) ) {
+				mPipelineType = i;
 			}
 		}
 		ImGui::EndCombo();
 	}
 
-	if( ImGui::Button( "initializeMeshSource" ) ) { initializeMeshSource(); mDrawType = 0; }
-	if( ImGui::Button( "initializeMeshBuffers" ) ) { initializeMeshBuffers(); mDrawType = 1; }
-	if( ImGui::Button( "initializeMeshIndexedVertices" ) ) { initializeMeshIndexedVertices(); mDrawType = 1; }
-	if( ImGui::Button( "initializeMeshVertices" ) ) { initializeMeshVertices(); mDrawType = 1; }
-	if( ImGui::Button( "initializeMeshSeparate" ) ) { initializeMeshSeparate(); mDrawType = 2; }
+	if( ImGui::Button( "initializeMeshSource" ) ) { initializeMeshSource(); mPipelineType = 0; }
+	if( ImGui::Button( "initializeMeshBuffers" ) ) { initializeMeshBuffers(); mPipelineType = 1; }
+	if( ImGui::Button( "initializeMeshIndexedVertices" ) ) { initializeMeshIndexedVertices(); mPipelineType = 1; }
+	if( ImGui::Button( "initializeMeshVertices" ) ) { initializeMeshVertices(); mPipelineType = 1; }
+	if( ImGui::Button( "initializeMeshSeparate" ) ) { initializeMeshSeparate(); mPipelineType = 2; }
 }
 
 void MeshesAndBatchesApp::draw()
@@ -470,16 +470,16 @@ void MeshesAndBatchesApp::draw()
 		*constants = glm::transpose( proj * view );
 	}
 
-	if( mDrawType == 0 ) {
+	if( mPipelineType == 0 ) {
 		mBatch.draw();
 	}
-	else if( mDrawType == 1 ) {
+	else if( mPipelineType == 1 ) {
 		// Set the mesh pipeline and resources and draw it
 		gx::setPipelineState( mMeshPipeline );
 		gx::commitShaderResources( mMeshSRB, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
 		mMesh.draw( gx::Mesh::DrawAttribs().drawFlags( gx::DRAW_FLAG_VERIFY_ALL ) );
 	}
-	else if( mDrawType == 2 ) {
+	else if( mPipelineType == 2 && mMeshPositionOnlyPipeline ) {
 		// Set the mesh pipeline and resources and draw it
 		gx::setPipelineState( mMeshPositionOnlyPipeline );
 		gx::commitShaderResources( mMeshSRB, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
