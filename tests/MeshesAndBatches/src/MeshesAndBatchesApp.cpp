@@ -321,7 +321,7 @@ void MeshesAndBatchesApp::initializeBatch()
 		}
 	)";
 
-	const string pixelShader = R"( #line 327
+	const string pixelShader = R"( #line 325
 		layout(location = 0) in vec4 vColor;
 		layout(location = 0) out vec4 oColor;
 
@@ -331,10 +331,11 @@ void MeshesAndBatchesApp::initializeBatch()
 		}
 	)";
 
-	gx::Mesh mesh = { geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } };
+	gx::Mesh mesh( geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } );
 	mBatch = gx::Batch( mesh, gx::GraphicsPipelineStateCreateInfo()
 		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
-		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) ) );
+		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) ) 
+	);
 	mBatch.setStaticVariable( gx::SHADER_TYPE_VERTEX, "ConstantBuffer", mMeshConstants );
 }
 
