@@ -20,7 +20,7 @@ class HelloTriangleApp : public App {
 void HelloTriangleApp::setup()
 {
     // Pipeline state object encompasses configuration of all GPU stages
-    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Simple triangle PSO" )

@@ -79,6 +79,7 @@ struct TextureDesc : public Diligent::TextureDesc {
 
     TextureDesc();
     TextureDesc( const TextureDesc &other );
+    TextureDesc( const Diligent::TextureDesc &other );
     TextureDesc( TextureDesc &&other ) noexcept;
     TextureDesc& operator=( const TextureDesc &other );
     TextureDesc& operator=( TextureDesc &&other ) noexcept;

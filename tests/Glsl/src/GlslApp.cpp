@@ -19,7 +19,7 @@ public:
 
 void GlslApp::setup()
 {
-    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
         .vertexShader( gx::createShader( gx::ShaderCreateInfo()
             .shaderType( gx::SHADER_TYPE_VERTEX )
             .sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_GLSL )

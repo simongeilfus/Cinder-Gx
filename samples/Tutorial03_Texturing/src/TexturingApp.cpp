@@ -59,7 +59,7 @@ void TexturingApp::createUniformBuffer()
 void TexturingApp::createPipelineState()
 {
     // Pipeline state object encompasses configuration of all GPU stages
-    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+    mPipelineState = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
         // Pipeline state name is used by the engine to report issues. It is always a good idea to give objects descriptive names.
         .name( "Cube PSO" )
         // Define vertex shader input layout

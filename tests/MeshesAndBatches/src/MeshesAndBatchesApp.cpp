@@ -108,7 +108,7 @@ void MeshesAndBatchesApp::initializeMeshSource()
 {
 	mMesh = gx::Mesh( geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } );
 
-	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::createShader( gx::ShaderCreateInfo()
 			.name( "Mesh vertex shader" )
 			.shaderType( gx::SHADER_TYPE_VERTEX )
@@ -184,7 +184,7 @@ void MeshesAndBatchesApp::initializeMeshBuffers()
 
 	mMesh = gx::Mesh( vertexBuffers, 36, indexBuffer, gx::VT_UINT32, geom::TRIANGLES );
 
-	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::createShader( gx::ShaderCreateInfo()
 			.name( "Mesh vertex shader" )
 			.shaderType( gx::SHADER_TYPE_VERTEX )
@@ -240,7 +240,7 @@ void MeshesAndBatchesApp::initializeMeshIndexedVertices()
 
 	mMesh = gx::Mesh( &vertices, sizeof( vertices ), attribs, 36, &indices );
 
-	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::createShader( gx::ShaderCreateInfo()
 			.name( "Mesh vertex shader" )
 			.shaderType( gx::SHADER_TYPE_VERTEX )
@@ -281,7 +281,7 @@ void MeshesAndBatchesApp::initializeMeshVertices()
 
 	mMesh = gx::Mesh( 3, &vertices, sizeof( vertices ), attribs );
 
-	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::createShader( gx::ShaderCreateInfo()
 			.name( "Mesh vertex shader" )
 			.shaderType( gx::SHADER_TYPE_VERTEX )
@@ -379,7 +379,7 @@ void MeshesAndBatchesApp::initializeMeshSeparate()
 		}
 	)";
 
-	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ).macro( "COLOR_PASS", 1 ) )
 		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ).macro( "COLOR_PASS", 1 ) )
 		.inputLayout( mMesh.getVertexLayoutElements() )
@@ -389,7 +389,7 @@ void MeshesAndBatchesApp::initializeMeshSeparate()
 	mMeshPipeline->CreateShaderResourceBinding( &mMeshSRB, true );
 
 	// position only pass has a different shader and layout elements
-	mMeshPositionOnlyPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	mMeshPositionOnlyPipeline = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
 		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
 		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) )
 		// manually specify the inputLayout because the shader and drawcall only uses geom::POSITION instead of both geom::POSITIOn and geom::COLOR
@@ -429,7 +429,7 @@ void MeshesAndBatchesApp::initializeBatch()
 	)";
 
 	gx::Mesh mesh( geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } );
-	mBatch = gx::Batch( mesh, gx::GraphicsPipelineStateCreateInfo()
+	mBatch = gx::Batch( mesh, gx::GraphicsPipelineDesc()
 		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
 		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) ) 
 	);

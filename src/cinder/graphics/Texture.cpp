@@ -42,6 +42,11 @@ TextureDesc::TextureDesc( const TextureDesc &other )
 	updatePtrs();
 }
 
+TextureDesc::TextureDesc( const Diligent::TextureDesc &other )
+	: Diligent::TextureDesc( other )
+{
+}
+
 TextureDesc::TextureDesc( TextureDesc &&other ) noexcept
 	: TextureDesc()
 {

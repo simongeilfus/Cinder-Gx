@@ -81,6 +81,9 @@
     <Filter Include="Blocks\Cinder-Gx\third_party\DiligentCore\Primitives\interface">
       <UniqueIdentifier>{9A5B6BCA-FBDA-4BAC-99C7-0AE0DC173221}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{8164cdcd-6cc6-4ce6-af51-fafe808d52a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\TextureArrayApp.cpp">
@@ -450,5 +453,13 @@
     <ClInclude Include="..\..\..\include\cinder\graphics\DeviceContext.h">
       <Filter>Blocks\Cinder-Gx\include\cinder\graphics</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\assets\cube_inst.psh">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="..\assets\cube_inst.vsh">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -154,7 +154,7 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
     )";
 
 	Pipeline pipeline;
-	pipeline.pso = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+	pipeline.pso = gx::createGraphicsPipelineState( device, gx::GraphicsPipelineDesc()
 		.name( "DrawContext Color Pipeline" )
 		.inputLayout( {
 			// Attribute 0 - vertex position
@@ -512,7 +512,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 				pipeline.srb->GetVariableByName( SHADER_TYPE_PIXEL, "rTexture" )->Set( getTextureAt( command.resources.textureIndex ) );
 			}
 			else {
-				pipeline.srb->GetVariableByName( SHADER_TYPE_PIXEL, "rTexture" )->SetArray( &mTextures[0], 0, mTextures.size() );
+				pipeline.srb->GetVariableByName( SHADER_TYPE_PIXEL, "rTexture" )->SetArray( &mTextures[0], 0, static_cast<uint32_t>( mTextures.size() ) );
 			}
 			context->SetPipelineState( pipeline.pso );
 			context->CommitShaderResources( pipeline.srb, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );

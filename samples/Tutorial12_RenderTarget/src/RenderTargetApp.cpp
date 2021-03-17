@@ -147,7 +147,7 @@ void RenderTargetApp::createRenderTargetPSO()
     constexpr bool transformUVCoords = false;
 #endif
 
-    mRTPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineStateCreateInfo()
+    mRTPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Render Target PSO" )

@@ -61,7 +61,7 @@ GlslConstantsApp::GlslConstantsApp()
 	)";
 
 	gx::Mesh mesh( geom::TorusKnot().colors(), { geom::POSITION, geom::COLOR } );
-	mBatch = gx::Batch( mesh, gx::GraphicsPipelineStateCreateInfo()
+	mBatch = gx::Batch( mesh, gx::GraphicsPipelineDesc()
 		.vertexShader( gx::ShaderCreateInfo().source( vertexShader ) )
 		.pixelShader( gx::ShaderCreateInfo().source( pixelShader ) )
 	);

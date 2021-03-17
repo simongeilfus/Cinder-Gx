@@ -33,18 +33,18 @@ class Batch {
 public:
 	Batch() = default;
 	Batch( const PipelineStateRef &pipelineState );
-	Batch( const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( const GraphicsPipelineDesc &pipelineCreateInfo );
 	Batch( const Mesh &mesh, const PipelineStateRef &pipelineState );
-	Batch( const Mesh &mesh, const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( const Mesh &mesh, const GraphicsPipelineDesc &pipelineCreateInfo );
 	Batch( const std::vector<Mesh> &meshes, const PipelineStateRef &pipelineState );
-	Batch( const std::vector<Mesh> &meshes, const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( const std::vector<Mesh> &meshes, const GraphicsPipelineDesc &pipelineCreateInfo );
 
 	Batch( RenderDevice* device, const PipelineStateRef &pipelineState );
-	Batch( RenderDevice* device, const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( RenderDevice* device, const GraphicsPipelineDesc &pipelineCreateInfo );
 	Batch( RenderDevice* device, const Mesh &mesh, const PipelineStateRef &pipelineState );
-	Batch( RenderDevice* device, const Mesh &mesh, const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( RenderDevice* device, const Mesh &mesh, const GraphicsPipelineDesc &pipelineCreateInfo );
 	Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const PipelineStateRef &pipelineState );
-	Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const GraphicsPipelineStateCreateInfo &pipelineCreateInfo );
+	Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const GraphicsPipelineDesc &pipelineCreateInfo );
 
 	//! Binds a static shader resource variable to Batch's ShaderResourceBinding object
 	void setStaticVariable( SHADER_TYPE shaderType, const char* name, IDeviceObject* pObject );

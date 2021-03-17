@@ -138,7 +138,7 @@ ci::gx::PipelineStateRef createPipelineState( ci::gx::RenderDevice* renderDevice
         .filePath( psFilePath )
     );
 
-    gx::GraphicsPipelineStateCreateInfo psoCreateInfo = gx::GraphicsPipelineStateCreateInfo()
+    gx::GraphicsPipelineDesc psoCreateInfo = gx::GraphicsPipelineDesc()
         // Pipeline state name is used by the engine to report issues. It is always a good idea to give objects descriptive names.
         .name( "Cube PSO" )
         // Set render target format which is the format of the swap chain's color buffer
@@ -159,9 +159,7 @@ ci::gx::PipelineStateRef createPipelineState( ci::gx::RenderDevice* renderDevice
         // Define immutable sampler for g_Texture. Immutable samplers should be used whenever possible
         .immutableSamplers( { { gx::SHADER_TYPE_PIXEL, "g_Texture", Diligent::SamplerDesc() } } );
 
-    gx::PipelineStateRef pso;
-    renderDevice->CreateGraphicsPipelineState( psoCreateInfo, &pso );
-    return pso;
+    return gx::createGraphicsPipelineState( psoCreateInfo );
 }
 
 } // namespace TexturedCube
