@@ -341,14 +341,6 @@ bool isVerticalSyncEnabled()
 	return std::static_pointer_cast<RendererGx>( app::App::get()->getRenderer() )->isVerticalSyncEnabled();
 }
 
-SamplerRef createSampler( const Diligent::SamplerDesc &samDesc )
-{
-	SamplerRef sampler;
-	getRenderDevice()->CreateSampler( samDesc, &sampler );
-	return sampler;
-}
-
-
 ResourceMappingRef createResourceMapping( const Diligent::ResourceMappingDesc &mappingDesc )
 {
 	ResourceMappingRef resourceMapping;

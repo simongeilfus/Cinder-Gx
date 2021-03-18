@@ -241,8 +241,6 @@ CI_API void traceRays( const TraceRaysAttribs &Attribs );
 CI_API void enableVerticalSync( bool enable = true );
 CI_API bool isVerticalSyncEnabled();
 
-//! Creates a new sampler object using the default RenderDevice
-CI_API SamplerRef createSampler( const Diligent::SamplerDesc &samDesc );
 //! Creates a new resource mapping using the default RenderDevice
 CI_API ResourceMappingRef createResourceMapping( const Diligent::ResourceMappingDesc &mappingDesc );
 //! Creates a new graphics pipeline state object using the default RenderDevice
