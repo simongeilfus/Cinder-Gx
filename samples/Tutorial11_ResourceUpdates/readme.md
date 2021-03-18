@@ -3,7 +3,7 @@
 This tutorial demonstrates different ways to update buffers and textures in Diligent Engine and explains important
 internal details and performance implications related to each method.
 
-![](Animation_Large.gif)
+![](https://github.com/DiligentGraphics/DiligentSamples/blob/master/Tutorials/Tutorial11_ResourceUpdates/Animation_Large.gif)
 
 ## Buffers
 
