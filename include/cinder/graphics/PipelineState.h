@@ -103,8 +103,12 @@ protected:
 struct CI_API GraphicsPipelineDesc {
     //! Blend state description.
     GraphicsPipelineDesc& blendStateDesc( const Diligent::BlendStateDesc &blendDesc ) { mGraphicsPipeline.BlendDesc = blendDesc; return *this; }
-    //! Blend state description.
-    GraphicsPipelineDesc& blendState( bool alphaToCoverageEnable, bool independentBlendEnable = false, const Diligent::RenderTargetBlendDesc& RT0 = {} ) { mGraphicsPipeline.BlendDesc = { alphaToCoverageEnable, independentBlendEnable, RT0 }; return *this; }
+    //! Specifies the blend states per render targets
+    GraphicsPipelineDesc& renderTargetBlendDesc( size_t rtIndex, const Diligent::RenderTargetBlendDesc &desc ) { mGraphicsPipeline.BlendDesc.RenderTargets[rtIndex] = desc; return *this; }
+    //! Specifies whether to use alpha-to-coverage as a multisampling technique when setting a pixel to a render target. Default value: False.
+    GraphicsPipelineDesc& alphaToCoverageEnable( bool alphaToCoverageEnable ) { mGraphicsPipeline.BlendDesc.AlphaToCoverageEnable = alphaToCoverageEnable; return *this; }
+    //! Specifies whether to enable independent blending in simultaneous render targets. If set to False, only RenderTargets[0] is used. Default value: False.
+    GraphicsPipelineDesc& independentBlendEnable( bool independentBlendEnable ) { mGraphicsPipeline.BlendDesc.IndependentBlendEnable = independentBlendEnable; return *this; }
     //! Enables blending and sets the blend function to unpremultiplied alpha blending
     GraphicsPipelineDesc& alphaBlending();
     //! Enables blending and sets the blend function to unpremultiplied alpha blending
@@ -120,10 +124,47 @@ struct CI_API GraphicsPipelineDesc {
 
     //! 32-bit sample mask that determines which samples get updated in all the active render targets. A sample mask is always applied; it is independent of whether multisampling is enabled, and does not depend on whether an application uses multisample render targets.
     GraphicsPipelineDesc& sampleMask( uint32_t sampleMask ) { mGraphicsPipeline.SampleMask = sampleMask; return *this; }
+
     //! Rasterizer state description.
     GraphicsPipelineDesc& rasterizerStateDesc( const Diligent::RasterizerStateDesc &rasterizerDesc ) { mGraphicsPipeline.RasterizerDesc = rasterizerDesc; return *this; }
+    //! Determines traingle fill mode, see Diligent::FILL_MODE for details. Default value: Diligent::FILL_MODE_SOLID.
+    GraphicsPipelineDesc& fillMode( FILL_MODE fillMode ) { mGraphicsPipeline.RasterizerDesc.FillMode = fillMode; return *this; }
+    //! Determines traingle cull mode, see Diligent::CULL_MODE for details. Default value: Diligent::CULL_MODE_BACK.
+    GraphicsPipelineDesc& cullMode( CULL_MODE cullMode ) { mGraphicsPipeline.RasterizerDesc.CullMode = cullMode; return *this; }
+    //! Determines if a triangle is front- or back-facing. If this parameter is True, a triangle will be considered front-facing if its vertices are counter-clockwise on the render target. Default value: False.
+    GraphicsPipelineDesc& frontCounterClockwise( bool frontCounterClockwise ) { mGraphicsPipeline.RasterizerDesc.FrontCounterClockwise = frontCounterClockwise; return *this; }
+    //! Enable clipping against near and far clip planes. Default value: True.
+    GraphicsPipelineDesc& depthClipEnable( bool depthClipEnable ) { mGraphicsPipeline.RasterizerDesc.DepthClipEnable = depthClipEnable; return *this; }
+    //! Enable scissor-rectangle culling. All pixels outside an active scissor rectangle are culled. Default value: False.
+    GraphicsPipelineDesc& scissorEnable( bool scissorEnable ) { mGraphicsPipeline.RasterizerDesc.ScissorEnable = scissorEnable; return *this; }
+    //! Specifies whether to enable line antialiasing. Default value: False.
+    GraphicsPipelineDesc& antialiasedLineEnable( bool antialiasedLineEnable ) { mGraphicsPipeline.RasterizerDesc.AntialiasedLineEnable = antialiasedLineEnable; return *this; }
+    //! Constant value added to the depth of a given pixel. Default value: 0.
+    GraphicsPipelineDesc& depthBias( int32_t depthBias ) { mGraphicsPipeline.RasterizerDesc.DepthBias = depthBias; return *this; }
+    //! Maximum depth bias of a pixel. \warning Depth bias clamp is not available in OpenGL Default value: 0.
+    GraphicsPipelineDesc& depthBiasClamp( float depthBiasClamp ) { mGraphicsPipeline.RasterizerDesc.DepthBiasClamp = depthBiasClamp; return *this; }
+    //! Scalar that scales the given pixel's slope before adding to the pixel's depth. Default value: 0.
+    GraphicsPipelineDesc& slopeScaledDepthBias( float slopeScaledDepthBias ) { mGraphicsPipeline.RasterizerDesc.SlopeScaledDepthBias = slopeScaledDepthBias; return *this; }
+
     //! Depth-stencil state description.
     GraphicsPipelineDesc& depthStencilDesc( const Diligent::DepthStencilStateDesc &depthStencilDesc ) { mGraphicsPipeline.DepthStencilDesc = depthStencilDesc; return *this; }
+    //! Enable depth-stencil operations. When it is set to False, depth test always passes, depth writes are disabled, and no stencil operations are performed. Default value: True.
+    GraphicsPipelineDesc& depthEnable( bool depthEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthEnable = depthEnable; return *this; };
+    //! Enable or disable writes to a depth buffer. Default value: True.
+    GraphicsPipelineDesc& depthWriteEnable( bool depthWriteEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthWriteEnable = depthWriteEnable; return *this; };
+    //! A function that compares depth data against existing depth data. See Diligent::COMPARISON_FUNCTION for details. Default value: Diligent::COMPARISON_FUNC_LESS.
+    GraphicsPipelineDesc& depthFunc( COMPARISON_FUNCTION depthFunc ) { mGraphicsPipeline.DepthStencilDesc.DepthFunc = depthFunc; return *this; };
+    //! Enable stencil opertaions. Default value: False.
+    GraphicsPipelineDesc& stencilEnable( bool stencilEnable ) { mGraphicsPipeline.DepthStencilDesc.StencilEnable = stencilEnable; return *this; };
+    //! Identify which bits of the depth-stencil buffer are accessed when reading stencil data. Default value: 0xFF.
+    GraphicsPipelineDesc& stencilReadMask( uint8_t stencilReadMask ) { mGraphicsPipeline.DepthStencilDesc.StencilReadMask = stencilReadMask; return *this; }
+    //! Identify which bits of the depth-stencil buffer are accessed when writing stencil data. Default value: 0xFF.
+    GraphicsPipelineDesc& stencilWriteMask( uint8_t stencilWriteMask ) { mGraphicsPipeline.DepthStencilDesc.StencilWriteMask = stencilWriteMask; return *this; };
+    //! Identify stencil operations for the front-facing triangles, see Diligent::StencilOpDesc.
+    GraphicsPipelineDesc& frontFace( StencilOpDesc frontFace ) { mGraphicsPipeline.DepthStencilDesc.FrontFace = frontFace; return *this; };
+    //! Identify stencil operations for the back-facing triangles, see Diligent::StencilOpDesc.
+    GraphicsPipelineDesc& backFace( StencilOpDesc backFace ) { mGraphicsPipeline.DepthStencilDesc.BackFace = backFace; return *this; };
+
     //! Input layout, ignored in a mesh pipeline.
     GraphicsPipelineDesc& inputLayout( const Diligent::InputLayoutDesc &inputLayout ) { mGraphicsPipeline.InputLayout = inputLayout; return *this; }
     //! Input layout, ignored in a mesh pipeline.
@@ -191,6 +232,8 @@ struct CI_API GraphicsPipelineDesc {
     //! Array of immutable sampler descriptions                
     GraphicsPipelineDesc& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
 
+    //! Specifies the Pipeline type. Default to PIPELINE_TYPE_GRAPHICS but can be changed to PIPELINE_TYPE_MESH.
+    GraphicsPipelineDesc& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
     //! Specifies the object's name.
     GraphicsPipelineDesc& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
 
