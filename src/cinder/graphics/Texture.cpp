@@ -33,6 +33,7 @@ namespace graphics {
 TextureDesc::TextureDesc() 
 	: Diligent::TextureDesc() 
 {
+	Usage = USAGE_NUM_USAGES;
 }
 
 TextureDesc::TextureDesc( const TextureDesc &other ) 
@@ -212,7 +213,7 @@ namespace {
 		textureDesc.Format = desc.Format != Diligent::TEX_FORMAT_UNKNOWN ? desc.Format : getTextureFormatFromImageSource( imageSource );
 		textureDesc.MipLevels = 1;
 		textureDesc.SampleCount = 1;
-		textureDesc.Usage = desc.Usage != Diligent::USAGE_DEFAULT ? desc.Usage : Diligent::USAGE_IMMUTABLE;
+		textureDesc.Usage = desc.Usage != Diligent::USAGE_NUM_USAGES ? desc.Usage : Diligent::USAGE_IMMUTABLE;
 		textureDesc.BindFlags = desc.BindFlags != Diligent::BIND_NONE ? desc.BindFlags : Diligent::BIND_SHADER_RESOURCE;
 		textureDesc.CPUAccessFlags = desc.CPUAccessFlags != Diligent::CPU_ACCESS_NONE ? desc.CPUAccessFlags : Diligent::CPU_ACCESS_READ;
 
