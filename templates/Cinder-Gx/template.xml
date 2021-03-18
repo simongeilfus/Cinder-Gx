@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <cinder>
-<template name="Cinder-Gx: Basic">
+<template name="Basic GX">
 	<requires>org.libcinder.gx</requires>
 	<source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
 </template>
