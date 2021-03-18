@@ -28,7 +28,7 @@
 
 namespace cinder { namespace graphics {
 
-/// Buffer description
+//! Buffer description
 struct CI_API BufferDesc : public Diligent::BufferDesc {
     //! Size of the buffer, in bytes. For a uniform buffer, this must be multiple of 16.
     BufferDesc& sizeInBytes( uint32_t sizeInBytes ) { uiSizeInBytes = sizeInBytes; return *this; }
@@ -64,6 +64,24 @@ protected:
 CI_API BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const Diligent::BufferData* buffData = nullptr );
 //! Creates a new buffer object using the default RenderDevice
 CI_API BufferRef createBuffer( const Diligent::BufferDesc &buffDesc, const void* data, uint32_t dataSize );
+
+//! Buffer view description
+struct CI_API BufferViewDesc : public Diligent::BufferViewDesc {
+    //! View type. See Diligent::BUFFER_VIEW_TYPE for details.
+    BufferViewDesc& viewType( BUFFER_VIEW_TYPE viewType ) { ViewType = viewType; return *this; }
+    //! Format of the view. This member is only used for formatted and raw buffers. To create raw view of a raw buffer, set Format.ValueType member to VT_UNDEFINED (default value).
+    BufferViewDesc& format( BufferFormat format ) { Format = format; return *this; }
+    //! Type of components. For a formatted buffer views, this value cannot be VT_UNDEFINED.  This member is only used for formatted and raw buffers.
+    BufferViewDesc& valueType( VALUE_TYPE valueType ) { Format.ValueType = valueType; return *this; }
+    //! Number of components. Allowed values: 1, 2, 3, 4. For a formatted buffer, this value cannot be 0. This member is only used for formatted and raw buffers.
+    BufferViewDesc& numComponents( Uint8 numComponents ) { Format.NumComponents = numComponents; return *this; }
+    //! For signed and unsigned integer value types indicates if the value should be normalized to [-1,+1] or [0, 1] range respectively. For floating point types, this member is ignored. This member is only used for formatted and raw buffers.
+    BufferViewDesc& isNormalized( Bool isNormalized ) { Format.IsNormalized = isNormalized; return *this; }
+    //! Offset in bytes from the beginnig of the buffer to the start of the buffer region referenced by the view
+    BufferViewDesc& byteOffset( uint32_t byteOffset ) { ByteOffset = byteOffset; return *this; }
+    //! Size in bytes of the referenced buffer region
+    BufferViewDesc& byteWidth( uint32_t byteWidth ) { ByteWidth = byteWidth; return *this; }
+};
 
 }
 

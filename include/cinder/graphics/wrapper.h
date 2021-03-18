@@ -50,6 +50,7 @@ using SwapChainRef = Diligent::RefCntAutoPtr<Diligent::ISwapChain>;
 using Buffer = Diligent::IBuffer;
 using BufferRef = Diligent::RefCntAutoPtr<Diligent::IBuffer>;
 using BufferView = Diligent::IBufferView;
+using BufferViewRef = Diligent::RefCntAutoPtr<Diligent::IBufferView>;
 using Texture = Diligent::ITexture;
 using TextureRef = Diligent::RefCntAutoPtr<Diligent::ITexture>;
 using TextureView = Diligent::ITextureView;
@@ -160,6 +161,7 @@ CI_API void drawIndexedIndirect( const Diligent::DrawIndexedIndirectAttribs &att
 CI_API void drawMesh( const Diligent::DrawMeshAttribs &attribs );
 //! Executes a mesh indirect draw command
 CI_API void drawMeshIndirect( const Diligent::DrawMeshIndirectAttribs &attribs );
+
 //! Executes a dispatch compute command.
 CI_API void dispatchCompute( const DispatchComputeAttribs &Attribs );
 //! Executes an indirect dispatch compute command.
