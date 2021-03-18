@@ -274,6 +274,68 @@ protected:
 PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineDesc &pipelineDesc );
 PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineDesc &pipelineDesc );
 
+
+//! Graphics pipeline state creation attributes
+struct CI_API ComputePipelineDesc {
+    //! Vertex shader to be used with the pipeline.
+    ComputePipelineDesc& shader( const ShaderRef &shader ) { mCS = shader; return *this; }
+    //! Vertex shader to be used with the pipeline.
+    ComputePipelineDesc& shader( const ShaderCreateInfo &shaderCreateInfo ) { mCSCreateInfo = shaderCreateInfo; mCSCreateInfo.Desc.ShaderType = SHADER_TYPE_COMPUTE; return *this; }
+
+    //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
+    ComputePipelineDesc& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
+    //! Defines which command queues this pipeline state can be used with
+    ComputePipelineDesc& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
+
+    //! Pipeline layout description
+    ComputePipelineDesc& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
+    //! Default shader resource variable type. This type will be used if shader variable description is not found in the Variables array or if Variables == nullptr
+    ComputePipelineDesc& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { mPSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
+    //! Array of shader resource variable descriptions               
+    ComputePipelineDesc& variables( const std::vector<ShaderResourceVariableDesc> &variables );
+    //! Array of immutable sampler descriptions                
+    ComputePipelineDesc& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
+
+    //! Specifies the Pipeline type. Default to PIPELINE_TYPE_GRAPHICS but can be changed to PIPELINE_TYPE_MESH.
+    ComputePipelineDesc& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
+    //! Specifies the object's name.
+    ComputePipelineDesc& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
+
+    ComputePipelineDesc();
+    ComputePipelineDesc( const ComputePipelineDesc &other );
+    ComputePipelineDesc( ComputePipelineDesc &&other ) noexcept;
+    ComputePipelineDesc& operator=( const ComputePipelineDesc &other );
+    ComputePipelineDesc& operator=( ComputePipelineDesc &&other ) noexcept;
+    ~ComputePipelineDesc() = default;
+
+    const std::vector<ShaderResourceVariableDesc>& getVariables() const { return mVariables; }
+    const std::vector<ImmutableSamplerDesc>& getImmutableSamplers() const { return mImmutableSamplers; }
+    const std::vector<Diligent::ShaderResourceVariableDesc>& getVariablesBase() const { return mVariablesBase; }
+    const std::vector<Diligent::ImmutableSamplerDesc>& getImmutableSamplersBase() const { return mImmutableSamplersBase; }
+
+protected:
+    void updatePtrs() noexcept;
+    void swap( ComputePipelineDesc &other ) noexcept;
+
+    std::string mName;
+    ShaderRef mCS;
+    ShaderCreateInfo mCSCreateInfo;
+
+    std::vector<ShaderResourceVariableDesc> mVariables;
+    std::vector<ImmutableSamplerDesc> mImmutableSamplers;
+
+    Diligent::PipelineStateDesc     mPSODesc;
+    PSO_CREATE_FLAGS                mFlags;
+
+    std::vector<Diligent::ShaderResourceVariableDesc> mVariablesBase;
+    std::vector<Diligent::ImmutableSamplerDesc> mImmutableSamplersBase;
+
+    friend PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc );
+};
+
+PipelineStateRef createComputePipelineState( const gx::ComputePipelineDesc &pipelineDesc );
+PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc );
+
 }
 
 namespace gx = graphics;

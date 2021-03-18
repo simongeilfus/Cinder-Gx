@@ -327,7 +327,6 @@ PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::Gr
 {
 	PipelineStateRef pipelineState;
 
-	// not sure if there's a way to avoid a copy here?
 	gx::GraphicsPipelineStateCreateInfo createInfo;
 	createInfo.Flags = pipelineDesc.mFlags;
 	createInfo.GraphicsPipeline = pipelineDesc.mGraphicsPipeline;
@@ -377,7 +376,131 @@ PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::Gr
 	return pipelineState;
 }
 
+ComputePipelineDesc::ComputePipelineDesc()
+{
+	mFlags = PSO_CREATE_FLAG_NONE;
+	mPSODesc.PipelineType = Diligent::PIPELINE_TYPE_COMPUTE;
 }
 
-namespace gx = graphics;
+ComputePipelineDesc::ComputePipelineDesc( const ComputePipelineDesc &other )
+	: mName( other.mName ),
+	mCS( other.mCS ),
+	mCSCreateInfo( other.mCSCreateInfo ),
+	mVariables( other.mVariables ),
+	mImmutableSamplers( other.mImmutableSamplers ),
+	mPSODesc( other.mPSODesc ),
+	mFlags( other.mFlags )
+{
+	updatePtrs();
+}
+
+ComputePipelineDesc::ComputePipelineDesc( ComputePipelineDesc &&other ) noexcept
+	: ComputePipelineDesc()
+{
+	other.swap( *this );
+	updatePtrs();
+}
+
+ComputePipelineDesc& ComputePipelineDesc::operator=( const ComputePipelineDesc &other )
+{
+	ComputePipelineDesc( other ).swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+ComputePipelineDesc& ComputePipelineDesc::operator=( ComputePipelineDesc &&other ) noexcept
+{
+	other.swap( *this );
+	updatePtrs();
+	return *this;
+}
+
+void ComputePipelineDesc::updatePtrs() noexcept
+{
+	if( ! mName.empty() ) mPSODesc.Name = mName.c_str();
+
+	if( ! mVariables.empty() ) {
+		mVariablesBase.resize( mVariables.size() );
+		for( size_t i = 0; i < mVariables.size(); ++i ) {
+			mVariablesBase[i] = mVariables[i];
+		}
+		mPSODesc.ResourceLayout.Variables = mVariablesBase.data();
+		mPSODesc.ResourceLayout.NumVariables = static_cast<uint32_t>( mVariablesBase.size() );
+	}
+
+	if( ! mImmutableSamplers.empty() ) {
+		mImmutableSamplersBase.resize( mImmutableSamplers.size() );
+		for( size_t i = 0; i < mImmutableSamplers.size(); ++i ) {
+			mImmutableSamplersBase[i] = mImmutableSamplers[i];
+		}
+		mPSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplersBase.data();
+		mPSODesc.ResourceLayout.NumImmutableSamplers = static_cast<uint32_t>( mImmutableSamplersBase.size() );
+	}
+}
+
+ComputePipelineDesc& ComputePipelineDesc::variables( const std::vector<ShaderResourceVariableDesc> &variables )
+{
+	mVariables = variables;
+	mVariablesBase.resize( mVariables.size() );
+	for( size_t i = 0; i < mVariables.size(); ++i ) {
+		mVariablesBase[i] = mVariables[i];
+	}
+	mPSODesc.ResourceLayout.Variables = mVariablesBase.data();
+	mPSODesc.ResourceLayout.NumVariables = static_cast<uint32_t>( mVariablesBase.size() );
+	return *this;
+}
+
+ComputePipelineDesc& ComputePipelineDesc::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers )
+{
+	mImmutableSamplers = immutableSamplers;
+	mImmutableSamplersBase.resize( mImmutableSamplers.size() );
+	for( size_t i = 0; i < mImmutableSamplers.size(); ++i ) {
+		mImmutableSamplersBase[i] = mImmutableSamplers[i];
+	}
+	mPSODesc.ResourceLayout.ImmutableSamplers = mImmutableSamplersBase.data();
+	mPSODesc.ResourceLayout.NumImmutableSamplers = static_cast<uint32_t>( mImmutableSamplersBase.size() );
+	return *this;
+}
+
+void ComputePipelineDesc::swap( ComputePipelineDesc &other ) noexcept
+{
+	std::swap( mPSODesc, other.mPSODesc );
+	std::swap( mFlags, other.mFlags );
+
+	std::swap( mName, other.mName );
+	std::swap( mCS, other.mCS );
+	std::swap( mCSCreateInfo, other.mCSCreateInfo );
+	std::swap( mVariables, other.mVariables );
+	std::swap( mImmutableSamplers, other.mImmutableSamplers );
+}
+
+PipelineStateRef createComputePipelineState( const gx::ComputePipelineDesc &pipelineDesc )
+{
+	return createComputePipelineState( app::getRenderDevice(), pipelineDesc );
+}
+
+PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc )
+{
+	PipelineStateRef pipelineState;
+
+	gx::ComputePipelineStateCreateInfo createInfo;
+	createInfo.Flags = pipelineDesc.mFlags;
+	createInfo.PSODesc = pipelineDesc.mPSODesc;
+
+	// initialize shaders if no pointer is present but a ShaderCreateInfo is available
+	ShaderRef cs;
+	if( ! createInfo.pCS && pipelineDesc.mCSCreateInfo.Desc.ShaderType != SHADER_TYPE_UNKNOWN ) {
+		device->CreateShader( pipelineDesc.mCSCreateInfo, &cs );
+		createInfo.pCS = cs;
+	}
+
+	// set shader pointers
+	if( pipelineDesc.mCS ) createInfo.pCS = pipelineDesc.mCS.RawPtr<Shader>();
+
+	device->CreateComputePipelineState( createInfo, &pipelineState );
+	return pipelineState;
+}
+
+
+}
 } // namespace cinder::graphics
