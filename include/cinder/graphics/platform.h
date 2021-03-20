@@ -27,18 +27,34 @@
 
 #if defined( CINDER_MSW )
 	#define PLATFORM_WIN32 1
-	#define D3D11_SUPPORTED 1
-	#define D3D12_SUPPORTED 1
-	#define GL_SUPPORTED 1
-	#define VULKAN_SUPPORTED 1
+	#if ! defined( D3D11_SUPPORTED )
+		#define D3D11_SUPPORTED 1
+	#endif
+	#if ! defined( D3D12_SUPPORTED )
+		#define D3D12_SUPPORTED 1
+	#endif
+	#if ! defined( GL_SUPPORTED )
+		#define GL_SUPPORTED 1
+	#endif
+	#if ! defined( VULKAN_SUPPORTED )
+		#define VULKAN_SUPPORTED 1
+	#endif
 #elif defined( CINDER_LINUX )
 	#define PLATFORM_LINUX 1
-	#define GL_SUPPORTED 1
-	#define VULKAN_SUPPORTED 1
+	#if ! defined( GL_SUPPORTED )
+		#define GL_SUPPORTED 1
+	#endif
+	#if ! defined( VULKAN_SUPPORTED )
+		#define VULKAN_SUPPORTED 1
+	#endif
 #elif defined( CINDER_ANDROID )
 	#define PLATFORM_ANDROID 1
-	#define GLES_SUPPORTED 1
-	#define VULKAN_SUPPORTED 1
+	#if ! defined( GLES_SUPPORTED )
+		#define GLES_SUPPORTED 1
+	#endif
+	#if ! defined( VULKAN_SUPPORTED )
+		#define VULKAN_SUPPORTED 1
+	#endif
 #elif defined( CINDER_MAC )
 	#define PLATFORM_MACOS 1
 #endif
