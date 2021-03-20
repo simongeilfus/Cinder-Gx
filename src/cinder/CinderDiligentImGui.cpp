@@ -1108,3 +1108,11 @@ bool ImGui::DiligentInitialize( const ImGui::Options& options )
 	sInitialized = true;
 	return sInitialized;
 }
+
+void ImGui::CreateFontsTexture()
+{
+    if( ! sInitialized || ! sImGuiDiligentRenderer )
+        return;
+
+    sImGuiDiligentRenderer->CreateFontsTexture();
+}

@@ -32,4 +32,5 @@ namespace ImGui {
 	//! In a multi-window context, only call ImGui in App::draw() if the active window matches the one
 	//! used here for initialization, or in App::update() only if the this window is still open.
 	CI_API bool DiligentInitialize( const Options& options = Options() );
+	CI_API void CreateFontsTexture();
 }
