@@ -108,7 +108,9 @@ namespace {
     void debugMessageCallback( enum DEBUG_MESSAGE_SEVERITY severity, const Diligent::Char* message, const Diligent::Char* function, const Diligent::Char* file, int line )
     {
         if( severity >= sDebugLogSeverity ) {
-            log::Entry( severityToLevel( severity ), log::Location( function != nullptr ? function : "   ci::gx", file != nullptr ? file : "", file != nullptr ? line : 0 ) ) << message;
+            log::Level    level    = severityToLevel( severity );
+            log::Location location = log::Location( function ? function : "", file ? file : "", line );
+            log::Entry( level, location ) << message;
             /*Diligent::String formatedMessage = BasicPlatformDebug::FormatDebugMessage( severity, message, function, file, line );
             app::console() << formatedMessage;
             app::console().flush();*/
