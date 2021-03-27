@@ -287,7 +287,7 @@ namespace {
 		textureDesc.Width = surface.getWidth();
 		textureDesc.Height = surface.getHeight();
 		TextureRef texture;
-		createTexture( renderDevice, textureDesc, surface.hasAlpha() ? 4u : 3u, sizeof(T) * 8, surface.getData(), surface.getRowBytes(), &texture );
+		createTexture( renderDevice, textureDesc, surface.hasAlpha() ? 4u : 3u, sizeof(T) * 8, surface.getData(), static_cast<uint32_t>( surface.getRowBytes() ), &texture );
 
 		return texture;
 	}
@@ -299,7 +299,7 @@ namespace {
 		textureDesc.Width = channel.getWidth();
 		textureDesc.Height = channel.getHeight();
 		TextureRef texture;
-		createTexture( renderDevice, textureDesc, 1u, sizeof(T) * 8, channel.getData(), channel.getRowBytes(), &texture );
+		createTexture( renderDevice, textureDesc, 1u, sizeof(T) * 8, channel.getData(), static_cast<uint32_t>( channel.getRowBytes() ), &texture );
 
 		return texture;
 	}
