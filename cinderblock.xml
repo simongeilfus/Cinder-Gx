@@ -23,6 +23,8 @@
     	<staticLibrary>build/third_party/DiligentCore/Platforms/Basic/$(Configuration)/Diligent-BasicPlatform.lib</staticLibrary>
     	<staticLibrary>build/third_party/DiligentCore/Platforms/Win32/$(Configuration)/Diligent-Win32Platform.lib</staticLibrary>
     	<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsEngine/$(Configuration)/Diligent-GraphicsEngine.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsTools/$(Configuration)/Diligent-GraphicsTools.lib</staticLibrary>
+    	<staticLibrary>build/third_party/DiligentCore/Graphics/GraphicsAccessories/$(Configuration)/Diligent-GraphicsAccessories.lib</staticLibrary>
     </platform>
 	<platform os="msw" config="debug">
 		<preprocessorDefine>DILIGENT_DEBUG</preprocessorDefine>
