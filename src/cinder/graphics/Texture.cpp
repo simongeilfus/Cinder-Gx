@@ -39,7 +39,6 @@ TextureDesc::TextureDesc()
 	mGenerateMips( true ),
 	mDefaultUsage( true )
 {
-	MipLevels = 0;
 }
 
 TextureDesc::TextureDesc( const TextureDesc &other ) 
