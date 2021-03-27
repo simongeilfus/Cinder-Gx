@@ -172,10 +172,12 @@ CI_API void clear( const ColorA &color = ColorA::black(), bool clearDepthBuffer 
 //! Clears a render target view
 CI_API void clearRenderTarget( const ColorA &color );
 //! Clears a depth-stencil view
-CI_API void clearDepth( const float depth );
+CI_API void clearDepth( float depth );
 //! Clears a depth-stencil view
-CI_API void clearStencil( const int s );
+CI_API void clearStencil( uint8_t s );
 //! Clears a depth-stencil view.
+CI_API void clearDepthStencil( float depth, uint8_t s );
+    //! Clears a depth-stencil view.
 CI_API void clearDepthStencil( TextureView* pView, CLEAR_DEPTH_STENCIL_FLAGS ClearFlags, float fDepth, uint8_t Stencil, RESOURCE_STATE_TRANSITION_MODE StateTransitionMode );
 //! Clears a render target view
 CI_API void clearRenderTarget( TextureView* pView, const float* RGBA, RESOURCE_STATE_TRANSITION_MODE StateTransitionMode );

@@ -163,19 +163,19 @@ void clearRenderTarget( const ColorA &color )
 	getImmediateContext()->ClearRenderTarget( pRTV, &color[0], RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
 }
 
-void clearDepth( const float depth )
+void clearDepth( float depth )
 {
 	auto* pDSV = getSwapChain()->GetDepthBufferDSV();
 	getImmediateContext()->ClearDepthStencil( pDSV, CLEAR_DEPTH_FLAG, depth, 0, RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
 }
 
-void clearStencil( const int s )
+void clearStencil( uint8_t s )
 {
 	auto* pDSV = getSwapChain()->GetDepthBufferDSV();
 	getImmediateContext()->ClearDepthStencil( pDSV, CLEAR_STENCIL_FLAG, 1.0f, s, RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
 }
 
-void clearDepthStencil( const float depth, const int s )
+void clearDepthStencil( float depth, uint8_t s )
 {
 	auto* pDSV = getSwapChain()->GetDepthBufferDSV();
 	getImmediateContext()->ClearDepthStencil( pDSV, CLEAR_DEPTH_FLAG | CLEAR_STENCIL_FLAG, depth, s, RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
