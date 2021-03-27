@@ -25,6 +25,7 @@
 
 #include "cinder/Filesystem.h"
 #include "cinder/DataSource.h"
+#include "cinder/Channel.h"
 #include "cinder/Surface.h"
 #include "cinder/Filesystem.h"
 #include "cinder/ImageIo.h"
@@ -43,7 +44,7 @@
 namespace cinder { namespace graphics {
 
 //! Texture description
-struct TextureDesc : public Diligent::TextureDesc {
+struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Texture type. See Diligent::RESOURCE_DIMENSION for details.
     TextureDesc& type( RESOURCE_DIMENSION type ) { Type = type; return *this; }
     //! Texture width and height, in pixels.
@@ -77,6 +78,11 @@ struct TextureDesc : public Diligent::TextureDesc {
     //! Specifies the object's name.
     TextureDesc& name( const std::string &name ) { mName = name; Name = mName.c_str(); return *this; }
 
+    //! Specifies whether the data is expected to be in the sRGB or Linear colorspace at load time. Ignored when creating the texture with raw data
+    TextureDesc& srgb( bool srgb ) { mSrgb = srgb; return *this; }
+    //! Specifies whether a mip chain needs to be created at load time. Ignored when creating the texture with raw data
+    TextureDesc& generateMips( bool mips ) { mGenerateMips = mips; return *this; }
+
     TextureDesc();
     TextureDesc( const TextureDesc &other );
     TextureDesc( const Diligent::TextureDesc &other );
@@ -84,52 +90,64 @@ struct TextureDesc : public Diligent::TextureDesc {
     TextureDesc& operator=( const TextureDesc &other );
     TextureDesc& operator=( TextureDesc &&other ) noexcept;
     virtual ~TextureDesc() = default;
+
+    //! Returns whether the data is expected to be in the sRGB or Linear colorspace
+    bool isSrgb() const { return mSrgb; }
+    //! Returns whether a mip chain needs to be created. 
+    bool needsGenerateMips() const { return mGenerateMips; }
 protected:
     void updatePtrs() noexcept;
     void swap( TextureDesc &other ) noexcept;
 
     std::string mName;
+    bool        mSrgb;
+    bool        mGenerateMips;
 };
 
 //! Constructs a Texture based on the contents of \a data.
-CI_API TextureRef createTexture( const Diligent::TextureDesc &desc, const TextureData* data = nullptr );
+CI_API TextureRef createTexture( const TextureDesc &desc, const TextureData* data = nullptr );
 //! Constructs a Texture based on the contents of \a surface using the default RenderDevice.
-CI_API TextureRef createTexture( const Surface8u &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Surface8u &surface, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a channel using the default RenderDevice.
-CI_API TextureRef createTexture( const Channel8u &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Channel8u &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a surface using the default RenderDevice.
-CI_API TextureRef createTexture( const Surface16u &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Surface16u &surface, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a channel using the default RenderDevice.
-CI_API TextureRef createTexture( const Channel16u &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Channel16u &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a surface using the default RenderDevice.
-CI_API TextureRef createTexture( const Surface32f &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Surface32f &surface, const TextureDesc &desc = TextureDesc() );
 //! brief Constructs a texture based on the contents of \a channel using the default RenderDevice.
-CI_API TextureRef createTexture( const Channel32f &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( const Channel32f &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on \a imageSource using the default RenderDevice.
-CI_API TextureRef createTexture( ImageSourceRef imageSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( ImageSourceRef imageSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from an optionally compressed KTX file using the default RenderDevice.
-CI_API TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from a DDS file using the default RenderDevice. Supports DXT1, DTX3, and DTX5. Supports BC7 in the presence of \c GL_ARB_texture_compression_bptc.
-CI_API TextureRef createTextureFromDds( const DataSourceRef &dataSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTextureFromDds( const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 
 //! Constructs a Texture based on the contents of \a surface.
-CI_API TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a channel.
-CI_API TextureRef createTexture( RenderDevice* device, const Channel8u &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Channel8u &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a surface.
-CI_API TextureRef createTexture( RenderDevice* device, const Surface16u &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Surface16u &surface, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a channel.
-CI_API TextureRef createTexture( RenderDevice* device, const Channel16u &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Channel16u &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a surface.
-CI_API TextureRef createTexture( RenderDevice* device, const Surface32f &surface, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Surface32f &surface, const TextureDesc &desc = TextureDesc() );
 //! brief Constructs a texture based on the contents of \a channel.
-CI_API TextureRef createTexture( RenderDevice* device, const Channel32f &channel, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, const Channel32f &channel, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on \a imageSource.
-CI_API TextureRef createTexture( RenderDevice* device, ImageSourceRef imageSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTexture( RenderDevice* device, ImageSourceRef imageSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from an optionally compressed KTX file.
-CI_API TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &dataSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from a DDS file. Supports DXT1, DTX3, and DTX5. Supports BC7 in the presence of \c GL_ARB_texture_compression_bptc.
-CI_API TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const Diligent::TextureDesc &desc = Diligent::TextureDesc() );
+CI_API TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
+
+class CI_API TextureDataExc : public Exception {
+public:
+    TextureDataExc( const std::string &description ) : Exception( description ) {}
+};
 }
 
 namespace gx = graphics;

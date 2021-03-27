@@ -24,6 +24,9 @@
 #include "cinder/graphics/Texture.h"
 #include "cinder/app/RendererGx.h"
 
+#include "DiligentCore/Graphics/GraphicsAccessories/interface/GraphicsAccessories.hpp"
+#include "DiligentCore/Graphics/GraphicsTools/interface/GraphicsUtilities.h"
+
 using namespace std;
 using namespace ci::app;
 
@@ -31,14 +34,19 @@ namespace cinder {
 namespace graphics {
 
 TextureDesc::TextureDesc() 
-	: Diligent::TextureDesc() 
+	: Diligent::TextureDesc(),
+	mSrgb( false ),
+	mGenerateMips( true )
 {
-	Usage = USAGE_NUM_USAGES;
+	Usage = USAGE_IMMUTABLE;
+	BindFlags = BIND_SHADER_RESOURCE;
+	CPUAccessFlags = CPU_ACCESS_NONE;
+	MipLevels = 0;
 }
 
 TextureDesc::TextureDesc( const TextureDesc &other ) 
 	: Diligent::TextureDesc( other ),
-	mName( other.mName )
+	mName( other.mName ), mSrgb( other.mSrgb )
 {
 	updatePtrs();
 }
@@ -71,7 +79,8 @@ TextureDesc& TextureDesc::operator=( TextureDesc &&other ) noexcept
 
 void TextureDesc::swap( TextureDesc &other ) noexcept
 {
-	std::swap( mName, other.mName );
+    std::swap( mName, other.mName );
+    std::swap( mSrgb, other.mSrgb );
 }
 
 void TextureDesc::updatePtrs() noexcept
@@ -87,138 +96,127 @@ TextureRef createTexture( const Diligent::TextureDesc &texDesc, const Diligent::
 }
 
 namespace {
-	template<typename T>
-	TEXTURE_FORMAT getTextureFormatFromSurface( const SurfaceT<T> &surface )
+	template <typename ChannelType>
+	void RGBToRGBA( const void* pRGBData, Uint32 RGBStride, void* pRGBAData, Uint32 RGBAStride, Uint32 Width, Uint32 Height )
 	{
-		TEXTURE_FORMAT format = Diligent::TEX_FORMAT_UNKNOWN;
-		SurfaceChannelOrder sco = surface.getChannelOrder();
+		for( size_t row = 0; row < size_t{ Height }; ++row )
+			for( size_t col = 0; col < size_t{ Width }; ++col ) {
+				for( int c = 0; c < 3; ++c ) {
+					reinterpret_cast<ChannelType*>( ( reinterpret_cast<Uint8*>( pRGBAData ) + size_t{ RGBAStride } * row ) )[col * 4 + c] =
+						reinterpret_cast<const ChannelType*>( ( reinterpret_cast<const Uint8*>( pRGBData ) + size_t{ RGBStride } * row ) )[col * 3 + c];
+				}
+				reinterpret_cast<ChannelType*>( ( reinterpret_cast<Uint8*>( pRGBAData ) + size_t{ RGBAStride } * row ) )[col * 4 + 3] = std::numeric_limits<ChannelType>::max();
+			}
+	}
 
-		bool isSRGB = true;
-		uint8_t numComponents = 4;// surface.hasAlpha()
-		if( std::is_same<T,uint8_t>::value ) {
-			switch( numComponents ) {
-			case 1: format = Diligent::TEX_FORMAT_R8_UNORM; break;
-			case 2: format = Diligent::TEX_FORMAT_RG8_UNORM; break;
-			case 4: format = isSRGB ? Diligent::TEX_FORMAT_RGBA8_UNORM_SRGB : Diligent::TEX_FORMAT_RGBA8_UNORM; break;
-			//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
+	void createTexture( IRenderDevice* pDevice, const TextureDesc& desc, uint32_t sourceNumComponents, uint32_t channelDepth, const void* data, uint32_t rowStride, ITexture** ppTexture )
+	{
+		TextureDesc textureDesc;
+		textureDesc.Name      = desc.Name;
+		textureDesc.Type      = RESOURCE_DIM_TEX_2D;
+		textureDesc.Width     = desc.Width;
+		textureDesc.Height    = desc.Height;
+
+		textureDesc.MipLevels = ComputeMipLevelsCount(textureDesc.Width, textureDesc.Height);
+		if( desc.MipLevels > 0 )
+			textureDesc.MipLevels = std::min( textureDesc.MipLevels, desc.MipLevels );
+
+		textureDesc.Usage          = desc.Usage;
+		textureDesc.BindFlags      = desc.BindFlags;
+		textureDesc.Format         = desc.Format;
+		textureDesc.CPUAccessFlags = desc.CPUAccessFlags;
+
+
+		uint32_t numComponents = sourceNumComponents == 3 ? 4 : sourceNumComponents;
+		bool   isSRGB          = (sourceNumComponents >= 3 && channelDepth == 8) ? desc.isSrgb() : false;
+
+		if( textureDesc.Format == TEX_FORMAT_UNKNOWN ) {
+			if( channelDepth == 8 ) {
+				switch( numComponents ) {
+					case 1: textureDesc.Format = TEX_FORMAT_R8_UNORM; break;
+					case 2: textureDesc.Format = TEX_FORMAT_RG8_UNORM; break;
+					case 4: textureDesc.Format = isSRGB ? TEX_FORMAT_RGBA8_UNORM_SRGB : TEX_FORMAT_RGBA8_UNORM; break;
+					default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")");
+				}
+			}
+			else if( channelDepth == 16 ) {
+				switch( numComponents ) {
+					case 1: textureDesc.Format = TEX_FORMAT_R16_UNORM; break;
+					case 2: textureDesc.Format = TEX_FORMAT_RG16_UNORM; break;
+					case 4: textureDesc.Format = TEX_FORMAT_RGBA16_UNORM; break;
+					default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")" );
+				}
+			}
+			else if( channelDepth == 32 ) {
+				switch( numComponents ) {
+					case 1: textureDesc.Format = TEX_FORMAT_R32_FLOAT; break;
+					case 2: textureDesc.Format = TEX_FORMAT_RG32_FLOAT; break;
+					case 4: textureDesc.Format = TEX_FORMAT_RGBA32_FLOAT; break;
+					default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")" );
+				}
+			}
+			else {
+				throw TextureDataExc( "Unsupported color channel depth (" + to_string( channelDepth ) + ")" );
 			}
 		}
-		else if( std::is_same<T,uint16_t>::value ) { // 16-bit
-			switch( numComponents ) {
-			case 1: format = Diligent::TEX_FORMAT_R16_UNORM; break;
-			case 2: format = Diligent::TEX_FORMAT_RG16_UNORM; break;
-			case 4: format = Diligent::TEX_FORMAT_RGBA16_UNORM; break;
-			//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
+		else {
+			const auto& TexFmtDesc = GetTextureFormatAttribs( textureDesc.Format );
+			if( TexFmtDesc.NumComponents != numComponents )
+				throw TextureDataExc( "Incorrect number of components (" + to_string( sourceNumComponents ) + ") for texture format" );
+			if( TexFmtDesc.ComponentSize != channelDepth / 8 )
+				throw TextureDataExc( "Incorrect channel size (" + to_string( channelDepth ) + ") for texture format" );
+		}
+
+		std::vector<TextureSubResData>  subResources(textureDesc.MipLevels);
+		std::vector<std::vector<Uint8>> mips(textureDesc.MipLevels);
+
+		if( sourceNumComponents == 3 ) {
+			VERIFY_EXPR( numComponents == 4 );
+			uint32_t rgbaStride = desc.Width * numComponents * channelDepth / 8;
+			rgbaStride = ( rgbaStride + 3 ) & (-4);
+			mips[0].resize( size_t{ rgbaStride } * size_t{ desc.Height } );
+			subResources[0].pData = mips[0].data();
+			subResources[0].Stride = rgbaStride;
+			if( channelDepth == 8 ) {
+				RGBToRGBA<Uint8>( data, rowStride, mips[0].data(), rgbaStride, desc.Width, desc.Height);
+			}
+			else if (channelDepth == 16) {
+				RGBToRGBA<Uint16>( data, rowStride, mips[0].data(), rgbaStride, desc.Width, desc.Height );
 			}
 		}
-		//else if( std::is_same<T, float>::value ) { // 32-bit float
-		//	switch( numComponents ) {
-		//	case 1: format = Diligent::TEX_FORMAT_R32_UNORM; break;
-		//	case 2: format = Diligent::TEX_FORMAT_RG32_UNORM; break;
-		//	case 4: format = Diligent::TEX_FORMAT_RGBA32_UNORM; break;
-		//	//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
-		//	}
-		//}
-		//else
-		//	LOG_ERROR_AND_THROW( "Unsupported color channel depth (", ChannelDepth, ")" );
-
-		return format;
-	}
-
-	template<typename T>
-	Diligent::TextureDesc getTextureDescFromSurface( const SurfaceT<T> &surface, const Diligent::TextureDesc &desc )
-	{
-		Diligent::TextureDesc textureDesc = desc;
-		textureDesc.Type = Diligent::RESOURCE_DIM_TEX_2D;
-		textureDesc.Width = surface.getWidth();
-		textureDesc.Height = surface.getHeight();
-		textureDesc.Depth = 1;
-		textureDesc.Format = desc.Format != Diligent::TEX_FORMAT_UNKNOWN ? desc.Format : getTextureFormatFromSurface( surface );
-		textureDesc.MipLevels = 1;
-		textureDesc.SampleCount = 1;
-		textureDesc.Usage = desc.Usage != Diligent::USAGE_DEFAULT ? desc.Usage : Diligent::USAGE_IMMUTABLE;
-		textureDesc.BindFlags = desc.BindFlags != Diligent::BIND_NONE ? desc.BindFlags : Diligent::BIND_SHADER_RESOURCE;
-		textureDesc.CPUAccessFlags = desc.CPUAccessFlags != Diligent::CPU_ACCESS_NONE ? desc.CPUAccessFlags : Diligent::CPU_ACCESS_READ;
-
-		return textureDesc;
-	}
-
-	template<typename T>
-	TextureRef createTextureFromSurface( RenderDevice* renderDevice, const SurfaceT<T> &surface, const Diligent::TextureDesc &desc )
-	{
-		TextureSubResData subData[] = { { surface.getData(), (uint32_t) surface.getRowBytes() } };
-		TextureData data = { subData, 1 };
-		TextureRef texture;
-		renderDevice->CreateTexture( getTextureDescFromSurface( surface, desc ), &data, &texture );
-		return texture;
-	}
-
-	TEXTURE_FORMAT getTextureFormatFromImageSource( const ImageSourceRef &imageSource )
-	{
-		TEXTURE_FORMAT format = Diligent::TEX_FORMAT_UNKNOWN;
-		uint8_t numComponents = 4;
-		switch( imageSource->getChannelOrder() ) {
-			case ImageIo::ChannelOrder::RGBA: numComponents = 4; break;
-			case ImageIo::ChannelOrder::BGRA: numComponents = 4; break;
-			case ImageIo::ChannelOrder::ARGB: numComponents = 4; break;
-			case ImageIo::ChannelOrder::ABGR: numComponents = 4; break;
-			case ImageIo::ChannelOrder::RGBX: numComponents = 4; break;
-			case ImageIo::ChannelOrder::BGRX: numComponents = 4; break;
-			case ImageIo::ChannelOrder::XRGB: numComponents = 4; break;
-			case ImageIo::ChannelOrder::XBGR: numComponents = 4; break;
-			case ImageIo::ChannelOrder::RGB: numComponents = 4; break;
-			case ImageIo::ChannelOrder::BGR: numComponents = 4; break;
-			case ImageIo::ChannelOrder::Y: numComponents = 1; break;
-			case ImageIo::ChannelOrder::YA: numComponents = 2; break;
-			default: numComponents = 4; break;
+		else {
+			subResources[0].pData  = data;
+			subResources[0].Stride = rowStride;
 		}
-		bool isSRGB = true;
-		if( imageSource->getDataType() == ImageIo::DataType::UINT8 ) {
-			switch( numComponents ) {
-			case 1: format = Diligent::TEX_FORMAT_R8_UNORM; break;
-			case 2: format = Diligent::TEX_FORMAT_RG8_UNORM; break;
-			case 4: format = isSRGB ? Diligent::TEX_FORMAT_RGBA8_UNORM_SRGB : Diligent::TEX_FORMAT_RGBA8_UNORM; break;
-			//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
+
+		uint32_t mipWidth  = textureDesc.Width;
+		uint32_t mipHeight = textureDesc.Height;
+		for( uint32_t m = 1; m < textureDesc.MipLevels; ++m )
+		{
+			uint32_t coarseMipWidth  = std::max(mipWidth / 2u, 1u);
+			uint32_t coarseMipHeight = std::max(mipHeight / 2u, 1u);
+			uint32_t coarseMipStride = coarseMipWidth * numComponents * channelDepth / 8;
+			coarseMipStride      = ( coarseMipStride + 3) & (-4);
+			mips[m].resize(size_t{ coarseMipStride } * size_t{ coarseMipHeight });
+
+			if( desc.needsGenerateMips() ) {
+				ComputeMipLevel( mipWidth, mipHeight, textureDesc.Format, subResources[m - 1].pData, subResources[m - 1].Stride, mips[m].data(), coarseMipStride );
 			}
-		}
-		else if( imageSource->getDataType() == ImageIo::DataType::UINT16 ) {
-			switch( numComponents ) {
-			case 1: format = Diligent::TEX_FORMAT_R16_UNORM; break;
-			case 2: format = Diligent::TEX_FORMAT_RG16_UNORM; break;
-			case 4: format = Diligent::TEX_FORMAT_RGBA16_UNORM; break;
-			//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
-			}
-		}
-		//else if( std::is_same<T, float>::value ) { // 32-bit float
-		//	switch( numComponents ) {
-		//	case 1: format = Diligent::TEX_FORMAT_R32_UNORM; break;
-		//	case 2: format = Diligent::TEX_FORMAT_RG32_UNORM; break;
-		//	case 4: format = Diligent::TEX_FORMAT_RGBA32_UNORM; break;
-		//	//default: LOG_ERROR_AND_THROW( "Unexpected number of color channels (", ImgDesc.NumComponents, ")" );
-		//	}
-		//}
-		//else
-		//	LOG_ERROR_AND_THROW( "Unsupported color channel depth (", ChannelDepth, ")" );
 
-		return format;
+			subResources[m].pData  = mips[m].data();
+			subResources[m].Stride = coarseMipStride;
+
+			mipWidth  = coarseMipWidth;
+			mipHeight = coarseMipHeight;
+		}
+
+		TextureData TexData;
+		TexData.pSubResources   = subResources.data();
+		TexData.NumSubresources = textureDesc.MipLevels;
+
+		pDevice->CreateTexture(textureDesc, &TexData, ppTexture);
 	}
 
-	Diligent::TextureDesc getTextureDescFromImageSource( const ImageSourceRef &imageSource, const Diligent::TextureDesc &desc )
-	{
-		Diligent::TextureDesc textureDesc = desc;
-		textureDesc.Type = Diligent::RESOURCE_DIM_TEX_2D;
-		textureDesc.Width = imageSource->getWidth();
-		textureDesc.Height = imageSource->getHeight();
-		textureDesc.Depth = 1;
-		textureDesc.Format = desc.Format != Diligent::TEX_FORMAT_UNKNOWN ? desc.Format : getTextureFormatFromImageSource( imageSource );
-		textureDesc.MipLevels = 1;
-		textureDesc.SampleCount = 1;
-		textureDesc.Usage = desc.Usage != Diligent::USAGE_NUM_USAGES ? desc.Usage : Diligent::USAGE_IMMUTABLE;
-		textureDesc.BindFlags = desc.BindFlags != Diligent::BIND_NONE ? desc.BindFlags : Diligent::BIND_SHADER_RESOURCE;
-		textureDesc.CPUAccessFlags = desc.CPUAccessFlags != Diligent::CPU_ACCESS_NONE ? desc.CPUAccessFlags : Diligent::CPU_ACCESS_READ;
-
-		return textureDesc;
-	}
 
 	class BasicImageTarget : public ImageTarget {
 	public:
@@ -237,12 +235,15 @@ namespace {
 	{
 		mData = malloc( imageSource->getRowBytes() * imageSource->getHeight() );
 
-		int64_t componentSize;
+		int64_t componentSize = 0;
 		if( imageSource->getDataType() == ImageIo::DataType::UINT8 ) {
 			componentSize = sizeof( uint8_t );
 		}
 		else if( imageSource->getDataType() == ImageIo::DataType::UINT16 ) {
 			componentSize = sizeof( uint16_t );
+		}
+		else if( imageSource->getDataType() == ImageIo::DataType::FLOAT32 ) {
+			componentSize = sizeof( float );
 		}
 
 		if( imageSource->getColorModel() == ImageIo::ColorModel::CM_GRAY ) {
@@ -274,106 +275,134 @@ namespace {
 		free( mData );
 	}
 
+	template<typename T>
+	TextureRef createTextureFromSurface( RenderDevice* renderDevice, const SurfaceT<T> &surface, const TextureDesc &desc )
+	{
+		TextureDesc textureDesc = desc;
+		textureDesc.Width = surface.getWidth();
+		textureDesc.Height = surface.getHeight();
+		TextureRef texture;
+		createTexture( renderDevice, textureDesc, surface.hasAlpha() ? 4u : 3u, sizeof(T) * 8, surface.getData(), surface.getRowBytes(), &texture );
+
+		return texture;
+	}
+
+	template<typename T>
+	TextureRef createTextureFromChannel( RenderDevice* renderDevice, const ChannelT<T> &channel, const TextureDesc &desc )
+	{
+		TextureDesc textureDesc = desc;
+		textureDesc.Width = channel.getWidth();
+		textureDesc.Height = channel.getHeight();
+		TextureRef texture;
+		createTexture( renderDevice, textureDesc, 1u, sizeof(T) * 8, channel.getData(), channel.getRowBytes(), &texture );
+
+		return texture;
+	}
+
+	TextureRef createTextureFromImageSource( RenderDevice* renderDevice, ImageSourceRef imageSource, const TextureDesc &desc )
+	{
+		shared_ptr<BasicImageTarget> imageTarget = make_shared<BasicImageTarget>( imageSource );
+		imageSource->load( imageTarget );
+		TextureDesc textureDesc = desc;
+		textureDesc.Width = imageSource->getWidth();
+		textureDesc.Height = imageSource->getHeight();
+		TextureRef texture;
+		createTexture( renderDevice, textureDesc, ImageIo::channelOrderNumChannels( imageSource->getChannelOrder() ), ImageIo::dataTypeBytes( imageSource->getDataType() ) * 8, imageTarget->getData(), (uint32_t) imageSource->getRowBytes(), &texture );
+
+		return texture;
+	}
+
 } // anonymous namespace
 
 using Diligent::TextureSubResData;
 
-TextureRef createTexture( const Surface8u &surface, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Surface8u &surface, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), surface, desc );
 }
 
-TextureRef createTexture( const Channel8u &channel, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Channel8u &channel, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), channel, desc );
 }
 
-TextureRef createTexture( const Surface16u &surface, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Surface16u &surface, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), surface, desc );
 }
 
-TextureRef createTexture( const Channel16u &channel, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Channel16u &channel, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), channel, desc );
 }
 
-TextureRef createTexture( const Surface32f &surface, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Surface32f &surface, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), surface, desc );
 }
 
-TextureRef createTexture( const Channel32f &channel, const Diligent::TextureDesc &desc )
+TextureRef createTexture( const Channel32f &channel, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), channel, desc );
 }
 
-TextureRef createTexture( ImageSourceRef imageSource, const Diligent::TextureDesc &desc )
+TextureRef createTexture( ImageSourceRef imageSource, const TextureDesc &desc )
 {
 	return createTexture( app::getRenderDevice(), imageSource, desc );
 }
 
-TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const Diligent::TextureDesc &desc )
+TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	return createTextureFromKtx( app::getRenderDevice(), dataSource, desc );
 }
 
-TextureRef createTextureFromDds( const DataSourceRef &dataSource, const Diligent::TextureDesc &desc )
+TextureRef createTextureFromDds( const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	return createTextureFromDds( app::getRenderDevice(), dataSource, desc );
 }
 
-TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const Diligent::TextureDesc &desc )
+TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const TextureDesc &desc )
 {
 	return createTextureFromSurface( device, surface, desc );
 }
 
-TextureRef createTexture( RenderDevice* device, const Channel8u &channel, const Diligent::TextureDesc &desc )
+TextureRef createTexture( RenderDevice* device, const Channel8u &channel, const TextureDesc &desc )
 {
-	TextureRef texture;
-	return texture;
+	return createTextureFromChannel( device, channel, desc );
 }
 
-TextureRef createTexture( RenderDevice* device, const Surface16u &surface, const Diligent::TextureDesc &desc )
-{
-	return createTextureFromSurface( device, surface, desc );
-}
-
-TextureRef createTexture( RenderDevice* device, const Channel16u &channel, const Diligent::TextureDesc &desc )
-{
-	TextureRef texture;
-	return texture;
-}
-
-TextureRef createTexture( RenderDevice* device, const Surface32f &surface, const Diligent::TextureDesc &desc )
+TextureRef createTexture( RenderDevice* device, const Surface16u &surface, const TextureDesc &desc )
 {
 	return createTextureFromSurface( device, surface, desc );
 }
 
-TextureRef createTexture( RenderDevice* device, const Channel32f &channel, const Diligent::TextureDesc &desc )
+TextureRef createTexture( RenderDevice* device, const Channel16u &channel, const TextureDesc &desc )
+{
+	return createTextureFromChannel( device, channel, desc );
+}
+
+TextureRef createTexture( RenderDevice* device, const Surface32f &surface, const TextureDesc &desc )
+{
+	return createTextureFromSurface( device, surface, desc );
+}
+
+TextureRef createTexture( RenderDevice* device, const Channel32f &channel, const TextureDesc &desc )
+{
+	return createTextureFromChannel( device, channel, desc );
+}
+
+TextureRef createTexture( RenderDevice* device, ImageSourceRef imageSource, const TextureDesc &desc )
+{
+	return createTextureFromImageSource( device, imageSource, desc );
+}
+
+TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	TextureRef texture;
 	return texture;
 }
 
-TextureRef createTexture( RenderDevice* device, ImageSourceRef imageSource, const Diligent::TextureDesc &desc )
-{
-	shared_ptr<BasicImageTarget> imageTarget = make_shared<BasicImageTarget>( imageSource );
-	imageSource->load( imageTarget );
-	TextureSubResData subData[] = { { imageTarget->getData(), (uint32_t) imageSource->getRowBytes() } };
-	TextureData data = { subData, 1 };
-	TextureRef texture;
-	device->CreateTexture( getTextureDescFromImageSource( imageSource, desc ), &data, &texture );
-	return texture;
-}
-
-TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &dataSource, const Diligent::TextureDesc &desc )
-{
-	TextureRef texture;
-	return texture;
-}
-
-TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const Diligent::TextureDesc &desc )
+TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	TextureRef texture;
 	return texture;
