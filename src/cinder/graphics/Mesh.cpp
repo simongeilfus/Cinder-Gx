@@ -129,8 +129,8 @@ void MeshGeomTarget::copyAttrib( geom::Attrib attr, uint8_t dims, size_t /*strid
 
 	// we need to find which element of 'mBufferData' containts 'attr'
 	uint8_t *dstData = nullptr;
-	uint8_t dstDims;
-	size_t dstStride, dstDataSize;
+	uint8_t dstDims = 0;
+	size_t dstStride = 0, dstDataSize = 0;
 	for( const auto &bufferData : mBufferData ) {
 		if( bufferData.mInfo.hasAttrib( attr ) ) {
 			auto attrInfo = bufferData.mInfo.getAttribInfo( attr );
