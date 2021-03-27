@@ -125,6 +125,8 @@ CI_API TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const T
 //! Constructs a Texture from a DDS file using the default RenderDevice. Supports DXT1, DTX3, and DTX5. Supports BC7 in the presence of \c GL_ARB_texture_compression_bptc.
 CI_API TextureRef createTextureFromDds( const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 
+//! Constructs a Texture based on the contents of \a data.
+CI_API TextureRef createTexture( RenderDevice* device, const TextureDesc &texDesc, const TextureData* data = nullptr );
 //! Constructs a Texture based on the contents of \a surface.
 CI_API TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture based on the contents of \a channel.

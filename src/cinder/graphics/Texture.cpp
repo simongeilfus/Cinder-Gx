@@ -88,10 +88,15 @@ void TextureDesc::updatePtrs() noexcept
 	if( ! mName.empty() ) Name = mName.c_str();
 }
 
-TextureRef createTexture( const Diligent::TextureDesc &texDesc, const Diligent::TextureData* data )
+TextureRef createTexture( const TextureDesc &texDesc, const Diligent::TextureData* data )
+{
+	return createTexture( getRenderDevice(), texDesc, data );
+}
+
+TextureRef createTexture( RenderDevice* device, const TextureDesc &texDesc, const Diligent::TextureData* data )
 {
 	TextureRef texture;
-	getRenderDevice()->CreateTexture( texDesc, data, &texture );
+	device->CreateTexture( texDesc, data, &texture );
 	return texture;
 }
 
