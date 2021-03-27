@@ -64,7 +64,7 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Number of samples. Only 2D textures or 2D texture arrays can be multisampled.
     TextureDesc& sampleCount( uint32_t sampleCount ) { SampleCount = sampleCount; return *this; }
     //! Texture usage. See Diligent::USAGE for details.
-    TextureDesc& usage( USAGE usage ) { Usage = usage; return *this; }
+    TextureDesc& usage( USAGE usage ) { Usage = usage; mDefaultUsage = false; return *this; }
     //! Bind flags, see Diligent::BIND_FLAGS for details.et
     TextureDesc& bindFlags( BIND_FLAGS bindFlags ) { BindFlags = bindFlags; return *this; }
     //! CPU access flags or 0 if no CPU access is allowed, see Diligent::CPU_ACCESS_FLAGS for details.
@@ -95,6 +95,8 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     bool isSrgb() const { return mSrgb; }
     //! Returns whether a mip chain needs to be created. 
     bool needsGenerateMips() const { return mGenerateMips; }
+    //! Returns whether a mip chain needs to be created. 
+    bool isDefaultUsage() const { return mDefaultUsage; }
 protected:
     void updatePtrs() noexcept;
     void swap( TextureDesc &other ) noexcept;
@@ -102,6 +104,7 @@ protected:
     std::string mName;
     bool        mSrgb;
     bool        mGenerateMips;
+    bool        mDefaultUsage;
 };
 
 //! Constructs a Texture based on the contents of \a data.

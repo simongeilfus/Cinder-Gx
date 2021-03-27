@@ -36,17 +36,16 @@ namespace graphics {
 TextureDesc::TextureDesc() 
 	: Diligent::TextureDesc(),
 	mSrgb( true ),
-	mGenerateMips( true )
+	mGenerateMips( true ),
+	mDefaultUsage( true )
 {
-	Usage = USAGE_IMMUTABLE;
-	BindFlags = BIND_SHADER_RESOURCE;
-	CPUAccessFlags = CPU_ACCESS_NONE;
 	MipLevels = 0;
 }
 
 TextureDesc::TextureDesc( const TextureDesc &other ) 
 	: Diligent::TextureDesc( other ),
-	mName( other.mName ), mSrgb( other.mSrgb )
+	mName( other.mName ), mSrgb( other.mSrgb ),
+	mGenerateMips( other.mGenerateMips ), mDefaultUsage( other.mDefaultUsage )
 {
 	updatePtrs();
 }
@@ -80,7 +79,22 @@ TextureDesc& TextureDesc::operator=( TextureDesc &&other ) noexcept
 void TextureDesc::swap( TextureDesc &other ) noexcept
 {
     std::swap( mName, other.mName );
-    std::swap( mSrgb, other.mSrgb );
+	std::swap( mSrgb, other.mSrgb );
+	std::swap( mGenerateMips, other.mGenerateMips );
+	std::swap( mDefaultUsage, other.mDefaultUsage );
+	std::swap( Type, other.Type );
+	std::swap( Width, other.Width );
+	std::swap( Height, other.Height );
+	std::swap( ArraySize, other.ArraySize );
+	std::swap( Format, other.Format );
+	std::swap( MipLevels, other.MipLevels );
+	std::swap( SampleCount, other.SampleCount );
+	std::swap( Usage, other.Usage );
+	std::swap( BindFlags, other.BindFlags );
+	std::swap( CPUAccessFlags, other.CPUAccessFlags );
+	std::swap( MiscFlags, other.MiscFlags );
+	std::swap( ClearValue, other.ClearValue );
+	std::swap( CommandQueueMask, other.CommandQueueMask );
 }
 
 void TextureDesc::updatePtrs() noexcept
@@ -286,6 +300,8 @@ namespace {
 		TextureDesc textureDesc = desc;
 		textureDesc.Width = surface.getWidth();
 		textureDesc.Height = surface.getHeight();
+		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
+		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
 		TextureRef texture;
 		createTexture( renderDevice, textureDesc, surface.hasAlpha() ? 4u : 3u, sizeof(T) * 8, surface.getData(), static_cast<uint32_t>( surface.getRowBytes() ), &texture );
 
@@ -298,6 +314,8 @@ namespace {
 		TextureDesc textureDesc = desc;
 		textureDesc.Width = channel.getWidth();
 		textureDesc.Height = channel.getHeight();
+		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
+		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
 		TextureRef texture;
 		createTexture( renderDevice, textureDesc, 1u, sizeof(T) * 8, channel.getData(), static_cast<uint32_t>( channel.getRowBytes() ), &texture );
 
@@ -311,6 +329,8 @@ namespace {
 		TextureDesc textureDesc = desc;
 		textureDesc.Width = imageSource->getWidth();
 		textureDesc.Height = imageSource->getHeight();
+		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
+		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
 		TextureRef texture;
 		createTexture( renderDevice, textureDesc, ImageIo::channelOrderNumChannels( imageSource->getChannelOrder() ), ImageIo::dataTypeBytes( imageSource->getDataType() ) * 8, imageTarget->getData(), (uint32_t) imageSource->getRowBytes(), &texture );
 
