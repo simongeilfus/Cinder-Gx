@@ -35,7 +35,7 @@ namespace graphics {
 
 TextureDesc::TextureDesc() 
 	: Diligent::TextureDesc(),
-	mSrgb( false ),
+	mSrgb( true ),
 	mGenerateMips( true )
 {
 	Usage = USAGE_IMMUTABLE;
