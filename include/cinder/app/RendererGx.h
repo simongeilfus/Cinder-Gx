@@ -116,7 +116,7 @@ class CI_API RendererGx : public Renderer {
 	gx::DeviceContext*						 getDeferredContext( size_t index ) { return mDeferredContexts[index]; }
 	size_t									 getDeferredContextsCount() const { return mDeferredContexts.size(); }
 
-	gx::ShaderSourceInputStreamFactory* getDefaultShaderSourceStreamFactory() { return mShaderSourceInputStreamFactory; }
+	gx::ShaderSourceInputStreamFactory*		 getDefaultShaderSourceStreamFactory();
 protected:
 	void initializeDiligentEngine( const Diligent::NativeWindow* pWindow );
 

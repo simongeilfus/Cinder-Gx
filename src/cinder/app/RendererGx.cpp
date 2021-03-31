@@ -85,12 +85,6 @@ void RendererGx::setup( WindowImplMsw *windowImpl, RendererRef sharedRenderer )
 
     unique_ptr<NativeWindow> pWindow = make_unique<NativeWindow>( mWindowImpl->getHwnd() );
     initializeDiligentEngine( pWindow.get() );  
-
-    string searchDirectories = app::getAppPath().string() + ";";
-    for( const auto &p : app::getAssetDirectories() ) {
-        searchDirectories += p.string() + ";";
-    }
-    mEngineFactory->CreateDefaultShaderSourceStreamFactory( searchDirectories.c_str(), &mShaderSourceInputStreamFactory );
 }
 
 namespace {
@@ -445,6 +439,19 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
 
     //    mScreenCapture.reset( new ScreenCapture( mDevice ) );
     //}
+}
+
+gx::ShaderSourceInputStreamFactory* RendererGx::getDefaultShaderSourceStreamFactory()
+{
+    // lazy initialize to account for user calls to addAssetDirectory
+    if( ! mShaderSourceInputStreamFactory ) {
+        string searchDirectories = app::getAppPath().string() + ";";
+        for( const auto &p : app::getAssetDirectories() ) {
+            searchDirectories += p.string() + ";";
+        }
+        mEngineFactory->CreateDefaultShaderSourceStreamFactory( searchDirectories.c_str(), &mShaderSourceInputStreamFactory );
+    }
+    return mShaderSourceInputStreamFactory;
 }
 
 HWND RendererGx::getHwnd() const
