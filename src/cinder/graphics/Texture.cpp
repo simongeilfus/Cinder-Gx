@@ -37,14 +37,16 @@ TextureDesc::TextureDesc()
 	: Diligent::TextureDesc(),
 	mSrgb( true ),
 	mGenerateMips( true ),
-	mDefaultUsage( true )
+	mDefaultUsage( true ),
+	mDefaultMips( true )
 {
 }
 
 TextureDesc::TextureDesc( const TextureDesc &other ) 
 	: Diligent::TextureDesc( other ),
 	mName( other.mName ), mSrgb( other.mSrgb ),
-	mGenerateMips( other.mGenerateMips ), mDefaultUsage( other.mDefaultUsage )
+	mGenerateMips( other.mGenerateMips ), mDefaultUsage( other.mDefaultUsage ),
+	mDefaultMips( other.mDefaultMips )
 {
 	updatePtrs();
 }
@@ -81,6 +83,7 @@ void TextureDesc::swap( TextureDesc &other ) noexcept
 	std::swap( mSrgb, other.mSrgb );
 	std::swap( mGenerateMips, other.mGenerateMips );
 	std::swap( mDefaultUsage, other.mDefaultUsage );
+	std::swap( mDefaultMips, other.mDefaultMips );
 	std::swap( Type, other.Type );
 	std::swap( Width, other.Width );
 	std::swap( Height, other.Height );
@@ -293,15 +296,21 @@ namespace {
 		free( mData );
 	}
 
+	TextureDesc getDefaultTextureDesc( TextureDesc desc, uint32_t width, uint32_t height )
+	{
+		desc.Width = width;
+		desc.Height = height;
+		desc.Usage = desc.isUsageDefault() ? USAGE_IMMUTABLE : desc.Usage;
+		desc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
+		desc.MipLevels = desc.isMipsDefault() ? 0 : desc.MipLevels;
+		return desc;
+	}
+
 	template<typename T>
 	TextureRef createTextureFromSurface( RenderDevice* renderDevice, const SurfaceT<T> &surface, const TextureDesc &desc )
 	{
-		TextureDesc textureDesc = desc;
-		textureDesc.Width = surface.getWidth();
-		textureDesc.Height = surface.getHeight();
-		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
-		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
 		TextureRef texture;
+		TextureDesc textureDesc = getDefaultTextureDesc( desc, surface.getWidth(), surface.getHeight() );
 		createTexture( renderDevice, textureDesc, surface.hasAlpha() ? 4u : 3u, sizeof(T) * 8, surface.getData(), static_cast<uint32_t>( surface.getRowBytes() ), &texture );
 
 		return texture;
@@ -310,12 +319,8 @@ namespace {
 	template<typename T>
 	TextureRef createTextureFromChannel( RenderDevice* renderDevice, const ChannelT<T> &channel, const TextureDesc &desc )
 	{
-		TextureDesc textureDesc = desc;
-		textureDesc.Width = channel.getWidth();
-		textureDesc.Height = channel.getHeight();
-		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
-		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
 		TextureRef texture;
+		TextureDesc textureDesc = getDefaultTextureDesc( desc, channel.getWidth(), channel.getHeight() );
 		createTexture( renderDevice, textureDesc, 1u, sizeof(T) * 8, channel.getData(), static_cast<uint32_t>( channel.getRowBytes() ), &texture );
 
 		return texture;
@@ -325,12 +330,9 @@ namespace {
 	{
 		shared_ptr<BasicImageTarget> imageTarget = make_shared<BasicImageTarget>( imageSource );
 		imageSource->load( imageTarget );
-		TextureDesc textureDesc = desc;
-		textureDesc.Width = imageSource->getWidth();
-		textureDesc.Height = imageSource->getHeight();
-		textureDesc.Usage = desc.isDefaultUsage() ? USAGE_IMMUTABLE : desc.Usage;
-		textureDesc.BindFlags = desc.BindFlags == BIND_NONE ? BIND_SHADER_RESOURCE : desc.BindFlags;
+
 		TextureRef texture;
+		TextureDesc textureDesc = getDefaultTextureDesc( desc, imageSource->getWidth(), imageSource->getHeight() );
 		createTexture( renderDevice, textureDesc, ImageIo::channelOrderNumChannels( imageSource->getChannelOrder() ), ImageIo::dataTypeBytes( imageSource->getDataType() ) * 8, imageTarget->getData(), (uint32_t) imageSource->getRowBytes(), &texture );
 
 		return texture;

@@ -49,6 +49,8 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     TextureDesc& type( RESOURCE_DIMENSION type ) { Type = type; return *this; }
     //! Texture width and height, in pixels.
     TextureDesc& size( const ivec2 &size ) { Width = size.x; Height = size.y; return *this; }
+    //! Texture width, height and arraySize or depth, in pixels.
+    TextureDesc& size( const ivec3 &size ) { Width = size.x; Height = size.y; Depth = size.z; return *this; }
     //! Texture width, in pixels.
     TextureDesc& width( uint32_t width ) { Width = width; return *this; }
     //! Texture height, in pixels.
@@ -60,7 +62,7 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Texture format, see Diligent::TEXTURE_FORMAT.
     TextureDesc& format( TEXTURE_FORMAT format ) { Format = format; return *this; }
     //! Number of Mip levels in the texture. Multisampled textures can only have 1 Mip level. Specify 0 to create full mipmap chain.
-    TextureDesc& mipLevels( uint32_t mipLevels ) { MipLevels = mipLevels; return *this; }
+    TextureDesc& mipLevels( uint32_t mipLevels ) { MipLevels = mipLevels; mDefaultMips = false; return *this; }
     //! Number of samples. Only 2D textures or 2D texture arrays can be multisampled.
     TextureDesc& sampleCount( uint32_t sampleCount ) { SampleCount = sampleCount; return *this; }
     //! Texture usage. See Diligent::USAGE for details.
@@ -81,7 +83,7 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Specifies whether the data is expected to be in the sRGB or Linear colorspace at load time. Ignored when creating the texture with raw data
     TextureDesc& srgb( bool srgb ) { mSrgb = srgb; return *this; }
     //! Specifies whether a mip chain needs to be created at load time. Ignored when creating the texture with raw data
-    TextureDesc& generateMips( bool mips ) { mGenerateMips = mips; return *this; }
+    TextureDesc& mips( bool mips ) { mGenerateMips = mips; return *this; }
 
     TextureDesc();
     TextureDesc( const TextureDesc &other );
@@ -96,7 +98,9 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Returns whether a mip chain needs to be created. 
     bool needsGenerateMips() const { return mGenerateMips; }
     //! Returns whether a mip chain needs to be created. 
-    bool isDefaultUsage() const { return mDefaultUsage; }
+    bool isUsageDefault() const { return mDefaultUsage; }
+    //! Returns whether a mip chain needs to be created. 
+    bool isMipsDefault() const { return mDefaultUsage; }
 protected:
     void updatePtrs() noexcept;
     void swap( TextureDesc &other ) noexcept;
@@ -105,6 +109,7 @@ protected:
     bool        mSrgb;
     bool        mGenerateMips;
     bool        mDefaultUsage;
+    bool        mDefaultMips;
 };
 
 //! Constructs a Texture based on the contents of \a data.
