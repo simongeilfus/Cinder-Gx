@@ -78,6 +78,19 @@ public:
 		friend Mesh;
 		friend class MeshGeomTarget;
 	};
+
+	//! StreamInfo describes raw buffer data. Allows for custom data to be used to create a Mesh.
+	class CI_API StreamData {
+	public:
+		StreamData( const void* data, uint32_t dataSize, const BufferInfo &info ) : mVertexData( data ), mVertexDataSize( dataSize ), mBufferInfo( info ) {}
+		const void*		  getVertexData() const { return mVertexData; }
+		uint32_t		  getVertexDataSize() const { return mVertexDataSize; }
+		const BufferInfo& getBufferInfo() const { return mBufferInfo; }
+	protected:
+		const void* mVertexData;
+		uint32_t	mVertexDataSize;
+		BufferInfo	mBufferInfo;
+	};
 		
 	Mesh() = default;
 
@@ -88,6 +101,7 @@ public:
 	Mesh( uint32_t numVertices, const void* vertexData, uint32_t vertexDataSize, const BufferInfo &bufferInfo, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 	Mesh( const std::vector<std::pair<BufferInfo, BufferRef>> &vertexBuffers, uint32_t numIndices, const BufferRef &indexBuffer, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 	Mesh( const void* vertexData, uint32_t vertexDataSize, const BufferInfo &bufferInfo, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
+	Mesh( const std::vector<StreamData> &vertexStreams, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 
 	Mesh( RenderDevice* device, const geom::Source &source );
 	Mesh( RenderDevice* device, const geom::Source &source, const geom::AttribSet &requestedAttribs );
@@ -96,6 +110,7 @@ public:
 	Mesh( RenderDevice* device, uint32_t numVertices, const void* vertexData, uint32_t vertexDataSize, const BufferInfo &bufferInfo, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 	Mesh( RenderDevice* device, const std::vector<std::pair<BufferInfo, BufferRef>> &vertexBuffers, uint32_t numIndices, const BufferRef &indexBuffer, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 	Mesh( RenderDevice* device, const void* vertexData, uint32_t vertexDataSize, const BufferInfo &bufferInfo, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
+	Mesh( RenderDevice* device, const std::vector<StreamData> &vertexStreams, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType = VT_UINT16, geom::Primitive primitiveType = geom::Primitive::TRIANGLES );
 
 	//! Returns the number of vertices in the mesh
 	uint32_t				getNumVertices() const { return mNumVertices; }

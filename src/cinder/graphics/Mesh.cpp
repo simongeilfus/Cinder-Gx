@@ -233,6 +233,11 @@ Mesh::Mesh( const void* vertexData, uint32_t vertexDataSize, const BufferInfo &b
 {
 }
 
+Mesh::Mesh( const std::vector<StreamData> &vertexStreams, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType, geom::Primitive primitiveType )
+	: Mesh( app::getRenderDevice(), vertexStreams, numIndices, indexData, indexType, primitiveType )
+{
+}
+
 namespace {
 	vector<Mesh::BufferInfo> makeInterleavedBufferInfos( const geom::AttribSet &requestedAttribs )
 	{
@@ -374,6 +379,15 @@ namespace {
 		return { bufferInfo, buffer };
 	}
 
+	std::vector<std::pair<Mesh::BufferInfo, BufferRef>> makeBufferInfoPairs( RenderDevice* device, const std::vector<Mesh::StreamData> &vertexStreamsData )
+	{
+		std::vector<std::pair<Mesh::BufferInfo, BufferRef>> buffers;
+		for( const auto &data : vertexStreamsData ) {
+			buffers.push_back( makeBufferInfoPair( device, data.getVertexData(), data.getVertexDataSize(), data.getBufferInfo() ) );
+		}
+		return buffers;
+	}
+
 	BufferRef makeIndexBuffer( RenderDevice* device, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType )
 	{
 		uint32_t size = numIndices * static_cast<uint32_t>( indexType == VT_UINT16 ? sizeof( uint16_t ) : sizeof( uint32_t ) );
@@ -436,6 +450,10 @@ Mesh::Mesh( RenderDevice* device, const void* vertexData, uint32_t vertexDataSiz
 {
 }
 
+Mesh::Mesh( RenderDevice* device, const std::vector<Mesh::StreamData> &vertexStreams, uint32_t numIndices, const void *indexData, VALUE_TYPE indexType, geom::Primitive primitiveType )
+	: Mesh( device, makeBufferInfoPairs( device, vertexStreams ), numIndices, makeIndexBuffer( device, numIndices, indexData, indexType ), indexType, primitiveType )
+{
+}
 
 uint8_t	Mesh::getAttribDims( geom::Attrib attr ) const
 {
