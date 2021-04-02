@@ -623,11 +623,7 @@ TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &data
 	textureDesc.Height    = header.pixelHeight;
 	textureDesc.Depth	  = header.pixelDepth;
 	textureDesc.MipLevels = std::max( header.numberOfMipmapLevels, desc.MipLevels );
-
-	textureDesc.Usage          = desc.Usage;
-	textureDesc.BindFlags      = desc.BindFlags;
-	textureDesc.CPUAccessFlags = desc.CPUAccessFlags;
-	textureDesc.Format         = FindDiligentTextureFormat( header.glInternalFormat );
+	textureDesc.Format    = FindDiligentTextureFormat( header.glInternalFormat );
 	if( textureDesc.Format == TEX_FORMAT_UNKNOWN ) {
 		throw TextureDataExc( "Failed to find appropriate Diligent format for internal gl format " + to_string( header.glInternalFormat ) );
 	}
