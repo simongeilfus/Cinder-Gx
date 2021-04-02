@@ -38,8 +38,6 @@
 // TODO:
 //
 // [ ] Check issue with D3D11 Textures
-// [ ] Mipmapping support
-// [ ] Add isSRGB argument to create* functions
 
 namespace cinder { namespace graphics {
 
@@ -83,7 +81,7 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Specifies whether the data is expected to be in the sRGB or Linear colorspace at load time. Ignored when creating the texture with raw data
     TextureDesc& srgb( bool srgb ) { mSrgb = srgb; return *this; }
     //! Specifies whether a mip chain needs to be created at load time. Ignored when creating the texture with raw data
-    TextureDesc& mips( bool mips ) { mGenerateMips = mips; return *this; }
+    TextureDesc& generateMips( bool mips ) { mGenerateMips = mips; return *this; }
 
     TextureDesc();
     TextureDesc( const TextureDesc &other );
@@ -100,7 +98,7 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     //! Returns whether a mip chain needs to be created. 
     bool isUsageDefault() const { return mDefaultUsage; }
     //! Returns whether a mip chain needs to be created. 
-    bool isMipsDefault() const { return mDefaultUsage; }
+    bool isMipsDefault() const { return mDefaultMips; }
 protected:
     void updatePtrs() noexcept;
     void swap( TextureDesc &other ) noexcept;
