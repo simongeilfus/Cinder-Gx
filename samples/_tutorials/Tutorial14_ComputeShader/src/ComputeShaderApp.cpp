@@ -82,7 +82,7 @@ void ComputeShaderApp::setup()
 
 void ComputeShaderApp::createRenderParticlePSO()
 {
-    gx::GraphicsPipelineDesc psoCreateInfo = gx::GraphicsPipelineDesc()
+    gx::GraphicsPipelineCreateInfo psoCreateInfo = gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         .name( "Render particles PSO" )
         // Primitive topology defines what kind of primitives will be rendered by this pipeline state
@@ -117,7 +117,7 @@ void ComputeShaderApp::createRenderParticlePSO()
 
 void ComputeShaderApp::createUpdateParticlePSO()
 {
-    gx::ComputePipelineDesc computePipelineDesc = gx::ComputePipelineDesc()
+    gx::ComputePipelineCreateInfo computePipelineCreateInfo = gx::ComputePipelineCreateInfo()
         .variables( { { gx::SHADER_TYPE_COMPUTE, "Constants", gx::SHADER_RESOURCE_VARIABLE_TYPE_STATIC } } )
         .defaultVariableType( gx::SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE );
 
@@ -126,16 +126,16 @@ void ComputeShaderApp::createUpdateParticlePSO()
         .useCombinedTextureSamplers( true )
         .sourceLanguage( gx::SHADER_SOURCE_LANGUAGE_HLSL );
 
-    mResetParticleListsPSO = gx::createComputePipelineState( computePipelineDesc.shader( shaderCreateInfo.name( "Reset particle lists CS" ).filePath( getAssetPath( "reset_particle_lists.csh" ) ) ) );
+    mResetParticleListsPSO = gx::createComputePipelineState( computePipelineCreateInfo.shader( shaderCreateInfo.name( "Reset particle lists CS" ).filePath( getAssetPath( "reset_particle_lists.csh" ) ) ) );
     mResetParticleListsPSO->GetStaticVariableByName( gx::SHADER_TYPE_COMPUTE, "Constants" )->Set( mConstants );
 
-    mMoveParticlesPSO = gx::createComputePipelineState( computePipelineDesc.shader( shaderCreateInfo.name( "Move particle CS" ).filePath( getAssetPath( "move_particles.csh" ) ) ) );
+    mMoveParticlesPSO = gx::createComputePipelineState( computePipelineCreateInfo.shader( shaderCreateInfo.name( "Move particle CS" ).filePath( getAssetPath( "move_particles.csh" ) ) ) );
     mMoveParticlesPSO->GetStaticVariableByName( gx::SHADER_TYPE_COMPUTE, "Constants" )->Set( mConstants );
 
-    mCollideParticlesPSO = gx::createComputePipelineState( computePipelineDesc.shader( shaderCreateInfo.name( "Collide particle CS" ).filePath( getAssetPath( "collide_particles.csh" ) ) ) );
+    mCollideParticlesPSO = gx::createComputePipelineState( computePipelineCreateInfo.shader( shaderCreateInfo.name( "Collide particle CS" ).filePath( getAssetPath( "collide_particles.csh" ) ) ) );
     mCollideParticlesPSO->GetStaticVariableByName( gx::SHADER_TYPE_COMPUTE, "Constants" )->Set( mConstants );
 
-    mUpdateParticleSpeedPSO = gx::createComputePipelineState( computePipelineDesc.shader( shaderCreateInfo.name( "Update particle speed CS" ).filePath( getAssetPath( "collide_particles.csh" ) ).macro( "UDPATE_SPEED", 1 ) ) );
+    mUpdateParticleSpeedPSO = gx::createComputePipelineState( computePipelineCreateInfo.shader( shaderCreateInfo.name( "Update particle speed CS" ).filePath( getAssetPath( "collide_particles.csh" ) ).macro( "UDPATE_SPEED", 1 ) ) );
     mUpdateParticleSpeedPSO->GetStaticVariableByName( gx::SHADER_TYPE_COMPUTE, "Constants" )->Set( mConstants );
 }
 

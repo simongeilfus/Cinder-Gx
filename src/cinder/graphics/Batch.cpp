@@ -35,7 +35,7 @@ Batch::Batch( const PipelineStateRef &pipelineState )
 {
 }
 
-Batch::Batch( const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( app::getRenderDevice(), pipelineCreateInfo )
 {
 }
@@ -45,7 +45,7 @@ Batch::Batch( const Mesh &mesh, const PipelineStateRef &pipelineState )
 {
 }
 
-Batch::Batch( const Mesh &mesh, const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( const Mesh &mesh, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( app::getRenderDevice(), mesh, pipelineCreateInfo )
 {
 }
@@ -55,18 +55,18 @@ Batch::Batch( const std::vector<Mesh> &meshes, const PipelineStateRef &pipelineS
 {
 }
 
-Batch::Batch( const std::vector<Mesh> &meshes, const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( const std::vector<Mesh> &meshes, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( app::getRenderDevice(), meshes, pipelineCreateInfo )
 {
 }
 
 namespace {
-	PipelineStateRef createPipeline( RenderDevice* device, const GraphicsPipelineDesc &pipelineCreateInfo )
+	PipelineStateRef createPipeline( RenderDevice* device, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	{
 		return createGraphicsPipelineState( device, pipelineCreateInfo );
 	}
 
-	PipelineStateRef createPipeline( RenderDevice* device, GraphicsPipelineDesc pipelineCreateInfo, const Mesh &mesh )
+	PipelineStateRef createPipeline( RenderDevice* device, GraphicsPipelineCreateInfo pipelineCreateInfo, const Mesh &mesh )
 	{
 		if( pipelineCreateInfo.getLayoutElements().empty() ) {
 			pipelineCreateInfo.inputLayout( mesh.getVertexLayoutElements() );
@@ -81,7 +81,7 @@ Batch::Batch( RenderDevice* device, const PipelineStateRef &pipelineState )
 {
 }
 
-Batch::Batch( RenderDevice* device, const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( RenderDevice* device, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( device, createPipeline( device, pipelineCreateInfo ) )
 {
 }
@@ -91,7 +91,7 @@ Batch::Batch( RenderDevice* device, const Mesh &mesh, const PipelineStateRef &pi
 {
 }
 
-Batch::Batch( RenderDevice* device, const Mesh &mesh, const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( RenderDevice* device, const Mesh &mesh, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( device, std::vector<Mesh>{ mesh }, createPipeline( device, pipelineCreateInfo, mesh ) )
 {
 }
@@ -103,7 +103,7 @@ Batch::Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const Pipel
 {
 }
 
-Batch::Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const GraphicsPipelineDesc &pipelineCreateInfo )
+Batch::Batch( RenderDevice* device, const std::vector<Mesh> &meshes, const GraphicsPipelineCreateInfo &pipelineCreateInfo )
 	: Batch( device, meshes, createPipeline( device, pipelineCreateInfo, meshes.front() ) ) // should all the meshes participate in choosing the input layout (instead of meshes.front()) ?
 {
 }

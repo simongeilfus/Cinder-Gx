@@ -100,149 +100,151 @@ protected:
 };
 
 //! Graphics pipeline state creation attributes
-struct CI_API GraphicsPipelineDesc {
+struct CI_API GraphicsPipelineCreateInfo {
     //! Blend state description.
-    GraphicsPipelineDesc& blendStateDesc( const Diligent::BlendStateDesc &blendDesc ) { mGraphicsPipeline.BlendDesc = blendDesc; return *this; }
+    GraphicsPipelineCreateInfo& blendStateDesc( const Diligent::BlendStateDesc &blendDesc ) { mGraphicsPipeline.BlendDesc = blendDesc; return *this; }
     //! Specifies the blend states per render targets
-    GraphicsPipelineDesc& renderTargetBlendDesc( size_t rtIndex, const Diligent::RenderTargetBlendDesc &desc ) { mGraphicsPipeline.BlendDesc.RenderTargets[rtIndex] = desc; return *this; }
+    GraphicsPipelineCreateInfo& renderTargetBlendDesc( size_t rtIndex, const Diligent::RenderTargetBlendDesc &desc ) { mGraphicsPipeline.BlendDesc.RenderTargets[rtIndex] = desc; return *this; }
     //! Specifies whether to use alpha-to-coverage as a multisampling technique when setting a pixel to a render target. Default value: False.
-    GraphicsPipelineDesc& alphaToCoverageEnable( bool alphaToCoverageEnable ) { mGraphicsPipeline.BlendDesc.AlphaToCoverageEnable = alphaToCoverageEnable; return *this; }
+    GraphicsPipelineCreateInfo& alphaToCoverageEnable( bool alphaToCoverageEnable ) { mGraphicsPipeline.BlendDesc.AlphaToCoverageEnable = alphaToCoverageEnable; return *this; }
     //! Specifies whether to enable independent blending in simultaneous render targets. If set to False, only RenderTargets[0] is used. Default value: False.
-    GraphicsPipelineDesc& independentBlendEnable( bool independentBlendEnable ) { mGraphicsPipeline.BlendDesc.IndependentBlendEnable = independentBlendEnable; return *this; }
+    GraphicsPipelineCreateInfo& independentBlendEnable( bool independentBlendEnable ) { mGraphicsPipeline.BlendDesc.IndependentBlendEnable = independentBlendEnable; return *this; }
     //! Enables blending and sets the blend function to unpremultiplied alpha blending
-    GraphicsPipelineDesc& alphaBlending();
+    GraphicsPipelineCreateInfo& alphaBlending();
     //! Enables blending and sets the blend function to unpremultiplied alpha blending
-    GraphicsPipelineDesc& alphaBlending( size_t renderTargetIndex );
+    GraphicsPipelineCreateInfo& alphaBlending( size_t renderTargetIndex );
     //! Enables blending and sets the blend function to premultiplied alpha blending
-    GraphicsPipelineDesc& alphaBlendingPremult();
+    GraphicsPipelineCreateInfo& alphaBlendingPremult();
     //! Enables blending and sets the blend function to premultiplied alpha blending
-    GraphicsPipelineDesc& alphaBlendingPremult( size_t renderTargetIndex );
+    GraphicsPipelineCreateInfo& alphaBlendingPremult( size_t renderTargetIndex );
     //! Enables \c GL_BLEND and sets the blend function to additive blending
-    GraphicsPipelineDesc& additiveBlending();
+    GraphicsPipelineCreateInfo& additiveBlending();
     //! Enables \c GL_BLEND and sets the blend function to additive blending
-    GraphicsPipelineDesc& additiveBlending( size_t renderTargetIndex );
+    GraphicsPipelineCreateInfo& additiveBlending( size_t renderTargetIndex );
 
     //! 32-bit sample mask that determines which samples get updated in all the active render targets. A sample mask is always applied; it is independent of whether multisampling is enabled, and does not depend on whether an application uses multisample render targets.
-    GraphicsPipelineDesc& sampleMask( uint32_t sampleMask ) { mGraphicsPipeline.SampleMask = sampleMask; return *this; }
+    GraphicsPipelineCreateInfo& sampleMask( uint32_t sampleMask ) { mGraphicsPipeline.SampleMask = sampleMask; return *this; }
 
     //! Rasterizer state description.
-    GraphicsPipelineDesc& rasterizerStateDesc( const Diligent::RasterizerStateDesc &rasterizerDesc ) { mGraphicsPipeline.RasterizerDesc = rasterizerDesc; return *this; }
+    GraphicsPipelineCreateInfo& rasterizerStateDesc( const Diligent::RasterizerStateDesc &rasterizerDesc ) { mGraphicsPipeline.RasterizerDesc = rasterizerDesc; return *this; }
     //! Determines traingle fill mode, see Diligent::FILL_MODE for details. Default value: Diligent::FILL_MODE_SOLID.
-    GraphicsPipelineDesc& fillMode( FILL_MODE fillMode ) { mGraphicsPipeline.RasterizerDesc.FillMode = fillMode; return *this; }
+    GraphicsPipelineCreateInfo& fillMode( FILL_MODE fillMode ) { mGraphicsPipeline.RasterizerDesc.FillMode = fillMode; return *this; }
     //! Determines traingle cull mode, see Diligent::CULL_MODE for details. Default value: Diligent::CULL_MODE_BACK.
-    GraphicsPipelineDesc& cullMode( CULL_MODE cullMode ) { mGraphicsPipeline.RasterizerDesc.CullMode = cullMode; return *this; }
+    GraphicsPipelineCreateInfo& cullMode( CULL_MODE cullMode ) { mGraphicsPipeline.RasterizerDesc.CullMode = cullMode; return *this; }
     //! Determines if a triangle is front- or back-facing. If this parameter is True, a triangle will be considered front-facing if its vertices are counter-clockwise on the render target. Default value: False.
-    GraphicsPipelineDesc& frontCounterClockwise( bool frontCounterClockwise ) { mGraphicsPipeline.RasterizerDesc.FrontCounterClockwise = frontCounterClockwise; return *this; }
+    GraphicsPipelineCreateInfo& frontCounterClockwise( bool frontCounterClockwise ) { mGraphicsPipeline.RasterizerDesc.FrontCounterClockwise = frontCounterClockwise; return *this; }
     //! Enable clipping against near and far clip planes. Default value: True.
-    GraphicsPipelineDesc& depthClipEnable( bool depthClipEnable ) { mGraphicsPipeline.RasterizerDesc.DepthClipEnable = depthClipEnable; return *this; }
+    GraphicsPipelineCreateInfo& depthClipEnable( bool depthClipEnable ) { mGraphicsPipeline.RasterizerDesc.DepthClipEnable = depthClipEnable; return *this; }
     //! Enable scissor-rectangle culling. All pixels outside an active scissor rectangle are culled. Default value: False.
-    GraphicsPipelineDesc& scissorEnable( bool scissorEnable ) { mGraphicsPipeline.RasterizerDesc.ScissorEnable = scissorEnable; return *this; }
+    GraphicsPipelineCreateInfo& scissorEnable( bool scissorEnable ) { mGraphicsPipeline.RasterizerDesc.ScissorEnable = scissorEnable; return *this; }
     //! Specifies whether to enable line antialiasing. Default value: False.
-    GraphicsPipelineDesc& antialiasedLineEnable( bool antialiasedLineEnable ) { mGraphicsPipeline.RasterizerDesc.AntialiasedLineEnable = antialiasedLineEnable; return *this; }
+    GraphicsPipelineCreateInfo& antialiasedLineEnable( bool antialiasedLineEnable ) { mGraphicsPipeline.RasterizerDesc.AntialiasedLineEnable = antialiasedLineEnable; return *this; }
     //! Constant value added to the depth of a given pixel. Default value: 0.
-    GraphicsPipelineDesc& depthBias( int32_t depthBias ) { mGraphicsPipeline.RasterizerDesc.DepthBias = depthBias; return *this; }
+    GraphicsPipelineCreateInfo& depthBias( int32_t depthBias ) { mGraphicsPipeline.RasterizerDesc.DepthBias = depthBias; return *this; }
     //! Maximum depth bias of a pixel. \warning Depth bias clamp is not available in OpenGL Default value: 0.
-    GraphicsPipelineDesc& depthBiasClamp( float depthBiasClamp ) { mGraphicsPipeline.RasterizerDesc.DepthBiasClamp = depthBiasClamp; return *this; }
+    GraphicsPipelineCreateInfo& depthBiasClamp( float depthBiasClamp ) { mGraphicsPipeline.RasterizerDesc.DepthBiasClamp = depthBiasClamp; return *this; }
     //! Scalar that scales the given pixel's slope before adding to the pixel's depth. Default value: 0.
-    GraphicsPipelineDesc& slopeScaledDepthBias( float slopeScaledDepthBias ) { mGraphicsPipeline.RasterizerDesc.SlopeScaledDepthBias = slopeScaledDepthBias; return *this; }
+    GraphicsPipelineCreateInfo& slopeScaledDepthBias( float slopeScaledDepthBias ) { mGraphicsPipeline.RasterizerDesc.SlopeScaledDepthBias = slopeScaledDepthBias; return *this; }
 
     //! Depth-stencil state description.
-    GraphicsPipelineDesc& depthStencilDesc( const Diligent::DepthStencilStateDesc &depthStencilDesc ) { mGraphicsPipeline.DepthStencilDesc = depthStencilDesc; return *this; }
+    GraphicsPipelineCreateInfo& depthStencilDesc( const Diligent::DepthStencilStateDesc &depthStencilDesc ) { mGraphicsPipeline.DepthStencilDesc = depthStencilDesc; return *this; }
     //! Enable depth-stencil operations. When it is set to False, depth test always passes, depth writes are disabled, and no stencil operations are performed. Default value: True.
-    GraphicsPipelineDesc& depthEnable( bool depthEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthEnable = depthEnable; return *this; };
+    GraphicsPipelineCreateInfo& depthEnable( bool depthEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthEnable = depthEnable; return *this; };
     //! Enable or disable writes to a depth buffer. Default value: True.
-    GraphicsPipelineDesc& depthWriteEnable( bool depthWriteEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthWriteEnable = depthWriteEnable; return *this; };
+    GraphicsPipelineCreateInfo& depthWriteEnable( bool depthWriteEnable ) { mGraphicsPipeline.DepthStencilDesc.DepthWriteEnable = depthWriteEnable; return *this; };
     //! A function that compares depth data against existing depth data. See Diligent::COMPARISON_FUNCTION for details. Default value: Diligent::COMPARISON_FUNC_LESS.
-    GraphicsPipelineDesc& depthFunc( COMPARISON_FUNCTION depthFunc ) { mGraphicsPipeline.DepthStencilDesc.DepthFunc = depthFunc; return *this; };
+    GraphicsPipelineCreateInfo& depthFunc( COMPARISON_FUNCTION depthFunc ) { mGraphicsPipeline.DepthStencilDesc.DepthFunc = depthFunc; return *this; };
     //! Enable stencil opertaions. Default value: False.
-    GraphicsPipelineDesc& stencilEnable( bool stencilEnable ) { mGraphicsPipeline.DepthStencilDesc.StencilEnable = stencilEnable; return *this; };
+    GraphicsPipelineCreateInfo& stencilEnable( bool stencilEnable ) { mGraphicsPipeline.DepthStencilDesc.StencilEnable = stencilEnable; return *this; };
     //! Identify which bits of the depth-stencil buffer are accessed when reading stencil data. Default value: 0xFF.
-    GraphicsPipelineDesc& stencilReadMask( uint8_t stencilReadMask ) { mGraphicsPipeline.DepthStencilDesc.StencilReadMask = stencilReadMask; return *this; }
+    GraphicsPipelineCreateInfo& stencilReadMask( uint8_t stencilReadMask ) { mGraphicsPipeline.DepthStencilDesc.StencilReadMask = stencilReadMask; return *this; }
     //! Identify which bits of the depth-stencil buffer are accessed when writing stencil data. Default value: 0xFF.
-    GraphicsPipelineDesc& stencilWriteMask( uint8_t stencilWriteMask ) { mGraphicsPipeline.DepthStencilDesc.StencilWriteMask = stencilWriteMask; return *this; };
+    GraphicsPipelineCreateInfo& stencilWriteMask( uint8_t stencilWriteMask ) { mGraphicsPipeline.DepthStencilDesc.StencilWriteMask = stencilWriteMask; return *this; };
     //! Identify stencil operations for the front-facing triangles, see Diligent::StencilOpDesc.
-    GraphicsPipelineDesc& frontFace( StencilOpDesc frontFace ) { mGraphicsPipeline.DepthStencilDesc.FrontFace = frontFace; return *this; };
+    GraphicsPipelineCreateInfo& frontFace( StencilOpDesc frontFace ) { mGraphicsPipeline.DepthStencilDesc.FrontFace = frontFace; return *this; };
     //! Identify stencil operations for the back-facing triangles, see Diligent::StencilOpDesc.
-    GraphicsPipelineDesc& backFace( StencilOpDesc backFace ) { mGraphicsPipeline.DepthStencilDesc.BackFace = backFace; return *this; };
+    GraphicsPipelineCreateInfo& backFace( StencilOpDesc backFace ) { mGraphicsPipeline.DepthStencilDesc.BackFace = backFace; return *this; };
 
     //! Input layout, ignored in a mesh pipeline.
-    GraphicsPipelineDesc& inputLayout( const Diligent::InputLayoutDesc &inputLayout ) { mGraphicsPipeline.InputLayout = inputLayout; return *this; }
+    GraphicsPipelineCreateInfo& inputLayout( const Diligent::InputLayoutDesc &inputLayout ) { mGraphicsPipeline.InputLayout = inputLayout; return *this; }
     //! Input layout, ignored in a mesh pipeline.
-    GraphicsPipelineDesc& inputLayout( const std::vector<LayoutElement> &elements );
+    GraphicsPipelineCreateInfo& inputLayout( const std::vector<LayoutElement> &elements );
     //! Primitive topology type, ignored in a mesh pipeline.
-    GraphicsPipelineDesc& primitiveTopology( PRIMITIVE_TOPOLOGY primitiveTopology ) { mGraphicsPipeline.PrimitiveTopology = primitiveTopology; return *this; }
+    GraphicsPipelineCreateInfo& primitiveTopology( PRIMITIVE_TOPOLOGY primitiveTopology ) { mGraphicsPipeline.PrimitiveTopology = primitiveTopology; return *this; }
 
     //! The number of viewports used by this pipeline
-    GraphicsPipelineDesc& numViewports( uint8_t numViewports ) { mGraphicsPipeline.NumViewports = numViewports; return *this; }
+    GraphicsPipelineCreateInfo& numViewports( uint8_t numViewports ) { mGraphicsPipeline.NumViewports = numViewports; return *this; }
     //! The number of render targets in the RTVFormats array. Must be 0 when pRenderPass is not null.
-    GraphicsPipelineDesc& numRenderTargets( uint8_t numRenderTargets ) { mGraphicsPipeline.NumRenderTargets = numRenderTargets; return *this; }
+    GraphicsPipelineCreateInfo& numRenderTargets( uint8_t numRenderTargets ) { mGraphicsPipeline.NumRenderTargets = numRenderTargets; return *this; }
     //! When pRenderPass is not null, the subpass index within the render pass. When pRenderPass is null, this member must be 0.
-    GraphicsPipelineDesc& subpassIndex( uint8_t subpassIndex ) { mGraphicsPipeline.SubpassIndex = subpassIndex; return *this; }
+    GraphicsPipelineCreateInfo& subpassIndex( uint8_t subpassIndex ) { mGraphicsPipeline.SubpassIndex = subpassIndex; return *this; }
     //! Render target formats. All formats must be TEX_FORMAT_UNKNOWN when pRenderPass is not null.
-    GraphicsPipelineDesc& rtvFormat( size_t index, TEXTURE_FORMAT rTVFormat ) { mGraphicsPipeline.RTVFormats[index] = rTVFormat; return *this; }
+    GraphicsPipelineCreateInfo& rtvFormat( size_t index, TEXTURE_FORMAT rTVFormat ) { mGraphicsPipeline.RTVFormats[index] = rTVFormat; return *this; }
     //! Depth-stencil format. Must be TEX_FORMAT_UNKNOWN when pRenderPass is not null.
-    GraphicsPipelineDesc& dsvFormat( TEXTURE_FORMAT dSVFormat ) { mGraphicsPipeline.DSVFormat = dSVFormat; return *this; }
+    GraphicsPipelineCreateInfo& dsvFormat( TEXTURE_FORMAT dSVFormat ) { mGraphicsPipeline.DSVFormat = dSVFormat; return *this; }
     //! Multisampling parameters.
-    GraphicsPipelineDesc& sampleDesc( const Diligent::SampleDesc &smplDesc ) { mGraphicsPipeline.SmplDesc = smplDesc; return *this; }
+    GraphicsPipelineCreateInfo& sampleDesc( const Diligent::SampleDesc &smplDesc ) { mGraphicsPipeline.SmplDesc = smplDesc; return *this; }
     //! Pointer to the render pass object. When non-null render pass is specified, NumRenderTargets must be 0, and all RTV formats as well as DSV format must be TEX_FORMAT_UNKNOWN.
-    GraphicsPipelineDesc& renderPass( Diligent::IRenderPass* renderPass ){ mGraphicsPipeline.pRenderPass = renderPass; return *this; }
+    GraphicsPipelineCreateInfo& renderPass( Diligent::IRenderPass* renderPass ){ mGraphicsPipeline.pRenderPass = renderPass; return *this; }
     //! Node mask.
-    GraphicsPipelineDesc& nodeMask( uint32_t nodeMask ) { mGraphicsPipeline.NodeMask = nodeMask; return *this; }
+    GraphicsPipelineCreateInfo& nodeMask( uint32_t nodeMask ) { mGraphicsPipeline.NodeMask = nodeMask; return *this; }
 
     //! Vertex shader to be used with the pipeline.
-    GraphicsPipelineDesc& vertexShader( const ShaderRef &vertexShader ) { mVS = vertexShader; return *this; }
+    GraphicsPipelineCreateInfo& vertexShader( const ShaderRef &vertexShader ) { mVS = vertexShader; return *this; }
     //! Vertex shader to be used with the pipeline.
-    GraphicsPipelineDesc& vertexShader( const ShaderCreateInfo &shaderCreateInfo )  { mVSCreateInfo = shaderCreateInfo; mVSCreateInfo.Desc.ShaderType = SHADER_TYPE_VERTEX; return *this; }
+    GraphicsPipelineCreateInfo& vertexShader( const ShaderCreateInfo &shaderCreateInfo )  { mVSCreateInfo = shaderCreateInfo; mVSCreateInfo.Desc.ShaderType = SHADER_TYPE_VERTEX; return *this; }
     //! Pixel shader to be used with the pipeline.
-    GraphicsPipelineDesc& pixelShader( const ShaderRef &pixelShader ) { mPS = pixelShader; return *this; }
+    GraphicsPipelineCreateInfo& pixelShader( const ShaderRef &pixelShader ) { mPS = pixelShader; return *this; }
     //! Pixel shader to be used with the pipeline.
-    GraphicsPipelineDesc& pixelShader( const ShaderCreateInfo &shaderCreateInfo )  { mPSCreateInfo = shaderCreateInfo; mPSCreateInfo.Desc.ShaderType = SHADER_TYPE_PIXEL; return *this; }
+    GraphicsPipelineCreateInfo& pixelShader( const ShaderCreateInfo &shaderCreateInfo )  { mPSCreateInfo = shaderCreateInfo; mPSCreateInfo.Desc.ShaderType = SHADER_TYPE_PIXEL; return *this; }
     //! Domain shader to be used with the pipeline.
-    GraphicsPipelineDesc& domainShader( const ShaderRef &domainShader ) { mDS = domainShader; return *this; }
+    GraphicsPipelineCreateInfo& domainShader( const ShaderRef &domainShader ) { mDS = domainShader; return *this; }
     //! Domain shader to be used with the pipeline.
-    GraphicsPipelineDesc& domainShader( const ShaderCreateInfo &shaderCreateInfo )  { mDSCreateInfo = shaderCreateInfo; mDSCreateInfo.Desc.ShaderType = SHADER_TYPE_DOMAIN; return *this; }
+    GraphicsPipelineCreateInfo& domainShader( const ShaderCreateInfo &shaderCreateInfo )  { mDSCreateInfo = shaderCreateInfo; mDSCreateInfo.Desc.ShaderType = SHADER_TYPE_DOMAIN; return *this; }
     //! Hull shader to be used with the pipeline.
-    GraphicsPipelineDesc& hullShader( const ShaderRef &hullShader ) { mHS = hullShader; return *this; }
+    GraphicsPipelineCreateInfo& hullShader( const ShaderRef &hullShader ) { mHS = hullShader; return *this; }
     //! Hull shader to be used with the pipeline.
-    GraphicsPipelineDesc& hullShader( const ShaderCreateInfo &shaderCreateInfo )  { mHSCreateInfo = shaderCreateInfo; mHSCreateInfo.Desc.ShaderType = SHADER_TYPE_HULL; return *this; }
+    GraphicsPipelineCreateInfo& hullShader( const ShaderCreateInfo &shaderCreateInfo )  { mHSCreateInfo = shaderCreateInfo; mHSCreateInfo.Desc.ShaderType = SHADER_TYPE_HULL; return *this; }
     //! Geometry shader to be used with the pipeline.
-    GraphicsPipelineDesc& geometryShader( const ShaderRef &geometryShader ) { mGS = geometryShader; return *this; }
+    GraphicsPipelineCreateInfo& geometryShader( const ShaderRef &geometryShader ) { mGS = geometryShader; return *this; }
     //! Geometry shader to be used with the pipeline.
-    GraphicsPipelineDesc& geometryShader( const ShaderCreateInfo &shaderCreateInfo )  { mGSCreateInfo = shaderCreateInfo; mGSCreateInfo.Desc.ShaderType = SHADER_TYPE_GEOMETRY; return *this; }
+    GraphicsPipelineCreateInfo& geometryShader( const ShaderCreateInfo &shaderCreateInfo )  { mGSCreateInfo = shaderCreateInfo; mGSCreateInfo.Desc.ShaderType = SHADER_TYPE_GEOMETRY; return *this; }
     //! Amplification shader to be used with the pipeline.
-    GraphicsPipelineDesc& amplificationShader( const ShaderRef &amplificationShader ) { mAS = amplificationShader; return *this; }
+    GraphicsPipelineCreateInfo& amplificationShader( const ShaderRef &amplificationShader ) { mAS = amplificationShader; return *this; }
     //! Amplification shader to be used with the pipeline.
-    GraphicsPipelineDesc& amplificationShader( const ShaderCreateInfo &shaderCreateInfo )  { mASCreateInfo = shaderCreateInfo; mASCreateInfo.Desc.ShaderType = SHADER_TYPE_AMPLIFICATION; return *this; }
+    GraphicsPipelineCreateInfo& amplificationShader( const ShaderCreateInfo &shaderCreateInfo )  { mASCreateInfo = shaderCreateInfo; mASCreateInfo.Desc.ShaderType = SHADER_TYPE_AMPLIFICATION; return *this; }
     //! Mesh shader to be used with the pipeline.
-    GraphicsPipelineDesc& meshShader( const ShaderRef &meshShader ) { mMS = meshShader; return *this; }
+    GraphicsPipelineCreateInfo& meshShader( const ShaderRef &meshShader ) { mMS = meshShader; return *this; }
     //! Mesh shader to be used with the pipeline.
-    GraphicsPipelineDesc& meshShader( const ShaderCreateInfo &shaderCreateInfo )  { mMSCreateInfo = shaderCreateInfo; mMSCreateInfo.Desc.ShaderType = SHADER_TYPE_MESH; return *this; }
+    GraphicsPipelineCreateInfo& meshShader( const ShaderCreateInfo &shaderCreateInfo )  { mMSCreateInfo = shaderCreateInfo; mMSCreateInfo.Desc.ShaderType = SHADER_TYPE_MESH; return *this; }
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
-    GraphicsPipelineDesc& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
+    GraphicsPipelineCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
     //! Defines which command queues this pipeline state can be used with
-    GraphicsPipelineDesc& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
+    GraphicsPipelineCreateInfo& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
 
     //! Pipeline layout description
-    GraphicsPipelineDesc& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
+    GraphicsPipelineCreateInfo& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
     //! Default shader resource variable type. This type will be used if shader variable description is not found in the Variables array or if Variables == nullptr
-    GraphicsPipelineDesc& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { mPSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
+    GraphicsPipelineCreateInfo& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { mPSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
     //! Array of shader resource variable descriptions               
-    GraphicsPipelineDesc& variables( const std::vector<ShaderResourceVariableDesc> &variables );
+    GraphicsPipelineCreateInfo& variables( const std::vector<ShaderResourceVariableDesc> &variables );
     //! Array of immutable sampler descriptions                
-    GraphicsPipelineDesc& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
+    GraphicsPipelineCreateInfo& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
 
+    //! Specifies the Pipeline state creation flags, see Diligent::PSO_CREATE_FLAGS.
+    GraphicsPipelineCreateInfo& flags( PSO_CREATE_FLAGS flags ) { mFlags = flags; return *this; }
     //! Specifies the Pipeline type. Default to PIPELINE_TYPE_GRAPHICS but can be changed to PIPELINE_TYPE_MESH.
-    GraphicsPipelineDesc& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
+    GraphicsPipelineCreateInfo& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
     //! Specifies the object's name.
-    GraphicsPipelineDesc& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
+    GraphicsPipelineCreateInfo& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
 
-    GraphicsPipelineDesc();
-    GraphicsPipelineDesc( const GraphicsPipelineDesc &other );
-    GraphicsPipelineDesc( GraphicsPipelineDesc &&other ) noexcept;
-    GraphicsPipelineDesc& operator=( const GraphicsPipelineDesc &other );
-    GraphicsPipelineDesc& operator=( GraphicsPipelineDesc &&other ) noexcept;
-    ~GraphicsPipelineDesc() = default;
+    GraphicsPipelineCreateInfo();
+    GraphicsPipelineCreateInfo( const GraphicsPipelineCreateInfo &other );
+    GraphicsPipelineCreateInfo( GraphicsPipelineCreateInfo &&other ) noexcept;
+    GraphicsPipelineCreateInfo& operator=( const GraphicsPipelineCreateInfo &other );
+    GraphicsPipelineCreateInfo& operator=( GraphicsPipelineCreateInfo &&other ) noexcept;
+    ~GraphicsPipelineCreateInfo() = default;
 
     const std::vector<LayoutElement>& getLayoutElements() const { return mLayoutElements; }
     const std::vector<ShaderResourceVariableDesc>& getVariables() const { return mVariables; }
@@ -252,7 +254,7 @@ struct CI_API GraphicsPipelineDesc {
 
 protected:
     void updatePtrs() noexcept;
-    void swap( GraphicsPipelineDesc &other ) noexcept;
+    void swap( GraphicsPipelineCreateInfo &other ) noexcept;
 
     std::string mName;
     ShaderRef mVS, mPS, mDS, mHS, mGS, mAS, mMS;
@@ -260,7 +262,7 @@ protected:
     std::vector<LayoutElement> mLayoutElements;
     std::vector<ShaderResourceVariableDesc> mVariables;
     std::vector<ImmutableSamplerDesc> mImmutableSamplers;
-
+    
     Diligent::GraphicsPipelineDesc  mGraphicsPipeline;
     Diligent::PipelineStateDesc     mPSODesc;
     PSO_CREATE_FLAGS                mFlags;
@@ -268,45 +270,45 @@ protected:
     std::vector<Diligent::ShaderResourceVariableDesc> mVariablesBase;
     std::vector<Diligent::ImmutableSamplerDesc> mImmutableSamplersBase;
 
-    friend PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineDesc &pipelineDesc );
+    friend PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineCreateInfo &pipelineDesc );
 };
 
-PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineDesc &pipelineDesc );
-PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineDesc &pipelineDesc );
+PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineCreateInfo &pipelineDesc );
+PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineCreateInfo &pipelineDesc );
 
 
 //! Graphics pipeline state creation attributes
-struct CI_API ComputePipelineDesc {
+struct CI_API ComputePipelineCreateInfo {
     //! Vertex shader to be used with the pipeline.
-    ComputePipelineDesc& shader( const ShaderRef &shader ) { mCS = shader; return *this; }
+    ComputePipelineCreateInfo& shader( const ShaderRef &shader ) { mCS = shader; return *this; }
     //! Vertex shader to be used with the pipeline.
-    ComputePipelineDesc& shader( const ShaderCreateInfo &shaderCreateInfo ) { mCSCreateInfo = shaderCreateInfo; mCSCreateInfo.Desc.ShaderType = SHADER_TYPE_COMPUTE; return *this; }
+    ComputePipelineCreateInfo& shader( const ShaderCreateInfo &shaderCreateInfo ) { mCSCreateInfo = shaderCreateInfo; mCSCreateInfo.Desc.ShaderType = SHADER_TYPE_COMPUTE; return *this; }
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
-    ComputePipelineDesc& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
+    ComputePipelineCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
     //! Defines which command queues this pipeline state can be used with
-    ComputePipelineDesc& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
+    ComputePipelineCreateInfo& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
 
     //! Pipeline layout description
-    ComputePipelineDesc& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
+    ComputePipelineCreateInfo& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
     //! Default shader resource variable type. This type will be used if shader variable description is not found in the Variables array or if Variables == nullptr
-    ComputePipelineDesc& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { mPSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
+    ComputePipelineCreateInfo& defaultVariableType( SHADER_RESOURCE_VARIABLE_TYPE defaultVariableType ) { mPSODesc.ResourceLayout.DefaultVariableType = defaultVariableType; return *this; }
     //! Array of shader resource variable descriptions               
-    ComputePipelineDesc& variables( const std::vector<ShaderResourceVariableDesc> &variables );
+    ComputePipelineCreateInfo& variables( const std::vector<ShaderResourceVariableDesc> &variables );
     //! Array of immutable sampler descriptions                
-    ComputePipelineDesc& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
+    ComputePipelineCreateInfo& immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers );
 
     //! Specifies the Pipeline type. Default to PIPELINE_TYPE_GRAPHICS but can be changed to PIPELINE_TYPE_MESH.
-    ComputePipelineDesc& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
+    ComputePipelineCreateInfo& pipelineType( PIPELINE_TYPE type ) { mPSODesc.PipelineType = type; return *this; }
     //! Specifies the object's name.
-    ComputePipelineDesc& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
+    ComputePipelineCreateInfo& name( const std::string &name ) { mName = name; mPSODesc.Name = mName.c_str(); return *this; }
 
-    ComputePipelineDesc();
-    ComputePipelineDesc( const ComputePipelineDesc &other );
-    ComputePipelineDesc( ComputePipelineDesc &&other ) noexcept;
-    ComputePipelineDesc& operator=( const ComputePipelineDesc &other );
-    ComputePipelineDesc& operator=( ComputePipelineDesc &&other ) noexcept;
-    ~ComputePipelineDesc() = default;
+    ComputePipelineCreateInfo();
+    ComputePipelineCreateInfo( const ComputePipelineCreateInfo &other );
+    ComputePipelineCreateInfo( ComputePipelineCreateInfo &&other ) noexcept;
+    ComputePipelineCreateInfo& operator=( const ComputePipelineCreateInfo &other );
+    ComputePipelineCreateInfo& operator=( ComputePipelineCreateInfo &&other ) noexcept;
+    ~ComputePipelineCreateInfo() = default;
 
     const std::vector<ShaderResourceVariableDesc>& getVariables() const { return mVariables; }
     const std::vector<ImmutableSamplerDesc>& getImmutableSamplers() const { return mImmutableSamplers; }
@@ -315,7 +317,7 @@ struct CI_API ComputePipelineDesc {
 
 protected:
     void updatePtrs() noexcept;
-    void swap( ComputePipelineDesc &other ) noexcept;
+    void swap( ComputePipelineCreateInfo &other ) noexcept;
 
     std::string mName;
     ShaderRef mCS;
@@ -330,11 +332,11 @@ protected:
     std::vector<Diligent::ShaderResourceVariableDesc> mVariablesBase;
     std::vector<Diligent::ImmutableSamplerDesc> mImmutableSamplersBase;
 
-    friend PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc );
+    friend PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineCreateInfo &pipelineDesc );
 };
 
-PipelineStateRef createComputePipelineState( const gx::ComputePipelineDesc &pipelineDesc );
-PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc );
+PipelineStateRef createComputePipelineState( const gx::ComputePipelineCreateInfo &pipelineDesc );
+PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineCreateInfo &pipelineDesc );
 
 }
 

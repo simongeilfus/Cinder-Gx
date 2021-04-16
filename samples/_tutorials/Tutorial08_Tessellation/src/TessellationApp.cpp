@@ -146,7 +146,7 @@ void TessellationApp::createPipelineStates()
     };
 
     // Pipeline state object encompasses configuration of all GPU stages
-    gx::GraphicsPipelineDesc psoCreateInfo = gx::GraphicsPipelineDesc()
+    gx::GraphicsPipelineCreateInfo psoCreateInfo = gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Terrain PSO" )

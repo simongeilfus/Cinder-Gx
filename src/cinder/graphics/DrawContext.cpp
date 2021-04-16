@@ -154,7 +154,7 @@ DrawContext::Pipeline DrawContext::initializePipelineState( RenderDevice* device
     )";
 
 	Pipeline pipeline;
-	pipeline.pso = gx::createGraphicsPipelineState( device, gx::GraphicsPipelineDesc()
+	pipeline.pso = gx::createGraphicsPipelineState( device, gx::GraphicsPipelineCreateInfo()
 		.name( "DrawContext Color Pipeline" )
 		.inputLayout( {
 			// Attribute 0 - vertex position

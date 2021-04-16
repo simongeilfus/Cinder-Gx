@@ -138,7 +138,7 @@ ci::gx::PipelineStateRef createPipelineState( ci::gx::RenderDevice* renderDevice
         .filePath( psFilePath )
     );
 
-    gx::GraphicsPipelineDesc psoCreateInfo = gx::GraphicsPipelineDesc()
+    gx::GraphicsPipelineCreateInfo psoCreateInfo = gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues. It is always a good idea to give objects descriptive names.
         .name( "Cube PSO" )
         // Set render target format which is the format of the swap chain's color buffer

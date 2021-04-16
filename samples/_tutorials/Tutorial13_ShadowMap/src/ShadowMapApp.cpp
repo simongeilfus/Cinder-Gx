@@ -124,7 +124,7 @@ void ShadowMapApp::createCubePSO()
     mCubePSO->CreateShaderResourceBinding( &mCubeSRB, true );
 
     // Create shadow pass PSO
-    gx::GraphicsPipelineDesc psoCreateInfo = gx::GraphicsPipelineDesc()
+    gx::GraphicsPipelineCreateInfo psoCreateInfo = gx::GraphicsPipelineCreateInfo()
         .name( "Cube shadow PSO" )
         // Shadow pass doesn't use any render target outputs
         .numRenderTargets( 0 )
@@ -177,7 +177,7 @@ void ShadowMapApp::createPlanePSO()
         .useCombinedTextureSamplers( true );
 
     // Create shadow pass PSO
-    mPlanePSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
+    mPlanePSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Plane PSO" )
@@ -213,7 +213,7 @@ void ShadowMapApp::createShadowMapVisPSO()
         // OpenGL backend requires emulated combined HLSL texture samplers (g_Texture + g_Texture_sampler combination)
         .useCombinedTextureSamplers( true );
 
-    mShadowMapVisPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
+    mShadowMapVisPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Shadow Map Vis PSO" )

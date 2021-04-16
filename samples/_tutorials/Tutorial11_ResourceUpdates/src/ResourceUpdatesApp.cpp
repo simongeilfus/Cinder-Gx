@@ -165,7 +165,7 @@ void ResourceUpdatesApp::createPipelineStates()
         .useCombinedTextureSamplers( true );
 
     // Pipeline state object encompasses configuration of all GPU stages
-    gx::GraphicsPipelineDesc pipelineDesc = gx::GraphicsPipelineDesc()
+    gx::GraphicsPipelineCreateInfo pipelineDesc = gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
         .name( "Cube PSO" )

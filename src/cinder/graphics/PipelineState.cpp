@@ -115,7 +115,7 @@ void ImmutableSamplerDesc::swap( ImmutableSamplerDesc &other ) noexcept
 	std::swap( Desc, other.Desc );
 }
 
-GraphicsPipelineDesc::GraphicsPipelineDesc()
+GraphicsPipelineCreateInfo::GraphicsPipelineCreateInfo()
 {
 	mFlags = PSO_CREATE_FLAG_NONE;
 	mPSODesc.PipelineType = Diligent::PIPELINE_TYPE_GRAPHICS;
@@ -124,7 +124,7 @@ GraphicsPipelineDesc::GraphicsPipelineDesc()
 	mGraphicsPipeline.NumRenderTargets = 1;
 }
 
-GraphicsPipelineDesc::GraphicsPipelineDesc( const GraphicsPipelineDesc &other )
+GraphicsPipelineCreateInfo::GraphicsPipelineCreateInfo( const GraphicsPipelineCreateInfo &other )
 	: mName( other.mName ),
 	mVS( other.mVS ),
 	mPS( other.mPS ),
@@ -150,28 +150,28 @@ GraphicsPipelineDesc::GraphicsPipelineDesc( const GraphicsPipelineDesc &other )
 	updatePtrs();
 }
 
-GraphicsPipelineDesc::GraphicsPipelineDesc( GraphicsPipelineDesc &&other ) noexcept
-	: GraphicsPipelineDesc()
+GraphicsPipelineCreateInfo::GraphicsPipelineCreateInfo( GraphicsPipelineCreateInfo &&other ) noexcept
+	: GraphicsPipelineCreateInfo()
 {
 	other.swap( *this );
 	updatePtrs();
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::operator=( const GraphicsPipelineDesc &other )
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::operator=( const GraphicsPipelineCreateInfo &other )
 {
-	GraphicsPipelineDesc( other ).swap( *this );
+	GraphicsPipelineCreateInfo( other ).swap( *this );
 	updatePtrs();
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::operator=( GraphicsPipelineDesc &&other ) noexcept
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::operator=( GraphicsPipelineCreateInfo &&other ) noexcept
 {
 	other.swap( *this );
 	updatePtrs();
 	return *this;
 }
 
-void GraphicsPipelineDesc::updatePtrs() noexcept
+void GraphicsPipelineCreateInfo::updatePtrs() noexcept
 {
 	if( ! mName.empty() ) mPSODesc.Name = mName.c_str();
 
@@ -199,7 +199,7 @@ void GraphicsPipelineDesc::updatePtrs() noexcept
 	}
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending()
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::alphaBlending()
 {
 	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
 		alphaBlending( i );
@@ -207,7 +207,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending()
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending( size_t renderTargetIndex )
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::alphaBlending( size_t renderTargetIndex )
 {
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_SRC_ALPHA;
@@ -220,7 +220,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlending( size_t renderTargetIn
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult()
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::alphaBlendingPremult()
 {
 	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
 		alphaBlendingPremult( i );
@@ -228,7 +228,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult()
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult( size_t renderTargetIndex )
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::alphaBlendingPremult( size_t renderTargetIndex )
 {
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_ONE;
@@ -240,7 +240,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::alphaBlendingPremult( size_t renderT
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending()
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::additiveBlending()
 {
 	for( uint8_t i = 0; i < mGraphicsPipeline.NumRenderTargets; ++i ) {
 		additiveBlending( i );
@@ -248,7 +248,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending()
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending( size_t renderTargetIndex )
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::additiveBlending( size_t renderTargetIndex )
 {
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].BlendEnable = true;
 	mGraphicsPipeline.BlendDesc.RenderTargets[renderTargetIndex].SrcBlend = BLEND_FACTOR_SRC_ALPHA;
@@ -260,7 +260,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::additiveBlending( size_t renderTarge
 	return *this;
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::inputLayout( const std::vector<LayoutElement> &elements ) 
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::inputLayout( const std::vector<LayoutElement> &elements ) 
 { 
 	mLayoutElements = elements; 
 	mGraphicsPipeline.InputLayout.LayoutElements = mLayoutElements.data(); 
@@ -268,7 +268,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::inputLayout( const std::vector<Layou
 	return *this; 
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::variables( const std::vector<ShaderResourceVariableDesc> &variables ) 
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::variables( const std::vector<ShaderResourceVariableDesc> &variables ) 
 { 
 	mVariables = variables;
 	mVariablesBase.resize( mVariables.size() );
@@ -280,7 +280,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::variables( const std::vector<ShaderR
 	return *this; 
 }
 
-GraphicsPipelineDesc& GraphicsPipelineDesc::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers ) 
+GraphicsPipelineCreateInfo& GraphicsPipelineCreateInfo::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers ) 
 { 
 	mImmutableSamplers = immutableSamplers;
 	mImmutableSamplersBase.resize( mImmutableSamplers.size() );
@@ -292,7 +292,7 @@ GraphicsPipelineDesc& GraphicsPipelineDesc::immutableSamplers( const std::vector
 	return *this; 
 }
 
-void GraphicsPipelineDesc::swap( GraphicsPipelineDesc &other ) noexcept
+void GraphicsPipelineCreateInfo::swap( GraphicsPipelineCreateInfo &other ) noexcept
 {
 	std::swap( mPSODesc, other.mPSODesc );
 	std::swap( mFlags, other.mFlags );
@@ -318,12 +318,12 @@ void GraphicsPipelineDesc::swap( GraphicsPipelineDesc &other ) noexcept
 	std::swap( mImmutableSamplers, other.mImmutableSamplers );
 }
 
-PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineDesc &pipelineDesc )
+PipelineStateRef createGraphicsPipelineState( const gx::GraphicsPipelineCreateInfo &pipelineDesc )
 {
 	return createGraphicsPipelineState( app::getRenderDevice(), pipelineDesc );
 }
 
-PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineDesc &pipelineDesc )
+PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::GraphicsPipelineCreateInfo &pipelineDesc )
 {
 	PipelineStateRef pipelineState;
 
@@ -376,13 +376,13 @@ PipelineStateRef createGraphicsPipelineState( RenderDevice* device, const gx::Gr
 	return pipelineState;
 }
 
-ComputePipelineDesc::ComputePipelineDesc()
+ComputePipelineCreateInfo::ComputePipelineCreateInfo()
 {
 	mFlags = PSO_CREATE_FLAG_NONE;
 	mPSODesc.PipelineType = Diligent::PIPELINE_TYPE_COMPUTE;
 }
 
-ComputePipelineDesc::ComputePipelineDesc( const ComputePipelineDesc &other )
+ComputePipelineCreateInfo::ComputePipelineCreateInfo( const ComputePipelineCreateInfo &other )
 	: mName( other.mName ),
 	mCS( other.mCS ),
 	mCSCreateInfo( other.mCSCreateInfo ),
@@ -394,28 +394,28 @@ ComputePipelineDesc::ComputePipelineDesc( const ComputePipelineDesc &other )
 	updatePtrs();
 }
 
-ComputePipelineDesc::ComputePipelineDesc( ComputePipelineDesc &&other ) noexcept
-	: ComputePipelineDesc()
+ComputePipelineCreateInfo::ComputePipelineCreateInfo( ComputePipelineCreateInfo &&other ) noexcept
+	: ComputePipelineCreateInfo()
 {
 	other.swap( *this );
 	updatePtrs();
 }
 
-ComputePipelineDesc& ComputePipelineDesc::operator=( const ComputePipelineDesc &other )
+ComputePipelineCreateInfo& ComputePipelineCreateInfo::operator=( const ComputePipelineCreateInfo &other )
 {
-	ComputePipelineDesc( other ).swap( *this );
+	ComputePipelineCreateInfo( other ).swap( *this );
 	updatePtrs();
 	return *this;
 }
 
-ComputePipelineDesc& ComputePipelineDesc::operator=( ComputePipelineDesc &&other ) noexcept
+ComputePipelineCreateInfo& ComputePipelineCreateInfo::operator=( ComputePipelineCreateInfo &&other ) noexcept
 {
 	other.swap( *this );
 	updatePtrs();
 	return *this;
 }
 
-void ComputePipelineDesc::updatePtrs() noexcept
+void ComputePipelineCreateInfo::updatePtrs() noexcept
 {
 	if( ! mName.empty() ) mPSODesc.Name = mName.c_str();
 
@@ -438,7 +438,7 @@ void ComputePipelineDesc::updatePtrs() noexcept
 	}
 }
 
-ComputePipelineDesc& ComputePipelineDesc::variables( const std::vector<ShaderResourceVariableDesc> &variables )
+ComputePipelineCreateInfo& ComputePipelineCreateInfo::variables( const std::vector<ShaderResourceVariableDesc> &variables )
 {
 	mVariables = variables;
 	mVariablesBase.resize( mVariables.size() );
@@ -450,7 +450,7 @@ ComputePipelineDesc& ComputePipelineDesc::variables( const std::vector<ShaderRes
 	return *this;
 }
 
-ComputePipelineDesc& ComputePipelineDesc::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers )
+ComputePipelineCreateInfo& ComputePipelineCreateInfo::immutableSamplers( const std::vector<ImmutableSamplerDesc> &immutableSamplers )
 {
 	mImmutableSamplers = immutableSamplers;
 	mImmutableSamplersBase.resize( mImmutableSamplers.size() );
@@ -462,7 +462,7 @@ ComputePipelineDesc& ComputePipelineDesc::immutableSamplers( const std::vector<I
 	return *this;
 }
 
-void ComputePipelineDesc::swap( ComputePipelineDesc &other ) noexcept
+void ComputePipelineCreateInfo::swap( ComputePipelineCreateInfo &other ) noexcept
 {
 	std::swap( mPSODesc, other.mPSODesc );
 	std::swap( mFlags, other.mFlags );
@@ -474,12 +474,12 @@ void ComputePipelineDesc::swap( ComputePipelineDesc &other ) noexcept
 	std::swap( mImmutableSamplers, other.mImmutableSamplers );
 }
 
-PipelineStateRef createComputePipelineState( const gx::ComputePipelineDesc &pipelineDesc )
+PipelineStateRef createComputePipelineState( const gx::ComputePipelineCreateInfo &pipelineDesc )
 {
 	return createComputePipelineState( app::getRenderDevice(), pipelineDesc );
 }
 
-PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineDesc &pipelineDesc )
+PipelineStateRef createComputePipelineState( RenderDevice* device, const gx::ComputePipelineCreateInfo &pipelineDesc )
 {
 	PipelineStateRef pipelineState;
 

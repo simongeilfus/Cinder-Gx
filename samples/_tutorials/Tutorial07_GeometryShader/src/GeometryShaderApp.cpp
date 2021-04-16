@@ -73,7 +73,7 @@ void GeometryShaderApp::createPipelineState()
     );
 
     // Pipeline state object encompasses configuration of all GPU stages
-    mPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineDesc()
+    mPSO = gx::createGraphicsPipelineState( gx::GraphicsPipelineCreateInfo()
         // Pipeline state name is used by the engine to report issues.
         // It is always a good idea to give objects descriptive names.
 		.name( "Cube PSO" )
