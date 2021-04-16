@@ -30,7 +30,6 @@ using namespace ci::app;
 namespace cinder { namespace graphics {
 
 ShaderCreateInfo::ShaderCreateInfo()
-	: mMacros( make_shared<ShaderMacroHelper>() )
 {
 	pShaderSourceStreamFactory = app::getDefaultShaderSourceStreamFactory();
 }

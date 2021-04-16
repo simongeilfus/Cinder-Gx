@@ -45,8 +45,6 @@ struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     ShaderCreateInfo& byteCodeSize( size_t byteCodeSize ) { ByteCodeSize = byteCodeSize; return *this; }
     //! Shader entry point. This member is ignored if ByteCode is not null
     ShaderCreateInfo& entryPoint( const std::string &entryPoint ) { mEntryPoint = entryPoint; EntryPoint = mEntryPoint.c_str(); return *this; }
-    //! Shader macros. This member is ignored if ByteCode is not null
-    ShaderCreateInfo& macros( const Diligent::ShaderMacro* macros ) { Macros = macros; return *this; }
     //! If set to true, textures will be combined with texture samplers.
     ShaderCreateInfo& useCombinedTextureSamplers( bool useCombinedTextureSamplers ) { UseCombinedTextureSamplers = useCombinedTextureSamplers; return *this; }
     //! If UseCombinedTextureSamplers is true, defines the suffix added to the texture variable name to get corresponding sampler name. For example, for default value "_sampler", a texture named "tex" will be combined with sampler named "tex_sampler". If UseCombinedTextureSamplers is false, this member is ignored.
@@ -67,9 +65,11 @@ struct ShaderCreateInfo : public Diligent::ShaderCreateInfo {
     ShaderCreateInfo& compilerOutput( struct Diligent::IDataBlob** compilerOutput ) { ppCompilerOutput = compilerOutput; return *this; }
     //! Specifies the object's name.
     ShaderCreateInfo& name( const std::string &name ) { mName = name; Desc.Name = mName.c_str(); return *this; }
+    //! Shader macros. This member is ignored if ByteCode is not null
+    ShaderCreateInfo& macros( const Diligent::ShaderMacro* macros ) { Macros = macros; return *this; }
     //! Adds a ShaderMacro definition
     template <typename DefintionType>
-    ShaderCreateInfo& macro( const char* name, DefintionType definition ) { mMacros->AddShaderMacro( name, definition ); Macros = *mMacros; return *this; }
+    ShaderCreateInfo& macro( const char* name, DefintionType definition ) { if( ! mMacros ) mMacros = std::make_shared<ShaderMacroHelper>(); mMacros->AddShaderMacro( name, definition ); Macros = *mMacros; return *this; }
 
     ShaderCreateInfo();
     ShaderCreateInfo( const ShaderCreateInfo &other );
