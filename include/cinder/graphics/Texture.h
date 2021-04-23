@@ -130,6 +130,10 @@ CI_API TextureRef createTexture( ImageSourceRef imageSource, const TextureDesc &
 CI_API TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from a DDS file using the default RenderDevice. Supports DXT1, DTX3, and DTX5. Supports BC7 in the presence of \c GL_ARB_texture_compression_bptc.
 CI_API TextureRef createTextureFromDds( const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
+//! Automatically infers Horizontal Cross, Vertical Cross, Row, or Column based on image aspect ratio
+CI_API TextureRef createTextureCubeMap( const ImageSourceRef &imageSource, const TextureDesc &desc = TextureDesc() );
+//! Expects images ordered { +X, -X, +Y, -Y, +Z, -Z }
+CI_API TextureRef createTextureCubeMap( const ImageSourceRef images[6], const TextureDesc &desc = TextureDesc() );
 
 //! Constructs a Texture based on the contents of \a data.
 CI_API TextureRef createTexture( RenderDevice* device, const TextureDesc &texDesc, const TextureData* data = nullptr );
@@ -151,6 +155,11 @@ CI_API TextureRef createTexture( RenderDevice* device, ImageSourceRef imageSourc
 CI_API TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
 //! Constructs a Texture from a DDS file. Supports DXT1, DTX3, and DTX5. Supports BC7 in the presence of \c GL_ARB_texture_compression_bptc.
 CI_API TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc = TextureDesc() );
+//! Automatically infers Horizontal Cross, Vertical Cross, Row, or Column based on image aspect ratio
+CI_API TextureRef createTextureCubeMap( RenderDevice* device, const ImageSourceRef &imageSource, const TextureDesc &desc = TextureDesc() );
+//! Expects images ordered { +X, -X, +Y, -Y, +Z, -Z }
+CI_API TextureRef createTextureCubeMap( RenderDevice* device, const ImageSourceRef images[6], const TextureDesc &desc = TextureDesc() );
+
 
 class CI_API TextureDataExc : public Exception {
 public:

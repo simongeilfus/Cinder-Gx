@@ -205,6 +205,9 @@ namespace {
 			else if (channelDepth == 16) {
 				RGBToRGBA<Uint16>( data, rowStride, mips[0].data(), rgbaStride, desc.Width, desc.Height );
 			}
+			else if( channelDepth == 32 ) {
+				RGBToRGBA<float>( data, rowStride, mips[0].data(), rgbaStride, desc.Width, desc.Height );
+			}
 		}
 		else {
 			subResources[0].pData  = data;
@@ -213,19 +216,19 @@ namespace {
 
 		uint32_t mipWidth  = textureDesc.Width;
 		uint32_t mipHeight = textureDesc.Height;
-		for( uint32_t m = 1; m < textureDesc.MipLevels; ++m ) {
+		for( uint32_t mip = 1; mip < textureDesc.MipLevels; ++mip ) {
 			uint32_t coarseMipWidth  = std::max(mipWidth / 2u, 1u);
 			uint32_t coarseMipHeight = std::max(mipHeight / 2u, 1u);
 			uint32_t coarseMipStride = coarseMipWidth * numComponents * channelDepth / 8;
 			coarseMipStride      = ( coarseMipStride + 3) & (-4);
-			mips[m].resize(size_t{ coarseMipStride } * size_t{ coarseMipHeight });
+			mips[mip].resize(size_t{ coarseMipStride } * size_t{ coarseMipHeight });
 
 			if( desc.needsGenerateMips() ) {
-				ComputeMipLevel( mipWidth, mipHeight, textureDesc.Format, subResources[m - 1].pData, subResources[m - 1].Stride, mips[m].data(), coarseMipStride );
+				ComputeMipLevel( mipWidth, mipHeight, textureDesc.Format, subResources[mip - 1].pData, subResources[mip - 1].Stride, mips[mip].data(), coarseMipStride );
 			}
 
-			subResources[m].pData  = mips[m].data();
-			subResources[m].Stride = coarseMipStride;
+			subResources[mip].pData  = mips[mip].data();
+			subResources[mip].Stride = coarseMipStride;
 
 			mipWidth  = coarseMipWidth;
 			mipHeight = coarseMipHeight;
@@ -385,6 +388,16 @@ TextureRef createTextureFromKtx( const DataSourceRef &dataSource, const TextureD
 TextureRef createTextureFromDds( const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	return createTextureFromDds( app::getRenderDevice(), dataSource, desc );
+}
+
+TextureRef createTextureCubeMap( const ImageSourceRef &imageSource, const TextureDesc &desc )
+{
+	return createTextureCubeMap( app::getRenderDevice(), imageSource, desc );
+}
+
+TextureRef createTextureCubeMap( const ImageSourceRef images[6], const TextureDesc &desc )
+{
+	return createTextureCubeMap( app::getRenderDevice(), images, desc );
 }
 
 TextureRef createTexture( RenderDevice* device, const Surface8u &surface, const TextureDesc &desc )
@@ -668,6 +681,547 @@ TextureRef createTextureFromKtx( RenderDevice* device, const DataSourceRef &data
 TextureRef createTextureFromDds( RenderDevice* device, const DataSourceRef &dataSource, const TextureDesc &desc )
 {
 	TextureRef texture;
+	return texture;
+}
+
+namespace {
+	struct CubeMapFaceRegion {
+		Area		mArea;
+		ivec2		mOffset;
+		bool		mFlip; // horizontal + vertical
+	};
+
+	std::vector<CubeMapFaceRegion> calcCubeMapHorizontalCrossRegions( const ImageSourceRef &imageSource )
+	{
+		std::vector<CubeMapFaceRegion> result;
+
+		ivec2 faceSize( imageSource->getWidth() / 4, imageSource->getHeight() / 3 );
+		Area faceArea( 0, 0, faceSize.x, faceSize.y );
+
+		Area area;
+		ivec2 offset;
+
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_X
+		area = faceArea + ivec2( faceSize.x * 2, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 2, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+		area = faceArea + ivec2( faceSize.x * 0, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 0, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 0 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 0 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 2 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 2 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+		area = faceArea + ivec2( faceSize.x * 3, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 3, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+
+		return result;
+	};
+
+	std::vector<CubeMapFaceRegion> calcCubeMapVerticalCrossRegions( const ImageSourceRef &imageSource )
+	{
+		std::vector<CubeMapFaceRegion> result;
+
+		ivec2 faceSize( imageSource->getWidth() / 3, imageSource->getHeight() / 4 );
+		Area faceArea( 0, 0, faceSize.x, faceSize.y );
+
+		Area area;
+		ivec2 offset;
+
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_X
+		area = faceArea + ivec2( faceSize.x * 2, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 2, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+		area = faceArea + ivec2( faceSize.x * 0, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 0, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 0 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 0 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 2 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 2 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 1 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 1 );
+		result.push_back( { area, offset, false } );
+		// GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+		area = faceArea + ivec2( faceSize.x * 1, faceSize.y * 3 );
+		offset = -ivec2( faceSize.x * 1, faceSize.y * 3 );
+		result.push_back( { area, offset, true } );
+
+		return result;
+	};
+
+	std::vector<CubeMapFaceRegion> calcCubeMapHorizontalRegions( const ImageSourceRef &imageSource )
+	{
+		std::vector<CubeMapFaceRegion> result;
+		ivec2 faceSize( imageSource->getHeight(), imageSource->getHeight() );
+
+		for( uint8_t index = 0; index < 6; ++index ) {
+			Area area( index * faceSize.x, 0, (index + 1) * faceSize.x, faceSize.y );
+			ivec2 offset( -index * faceSize.x, 0 );
+			result.push_back( { area, offset, false } );
+		}
+
+		return result;
+	};
+
+	std::vector<CubeMapFaceRegion> calcCubeMapVerticalRegions( const ImageSourceRef &imageSource )
+	{
+		std::vector<CubeMapFaceRegion> result;
+		ivec2 faceSize( imageSource->getWidth(), imageSource->getWidth() );
+
+		for( uint8_t index = 0; index < 6; ++index ) {
+			Area area( 0, index * faceSize.x, faceSize.x, (index + 1) * faceSize.y );
+			ivec2 offset( 0, -index * faceSize.y );
+			result.push_back( { area, offset, false } );
+		}
+
+		return result;
+	};
+
+	TextureDesc getTextureCubeMapDesc( const TextureDesc &desc, uint32_t width, uint32_t height, uint32_t sourceNumComponents, uint32_t channelDepth, uint32_t rowStride )
+	{
+		uint32_t mipLevels = ComputeMipLevelsCount( width, height );
+		if( desc.MipLevels > 0 )
+			mipLevels = std::min( desc.MipLevels, mipLevels );
+
+		TextureDesc textureDesc;
+		textureDesc.Name      = desc.Name;
+		textureDesc.Type      = RESOURCE_DIM_TEX_CUBE;
+		textureDesc.Width     = width;
+		textureDesc.Height    = height;
+		textureDesc.ArraySize = 6;
+		textureDesc.MipLevels = mipLevels;
+
+		textureDesc.Usage          = desc.Usage;
+		textureDesc.BindFlags      = desc.BindFlags;
+		textureDesc.Format         = desc.Format;
+		textureDesc.CPUAccessFlags = desc.CPUAccessFlags;
+
+		uint32_t numComponents = sourceNumComponents == 3 ? 4 : sourceNumComponents;
+		bool   isSRGB          = ( sourceNumComponents >= 3 && channelDepth == 8 ) ? desc.isSrgb() : false;
+
+		if( textureDesc.Format == TEX_FORMAT_UNKNOWN ) {
+			if( channelDepth == 8 ) {
+				switch( numComponents ) {
+				case 1: textureDesc.Format = TEX_FORMAT_R8_UNORM; break;
+				case 2: textureDesc.Format = TEX_FORMAT_RG8_UNORM; break;
+				case 4: textureDesc.Format = isSRGB ? TEX_FORMAT_RGBA8_UNORM_SRGB : TEX_FORMAT_RGBA8_UNORM; break;
+				default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")" );
+				}
+			}
+			else if( channelDepth == 16 ) {
+				switch( numComponents ) {
+				case 1: textureDesc.Format = TEX_FORMAT_R16_UNORM; break;
+				case 2: textureDesc.Format = TEX_FORMAT_RG16_UNORM; break;
+				case 4: textureDesc.Format = TEX_FORMAT_RGBA16_UNORM; break;
+				default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")" );
+				}
+			}
+			else if( channelDepth == 32 ) {
+				switch( numComponents ) {
+				case 1: textureDesc.Format = TEX_FORMAT_R32_FLOAT; break;
+				case 2: textureDesc.Format = TEX_FORMAT_RG32_FLOAT; break;
+				case 4: textureDesc.Format = TEX_FORMAT_RGBA32_FLOAT; break;
+				default: throw TextureDataExc( "Unexpected number of color channels (" + to_string( sourceNumComponents ) + ")" );
+				}
+			}
+			else {
+				throw TextureDataExc( "Unsupported color channel depth (" + to_string( channelDepth ) + ")" );
+			}
+		}
+		else {
+			const auto& TexFmtDesc = GetTextureFormatAttribs( textureDesc.Format );
+			if( TexFmtDesc.NumComponents != numComponents )
+				throw TextureDataExc( "Incorrect number of components (" + to_string( sourceNumComponents ) + ") for texture format" );
+			if( TexFmtDesc.ComponentSize != channelDepth / 8 )
+				throw TextureDataExc( "Incorrect channel size (" + to_string( channelDepth ) + ") for texture format" );
+		}
+
+		return textureDesc;
+	}
+	
+	void createTextureCubeMap( IRenderDevice* pDevice, const ImageSourceRef images[6], const TextureDesc &desc, ITexture** ppTexture )
+	{
+		uint32_t mipLevels = ComputeMipLevelsCount( images[0]->getWidth(), images[0]->getHeight() );
+		if( desc.MipLevels > 0 )
+			mipLevels = std::min( desc.MipLevels, mipLevels );
+
+		std::vector<TextureSubResData>  subResources( mipLevels * 6u );
+		std::vector<std::vector<Uint8>> mips( mipLevels * 6u );
+
+		uint32_t sourceNumComponents = ImageIo::channelOrderNumChannels( images[0]->getChannelOrder() );
+		uint32_t channelDepth = ImageIo::dataTypeBytes( images[0]->getDataType() ) * 8;
+		uint32_t rowStride = static_cast<uint32_t>( images[0]->getRowBytes() );
+		uint32_t numComponents = sourceNumComponents == 3 ? 4 : sourceNumComponents;
+
+		TextureDesc textureDesc = getTextureCubeMapDesc( desc, images[0]->getWidth(), images[0]->getHeight(), sourceNumComponents, channelDepth, rowStride );
+
+		for( size_t face = 0; face < 6; ++face ) {
+
+			shared_ptr<BasicImageTarget> imageTarget = make_shared<BasicImageTarget>( images[face] );
+			images[face]->load( imageTarget );
+
+			const void* data = imageTarget->getData();					
+			size_t faceSubResource = face * mipLevels;
+			if( sourceNumComponents == 3 ) {
+				VERIFY_EXPR( numComponents == 4 );
+				uint32_t rgbaStride = desc.Width * numComponents * channelDepth / 8;
+				rgbaStride = ( rgbaStride + 3 ) & ( -4 );
+				mips[faceSubResource].resize( size_t { rgbaStride } * size_t { desc.Height } );
+				subResources[faceSubResource].pData = mips[faceSubResource].data();
+				subResources[faceSubResource].Stride = rgbaStride;
+				if( channelDepth == 8 ) {
+					RGBToRGBA<Uint8>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+				else if( channelDepth == 16 ) {
+					RGBToRGBA<Uint16>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+				else if( channelDepth == 32 ) {
+					RGBToRGBA<float>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+			}
+			else {
+				subResources[faceSubResource].pData  = data;
+				subResources[faceSubResource].Stride = rowStride;
+			}
+
+			uint32_t mipWidth  = textureDesc.Width;
+			uint32_t mipHeight = textureDesc.Height;
+			for( uint32_t mip = 1; mip < textureDesc.MipLevels; ++mip ) {
+				uint32_t coarseMipWidth  = std::max( mipWidth / 2u, 1u );
+				uint32_t coarseMipHeight = std::max( mipHeight / 2u, 1u );
+				uint32_t coarseMipStride = coarseMipWidth * numComponents * channelDepth / 8;
+				coarseMipStride      = ( coarseMipStride + 3 ) & ( -4 );
+				mips[faceSubResource+mip].resize( size_t { coarseMipStride } * size_t { coarseMipHeight } );
+
+				if( desc.needsGenerateMips() ) {
+					ComputeMipLevel( mipWidth, mipHeight, textureDesc.Format, subResources[faceSubResource+mip - 1].pData, subResources[faceSubResource+mip - 1].Stride, mips[faceSubResource+mip].data(), coarseMipStride );
+				}
+
+				subResources[faceSubResource+mip].pData  = mips[faceSubResource+mip].data();
+				subResources[faceSubResource+mip].Stride = coarseMipStride;
+
+				mipWidth  = coarseMipWidth;
+				mipHeight = coarseMipHeight;
+			}
+		}
+
+		TextureData texData;
+		texData.pSubResources   = subResources.data();
+		texData.NumSubresources = textureDesc.MipLevels * 6;
+
+		pDevice->CreateTexture( textureDesc, &texData, ppTexture );
+	}
+
+	template<typename T>
+	void createTextureCubeMap( IRenderDevice* pDevice, const SurfaceT<T> surfaces[6], const TextureDesc &desc, ITexture** ppTexture )
+	{
+		uint32_t mipLevels = ComputeMipLevelsCount( surfaces[0].getWidth(), surfaces[0].getHeight() );
+		if( desc.MipLevels > 0 )
+			mipLevels = std::min( desc.MipLevels, mipLevels );
+
+		std::vector<TextureSubResData>  subResources( mipLevels * 6 );
+		std::vector<std::vector<Uint8>> mips( mipLevels * 6 );
+		
+		uint32_t sourceNumComponents = surfaces[0].hasAlpha() ? 4 : 3;
+		uint32_t channelDepth = sizeof( T ) * 8;
+		uint32_t rowStride = static_cast<uint32_t>( surfaces[0].getRowBytes() );
+		uint32_t numComponents = sourceNumComponents == 3 ? 4 : sourceNumComponents;
+
+		TextureDesc textureDesc = getTextureCubeMapDesc( desc, surfaces[0].getWidth(), surfaces[0].getHeight(), sourceNumComponents, channelDepth, rowStride );
+
+		for( size_t face = 0; face < 6; ++face ) {
+
+			const void* data = surfaces[face].getData();
+			size_t faceSubResource = face * mipLevels;
+			if( sourceNumComponents == 3 ) {
+				VERIFY_EXPR( numComponents == 4 );
+				uint32_t rgbaStride = desc.Width * numComponents * channelDepth / 8;
+				rgbaStride = ( rgbaStride + 3 ) & ( -4 );
+				mips[faceSubResource].resize( size_t { rgbaStride } * size_t { desc.Height } );
+				subResources[faceSubResource].pData = mips[faceSubResource].data();
+				subResources[faceSubResource].Stride = rgbaStride;
+				if( channelDepth == 8 ) {
+					RGBToRGBA<Uint8>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+				else if( channelDepth == 16 ) {
+					RGBToRGBA<Uint16>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+				else if( channelDepth == 32 ) {
+					RGBToRGBA<float>( data, rowStride, mips[faceSubResource].data(), rgbaStride, textureDesc.Width, textureDesc.Height );
+				}
+			}
+			else {
+				subResources[faceSubResource].pData  = data;
+				subResources[faceSubResource].Stride = rowStride;
+			}
+
+			uint32_t mipWidth  = textureDesc.Width;
+			uint32_t mipHeight = textureDesc.Height;
+			for( uint32_t mip = 1; mip < textureDesc.MipLevels; ++mip ) {
+				uint32_t coarseMipWidth  = std::max( mipWidth / 2u, 1u );
+				uint32_t coarseMipHeight = std::max( mipHeight / 2u, 1u );
+				uint32_t coarseMipStride = coarseMipWidth * numComponents * channelDepth / 8;
+				coarseMipStride      = ( coarseMipStride + 3 ) & ( -4 );
+				mips[faceSubResource+mip].resize( size_t { coarseMipStride } * size_t { coarseMipHeight } );
+
+				if( desc.needsGenerateMips() ) {
+					ComputeMipLevel( mipWidth, mipHeight, textureDesc.Format, subResources[faceSubResource+mip - 1].pData, subResources[faceSubResource+mip - 1].Stride, mips[faceSubResource+mip].data(), coarseMipStride );
+				}
+
+				subResources[faceSubResource+mip].pData  = mips[faceSubResource+mip].data();
+				subResources[faceSubResource+mip].Stride = coarseMipStride;
+
+				mipWidth  = coarseMipWidth;
+				mipHeight = coarseMipHeight;
+			}
+		}
+
+		TextureData texData;
+		texData.pSubResources   = subResources.data();
+		texData.NumSubresources = textureDesc.MipLevels * 6;
+
+		pDevice->CreateTexture( textureDesc, &texData, ppTexture );
+	}
+
+	static inline void latLongFromVec( float& _u, float& _v, const float _vec[3] )
+	{
+		const float phi = atan2f( _vec[0], _vec[2] );
+		const float theta = acosf( _vec[1] );
+
+		_u = ( glm::pi<float>() + phi ) * ( 0.5f * glm::one_over_pi<float>() );
+		_v = theta * glm::one_over_pi<float>();
+	}
+	
+    static const float s_faceUvVectors[6][3][3] =
+    {
+        { // +x face
+            {  0.0f,  0.0f, -1.0f }, // u -> -z
+            {  0.0f, -1.0f,  0.0f }, // v -> -y
+            {  1.0f,  0.0f,  0.0f }, // +x face
+        },
+        { // -x face
+            {  0.0f,  0.0f,  1.0f }, // u -> +z
+            {  0.0f, -1.0f,  0.0f }, // v -> -y
+            { -1.0f,  0.0f,  0.0f }, // -x face
+        },
+        { // +y face
+            {  1.0f,  0.0f,  0.0f }, // u -> +x
+            {  0.0f,  0.0f,  1.0f }, // v -> +z
+            {  0.0f,  1.0f,  0.0f }, // +y face
+        },
+        { // -y face
+            {  1.0f,  0.0f,  0.0f }, // u -> +x
+            {  0.0f,  0.0f, -1.0f }, // v -> -z
+            {  0.0f, -1.0f,  0.0f }, // -y face
+        },
+        { // +z face
+            {  1.0f,  0.0f,  0.0f }, // u -> +x
+            {  0.0f, -1.0f,  0.0f }, // v -> -y
+            {  0.0f,  0.0f,  1.0f }, // +z face
+        },
+        { // -z face
+            { -1.0f,  0.0f,  0.0f }, // u -> -x
+            {  0.0f, -1.0f,  0.0f }, // v -> -y
+            {  0.0f,  0.0f, -1.0f }, // -z face
+        }
+    };
+
+	/// _u and _v should be center adressing and in [-1.0+invSize..1.0-invSize] range.
+	static inline void texelCoordToVec( float* _out3f, float _u, float _v, uint8_t _faceId )
+	{
+		// out = u * s_faceUv[0] + v * s_faceUv[1] + s_faceUv[2].
+		_out3f[0] = s_faceUvVectors[_faceId][0][0] * _u + s_faceUvVectors[_faceId][1][0] * _v + s_faceUvVectors[_faceId][2][0];
+		_out3f[1] = s_faceUvVectors[_faceId][0][1] * _u + s_faceUvVectors[_faceId][1][1] * _v + s_faceUvVectors[_faceId][2][1];
+		_out3f[2] = s_faceUvVectors[_faceId][0][2] * _u + s_faceUvVectors[_faceId][1][2] * _v + s_faceUvVectors[_faceId][2][2];
+
+		// Normalize.
+		const float invLen = 1.0f/sqrtf( _out3f[0]*_out3f[0] + _out3f[1]*_out3f[1] + _out3f[2]*_out3f[2] );
+		_out3f[0] *= invLen;
+		_out3f[1] *= invLen;
+		_out3f[2] *= invLen;
+	}
+
+
+	template<typename T>
+	void createTextureCubeMapLatLong( IRenderDevice* pDevice, const ImageSourceRef &imageSource, const TextureDesc &desc, bool bilinearInterpolation, ITexture** ppTexture )
+	{
+		uint32_t faceSize = ( imageSource->getHeight() + 1 ) / 2;
+		uint32_t srcNumComponents = ImageIo::channelOrderNumChannels( imageSource->getChannelOrder() );
+		uint32_t srcRowStride = static_cast<uint32_t>( imageSource->getRowBytes() );
+		uint32_t srcPixelBytes = sizeof( T ) * srcNumComponents;
+		uint32_t channelDepth = ImageIo::dataTypeBytes( imageSource->getDataType() ) * 8;
+		float faceSizeInv = 1.0f / float( faceSize );
+
+		const float srcWidthMinusOne  = float( imageSource->getWidth() - 1 );
+		const float srcHeightMinusOne = float( imageSource->getHeight() - 1 );
+
+		shared_ptr<BasicImageTarget> imageTarget = make_shared<BasicImageTarget>( imageSource );
+		imageSource->load( imageTarget );
+
+		const void* srcData = imageTarget->getData();
+
+		SurfaceT<T> images[6];
+		for( size_t face = 0; face < 6; ++face ) {
+			images[face] = SurfaceT<T>( faceSize, faceSize, true, SurfaceConstraints() );
+
+			for( uint32_t y = 0; y < faceSize; ++y ) {
+				T *dstRowPtr = reinterpret_cast<T*>( reinterpret_cast<uint8_t*>( images[face].getData() ) + y * images[face].getRowBytes() );
+				for( uint32_t x = 0; x < faceSize; ++x ) {
+					T *dstPixelPtr = reinterpret_cast<T*>( reinterpret_cast<uint8_t*>( dstRowPtr ) + x * images[face].getPixelBytes() );
+
+					// Cubemap (u,v) on current face.
+					const float uu = 2.0f * x * faceSizeInv - 1.0f;
+					const float vv = 2.0f * y * faceSizeInv - 1.0f;
+
+					// Get cubemap vector (x,y,z) from (u,v,faceIdx).
+					float vec[3];
+					texelCoordToVec( vec, uu, vv, face );
+
+					// Convert cubemap vector (x,y,z) to latlong (u,v).
+					float xSrcf;
+					float ySrcf;
+					latLongFromVec( xSrcf, ySrcf, vec );
+
+					// Convert from [0..1] to [0..(size-1)] range.
+					xSrcf *= srcWidthMinusOne;
+					ySrcf *= srcHeightMinusOne;
+
+					if( bilinearInterpolation ) {
+						const uint32_t x0 = uint32_t( int32_t( xSrcf ) );
+						const uint32_t y0 = uint32_t( int32_t( ySrcf ) );
+						const uint32_t x1 = min( x0 + 1, uint32_t( imageSource->getWidth() ) - 1 );
+						const uint32_t y1 = min( y0 + 1, uint32_t( imageSource->getHeight() ) - 1 );
+
+						const T *src0 = reinterpret_cast<const T*>( reinterpret_cast<const uint8_t*>( srcData ) + y0 * srcRowStride + x0 * srcPixelBytes );
+						const T *src1 = reinterpret_cast<const T*>( reinterpret_cast<const uint8_t*>( srcData ) + y0 * srcRowStride + x1 * srcPixelBytes );
+						const T *src2 = reinterpret_cast<const T*>( reinterpret_cast<const uint8_t*>( srcData ) + y1 * srcRowStride + x0 * srcPixelBytes );
+						const T *src3 = reinterpret_cast<const T*>( reinterpret_cast<const uint8_t*>( srcData ) + y1 * srcRowStride + x1 * srcPixelBytes );
+
+						const float tx = xSrcf - float( int32_t( x0 ) );
+						const float ty = ySrcf - float( int32_t( y0 ) );
+						const float invTx = 1.0f - tx;
+						const float invTy = 1.0f - ty;
+
+						const float w0 = invTx * invTy;
+						const float w1 = tx * invTy;
+						const float w2 = invTx * ty;
+						const float w3 = tx * ty;
+
+						T p0[4] = { src0[0] * w0, src0[1] * w0, src0[2] * w0, srcNumComponents > 3 ? src0[3] * w0 : CHANTRAIT<T>::max() * w0 };
+						T p1[4] = { src1[0] * w1, src1[1] * w1, src1[2] * w1, srcNumComponents > 3 ? src1[3] * w1 : CHANTRAIT<T>::max() * w1 };
+						T p2[4] = { src2[0] * w2, src2[1] * w2, src2[2] * w2, srcNumComponents > 3 ? src2[3] * w2 : CHANTRAIT<T>::max() * w2 };
+						T p3[4] = { src3[0] * w3, src3[1] * w3, src3[2] * w3, srcNumComponents > 3 ? src3[3] * w3 : CHANTRAIT<T>::max() * w3 };
+
+						const T rr = p0[0] + p1[0] + p2[0] + p3[0];
+						const T gg = p0[1] + p1[1] + p2[1] + p3[1];
+						const T bb = p0[2] + p1[2] + p2[2] + p3[2];
+						const T aa = p0[3] + p1[3] + p2[3] + p3[3];
+
+						dstPixelPtr[0] = rr;
+						dstPixelPtr[1] = gg;
+						dstPixelPtr[2] = bb;
+						dstPixelPtr[3] = aa;
+					}
+					else {
+						const uint32_t xSrc = uint32_t( int32_t( xSrcf ) );
+						const uint32_t ySrc = uint32_t( int32_t( ySrcf ) );
+						const T *srcPtr = reinterpret_cast<const T*>( reinterpret_cast<const uint8_t*>( srcData ) + ySrc * srcRowStride + xSrc * srcPixelBytes );
+
+						dstPixelPtr[0] = srcPtr[0];
+						dstPixelPtr[1] = srcPtr[1];
+						dstPixelPtr[2] = srcPtr[2];
+						dstPixelPtr[3] = srcNumComponents > 3 ? srcPtr[3] : CHANTRAIT<T>::max();
+					}
+				}
+			}
+		}
+
+		createTextureCubeMap( pDevice, images, desc, ppTexture );
+	}
+
+	template<typename T>
+	void createTextureCubeMap( IRenderDevice* pDevice, const ImageSourceRef &imageSource, const TextureDesc &desc, ITexture** ppTexture )
+	{
+		std::vector<CubeMapFaceRegion> faceRegions;
+
+		// Infer the layout based on image aspect ratio
+		ivec2 imageSize( imageSource->getWidth(), imageSource->getHeight() );
+		float minDim = (float) std::min( imageSize.x, imageSize.y );
+		float maxDim = (float) std::max( imageSize.x, imageSize.y );
+		float aspect = minDim / maxDim;
+		if( abs( aspect - 1.0f / 2.0f ) < 0.0001f ) { // latlong
+			createTextureCubeMapLatLong<T>( pDevice, imageSource, desc, true, ppTexture );
+		}
+		else {
+			if( abs( aspect - 1 / 6.0f ) < abs( aspect - 3 / 4.0f ) ) { // closer to 1:6 than to 4:3, so row or column
+				faceRegions = ( imageSize.x > imageSize.y ) ? calcCubeMapHorizontalRegions( imageSource ) : calcCubeMapVerticalRegions( imageSource );
+			}
+			else { // else, horizontal or vertical cross
+				faceRegions = ( imageSize.x > imageSize.y ) ? calcCubeMapHorizontalCrossRegions( imageSource ) : calcCubeMapVerticalCrossRegions( imageSource );
+			}
+
+			Area faceArea = faceRegions.front().mArea;
+			ivec2 faceSize = faceArea.getSize();
+
+			SurfaceT<T> masterSurface( imageSource, SurfaceConstraintsDefault() );
+			SurfaceT<T> images[6];
+
+			for( uint8_t f = 0; f < 6; ++f ) {
+				images[f] = SurfaceT<T>( faceSize.x, faceSize.y, masterSurface.hasAlpha(), SurfaceConstraints() );
+				images[f].copyFrom( masterSurface, faceRegions[f].mArea, faceRegions[f].mOffset );
+				if( faceRegions[f].mFlip ) {
+					//ip::flipVertical( &images[f] );
+					//ip::flipHorizontal( &images[f] );
+				}
+			}
+
+			createTextureCubeMap( pDevice, images, desc, ppTexture );
+		}
+	}
+
+} // anonymous namespace
+
+TextureRef createTextureCubeMap( RenderDevice* device, const ImageSourceRef &imageSource, const TextureDesc &desc )
+{
+	TextureRef texture;
+	Surface s;
+	s.getPixelBytes();
+	TextureDesc textureDesc = getDefaultTextureDesc( desc, imageSource->getWidth(), imageSource->getHeight() );
+	if( imageSource->getDataType() == ImageIo::UINT8 ) {
+		createTextureCubeMap<uint8_t>( device, imageSource, textureDesc, &texture );
+	}
+	else if( imageSource->getDataType() == ImageIo::UINT16 ) {
+		createTextureCubeMap<uint16_t>( device, imageSource, textureDesc, &texture );
+	}
+	else {
+		createTextureCubeMap<float>( device, imageSource, textureDesc, &texture );
+	}
+	return texture;
+}
+
+TextureRef createTextureCubeMap( RenderDevice* device, const ImageSourceRef images[6], const TextureDesc &desc )
+{
+	TextureRef texture;
+	TextureDesc textureDesc = getDefaultTextureDesc( desc, images[0]->getWidth(), images[0]->getHeight() );
+	createTextureCubeMap( device, images, textureDesc, &texture );
 	return texture;
 }
 
