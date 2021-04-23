@@ -130,6 +130,12 @@ struct CI_API DrawAttribs : public Diligent::DrawAttribs {
     DrawAttribs& startVertexLocation( uint32_t index ) { StartVertexLocation = index; return *this; }
     //! LOCATION (or INDEX, but NOT the byte offset) in the vertex buffer to start reading instance data from.
     DrawAttribs& firstInstanceLocation( uint32_t index ) { FirstInstanceLocation = index; return *this; }
+
+    /// Initializes the structure members with default values.
+    DrawAttribs() noexcept : Diligent::DrawAttribs() {}
+    //! Initializes the structure with user-specified values.
+    DrawAttribs( uint32_t numVertices, DRAW_FLAGS flags, Uint32 numInstances = 1, Uint32 startVertexLocation = 0, Uint32 firstInstanceLocation = 0 ) 
+        : Diligent::DrawAttribs( numVertices, flags, numInstances, startVertexLocation, firstInstanceLocation ) {}
 };
 
 //! Executes a draw command
@@ -151,6 +157,12 @@ struct DrawIndexedAttribs : public Diligent::DrawIndexedAttribs {
     DrawIndexedAttribs& baseVertex( uint32_t baseVertex ) { BaseVertex = baseVertex; return *this; }
     //! LOCATION (or INDEX, but NOT the byte offset) in the vertex buffer to start reading instance data from.
     DrawIndexedAttribs& firstInstanceLocation( uint32_t firstInstanceLocation ) { FirstInstanceLocation = firstInstanceLocation; return *this; }
+
+    /// Initializes the structure members with default values.
+    DrawIndexedAttribs() noexcept : Diligent::DrawIndexedAttribs() {}
+    /// Initializes the structure members with user-specified values.
+    DrawIndexedAttribs( Uint32 _NumIndices, VALUE_TYPE _IndexType, DRAW_FLAGS _Flags, Uint32 _NumInstances = 1, Uint32 _FirstIndexLocation = 0, Uint32 _BaseVertex = 0, Uint32 _FirstInstanceLocation = 0 ) noexcept 
+        : Diligent::DrawIndexedAttribs( _NumIndices, _IndexType, _Flags, _NumInstances, _FirstIndexLocation, _BaseVertex, _FirstInstanceLocation ) {}
 };
 
 //! Executes an indexed draw command

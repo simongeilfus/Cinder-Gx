@@ -74,6 +74,14 @@ void ShaderResourceVariableDesc::swap( ShaderResourceVariableDesc &other ) noexc
 	std::swap( Type, other.Type );
 }
 
+
+ImmutableSamplerDesc::ImmutableSamplerDesc( SHADER_TYPE shaderStages, const std::string &samplerOrTextureName, const SamplerDesc& desc ) noexcept
+	: mSamplerOrTextureName( samplerOrTextureName ), 
+	Diligent::ImmutableSamplerDesc( shaderStages, mSamplerOrTextureName.c_str(), desc )
+{
+	updatePtrs();
+}
+
 ImmutableSamplerDesc::ImmutableSamplerDesc( const ImmutableSamplerDesc &other )
 	: mSamplerOrTextureName( other.mSamplerOrTextureName ),
 	Diligent::ImmutableSamplerDesc( other.ShaderStages, other.SamplerOrTextureName, other.Desc )

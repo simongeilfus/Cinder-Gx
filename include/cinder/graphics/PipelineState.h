@@ -81,12 +81,7 @@ struct ImmutableSamplerDesc : public Diligent::ImmutableSamplerDesc {
     //! Sampler description
     ImmutableSamplerDesc& samplerDesc( const Diligent::SamplerDesc desc ) { Desc = desc; return *this; }
 
-    ImmutableSamplerDesc( SHADER_TYPE shaderStages, const std::string &samplerOrTextureName, const SamplerDesc& desc ) noexcept
-        : mSamplerOrTextureName( samplerOrTextureName ), Diligent::ImmutableSamplerDesc( shaderStages, mSamplerOrTextureName.data(), desc ) {}
-    //ImmutableSamplerDesc( const ImmutableSamplerDesc &other ) noexcept
-    //    : mSamplerOrTextureName( other.mSamplerOrTextureName ), Diligent::ImmutableSamplerDesc( other.ShaderStages, nullptr, other.Desc ) { SamplerOrTextureName = mSamplerOrTextureName.data(); }
-    //ImmutableSamplerDesc& operator=( const ImmutableSamplerDesc &other ) noexcept { mSamplerOrTextureName = other.mSamplerOrTextureName; ShaderStages = other.ShaderStages; SamplerOrTextureName = mSamplerOrTextureName.data(); Desc = other.Desc; return *this; }
-
+    ImmutableSamplerDesc( SHADER_TYPE shaderStages, const std::string &samplerOrTextureName, const SamplerDesc& desc ) noexcept;
     ImmutableSamplerDesc() = default;
     ImmutableSamplerDesc( const ImmutableSamplerDesc &other );
     ImmutableSamplerDesc( ImmutableSamplerDesc &&other ) noexcept;
@@ -178,6 +173,8 @@ struct CI_API GraphicsPipelineCreateInfo {
     GraphicsPipelineCreateInfo& numRenderTargets( uint8_t numRenderTargets ) { mGraphicsPipeline.NumRenderTargets = numRenderTargets; return *this; }
     //! When pRenderPass is not null, the subpass index within the render pass. When pRenderPass is null, this member must be 0.
     GraphicsPipelineCreateInfo& subpassIndex( uint8_t subpassIndex ) { mGraphicsPipeline.SubpassIndex = subpassIndex; return *this; }
+    //! Render target formats. All formats must be TEX_FORMAT_UNKNOWN when pRenderPass is not null.
+    GraphicsPipelineCreateInfo& rtvFormat( TEXTURE_FORMAT rTVFormat ) { mGraphicsPipeline.RTVFormats[0] = rTVFormat; return *this; }
     //! Render target formats. All formats must be TEX_FORMAT_UNKNOWN when pRenderPass is not null.
     GraphicsPipelineCreateInfo& rtvFormat( size_t index, TEXTURE_FORMAT rTVFormat ) { mGraphicsPipeline.RTVFormats[index] = rTVFormat; return *this; }
     //! Depth-stencil format. Must be TEX_FORMAT_UNKNOWN when pRenderPass is not null.
