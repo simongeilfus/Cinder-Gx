@@ -24,50 +24,64 @@ add_library(cinder-gx STATIC ${SOURCES})
 target_include_directories( cinder-gx PUBLIC ${INCLUDE_DIR} )
 target_compile_definitions( cinder-gx PRIVATE ENGINE_DLL=1)
 
-# set common diligent directory variables
-set(DILIGENT_LIB_COMMON_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Common)
-set(DILIGENT_LIB_PLATFORM_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Platforms)
-set(DILIGENT_LIB_GRAPHICS_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Graphics)
-
-# link cinder and manually link Diligent .lib files to avoid its dependencies
-target_link_libraries( cinder-gx PRIVATE cinder 
-    debug ${DILIGENT_LIB_COMMON_DIR}/Debug/Diligent-Common.lib
-    debug ${DILIGENT_LIB_PLATFORM_DIR}/Basic/Debug/Diligent-BasicPlatform.lib
-    debug ${DILIGENT_LIB_PLATFORM_DIR}/Win32/Debug/Diligent-Win32Platform.lib
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsAccessories/Debug/Diligent-GraphicsAccessories.lib
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsTools/Debug/Diligent-GraphicsTools.lib
-  
-    optimized ${DILIGENT_LIB_COMMON_DIR}/Release/Diligent-Common.lib
-    optimized ${DILIGENT_LIB_PLATFORM_DIR}/Basic/Release/Diligent-BasicPlatform.lib
-    optimized ${DILIGENT_LIB_PLATFORM_DIR}/Win32/Release/Diligent-Win32Platform.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsAccessories/Release/Diligent-GraphicsAccessories.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsTools/Release/Diligent-GraphicsTools.lib
-)
-# link Diligent backend libraries
+target_link_libraries( cinder-gx PRIVATE cinder Diligent-Win32Platform Diligent-GraphicsAccessories Diligent-GraphicsTools )
 if( NOT DILIGENT_NO_OPENGL ) 
-  target_link_libraries( cinder-gx PRIVATE 
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineOpenGL/Debug/GraphicsEngineOpenGL_64d.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineOpenGL/Release/GraphicsEngineOpenGL_64r.lib
-  )
+  target_link_libraries( cinder-gx PRIVATE Diligent-GraphicsEngineOpenGL-shared )
 endif()
 if( NOT DILIGENT_NO_DIRECT3D11 ) 
-  target_link_libraries( cinder-gx PRIVATE 
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D11/Debug/GraphicsEngineD3D11_64d.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D11/Release/GraphicsEngineD3D11_64r.lib
-  )
+  target_link_libraries( cinder-gx PRIVATE Diligent-GraphicsEngineD3D11-shared )
 endif()
 if( NOT DILIGENT_NO_DIRECT3D12 ) 
-  target_link_libraries( cinder-gx PRIVATE 
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D12/Debug/GraphicsEngineD3D12_64d.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D12/Release/GraphicsEngineD3D12_64r.lib
-  )
+  target_link_libraries( cinder-gx PRIVATE Diligent-GraphicsEngineD3D12-shared )
 endif()
 if( NOT DILIGENT_NO_VULKAN ) 
-  target_link_libraries( cinder-gx PRIVATE 
-    debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineVulkan/Debug/GraphicsEngineVk_64d.lib
-    optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineVulkan/Release/GraphicsEngineVk_64r.lib
-  )
+  target_link_libraries( cinder-gx PRIVATE Diligent-GraphicsEngineVk-shared )
 endif()
+
+# set common diligent directory variables
+# set(DILIGENT_LIB_COMMON_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Common)
+# set(DILIGENT_LIB_PLATFORM_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Platforms)
+# set(DILIGENT_LIB_GRAPHICS_DIR ${PROJECT_BINARY_DIR}/third_party/DiligentCore/Graphics)
+
+# # link cinder and manually link Diligent .lib files to avoid its dependencies
+# target_link_libraries( cinder-gx PRIVATE cinder 
+#     debug ${DILIGENT_LIB_COMMON_DIR}/Debug/Diligent-Common.lib
+#     debug ${DILIGENT_LIB_PLATFORM_DIR}/Basic/Debug/Diligent-BasicPlatform.lib
+#     debug ${DILIGENT_LIB_PLATFORM_DIR}/Win32/Debug/Diligent-Win32Platform.lib
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsAccessories/Debug/Diligent-GraphicsAccessories.lib
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsTools/Debug/Diligent-GraphicsTools.lib
+  
+#     optimized ${DILIGENT_LIB_COMMON_DIR}/Release/Diligent-Common.lib
+#     optimized ${DILIGENT_LIB_PLATFORM_DIR}/Basic/Release/Diligent-BasicPlatform.lib
+#     optimized ${DILIGENT_LIB_PLATFORM_DIR}/Win32/Release/Diligent-Win32Platform.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsAccessories/Release/Diligent-GraphicsAccessories.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsTools/Release/Diligent-GraphicsTools.lib
+# )
+# # link Diligent backend libraries
+# if( NOT DILIGENT_NO_OPENGL ) 
+#   target_link_libraries( cinder-gx PRIVATE 
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineOpenGL/Debug/GraphicsEngineOpenGL_64d.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineOpenGL/Release/GraphicsEngineOpenGL_64r.lib
+#   )
+# endif()
+# if( NOT DILIGENT_NO_DIRECT3D11 ) 
+#   target_link_libraries( cinder-gx PRIVATE 
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D11/Debug/GraphicsEngineD3D11_64d.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D11/Release/GraphicsEngineD3D11_64r.lib
+#   )
+# endif()
+# if( NOT DILIGENT_NO_DIRECT3D12 ) 
+#   target_link_libraries( cinder-gx PRIVATE 
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D12/Debug/GraphicsEngineD3D12_64d.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineD3D12/Release/GraphicsEngineD3D12_64r.lib
+#   )
+# endif()
+# if( NOT DILIGENT_NO_VULKAN ) 
+#   target_link_libraries( cinder-gx PRIVATE 
+#     debug ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineVulkan/Debug/GraphicsEngineVk_64d.lib
+#     optimized ${DILIGENT_LIB_GRAPHICS_DIR}/GraphicsEngineVulkan/Release/GraphicsEngineVk_64r.lib
+#   )
+# endif()
 
 target_compile_definitions( cinder-gx PUBLIC
     D3D11_SUPPORTED=$<BOOL:${D3D11_SUPPORTED}>
