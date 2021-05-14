@@ -27,7 +27,7 @@
 #include "cinder/app/RendererGx.h"
 
 #if defined( IMGUI_DEGUG )
-#include "cinder/CinderImGui.h"
+//#include "cinder/CinderImGui.h"
 #endif
 
 #include <functional>
@@ -978,9 +978,9 @@ void DrawContext::draw( const geom::Source &source )
 void DrawContext::drawSolidRect( const Rectf &r, const vec2 &upperLeftTexCoord, const vec2 &lowerRightTexCoord )
 {
 	const DrawScope	scope = getDrawScope( 6, 4 );
-	const Index			offset = scope.getIndexOffset();
-	Vertex*				vertices = scope.getVertices();
-	Index*				indices	= scope.getIndices();
+	const Index		offset = scope.getIndexOffset();
+	Vertex*			vertices = scope.getVertices();
+	Index*			indices	= scope.getIndices();
 
 	vertices[0].setPosition( r.getUpperLeft() );  vertices[0].setUv( upperLeftTexCoord );
 	vertices[1].setPosition( r.getUpperRight() ); vertices[1].setUv( lowerRightTexCoord.x, upperLeftTexCoord.y );
@@ -993,6 +993,25 @@ void DrawContext::drawSolidRect( const Rectf &r, const vec2 &upperLeftTexCoord, 
 	indices[3] = offset + 0;
 	indices[4] = offset + 2;
 	indices[5] = offset + 3;
+}
+
+void DrawContext::drawLine( const vec3 &a, const vec3 &b )
+{
+	const DrawScope	scope = getDrawScope( 6, 4 );
+	const Index		offset = scope.getIndexOffset();
+	Vertex*			vertices = scope.getVertices();
+	Index*			indices	= scope.getIndices();
+
+	vertices[0].setPosition( a );  vertices[0].setUv( vec2( 0.0f, 0.0f ) );
+	vertices[1].setPosition( b );  vertices[1].setUv( vec2( 1.0f, 1.0f ) );
+
+	indices[0] = offset + 0;
+	indices[1] = offset + 1;
+}
+
+void DrawContext::drawLine( const vec2 &a, const vec2 &b )
+{
+	drawLine( vec3( a, 0.0f ), vec3( b, 0.0f ) );
 }
 
 std::pair<vec2, vec2> DrawContext::getViewport()

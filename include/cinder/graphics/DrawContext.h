@@ -56,6 +56,11 @@ public:
     //! Draws a filled ellipse centered around \a center with an X-axis radius of \a radiusX and a Y-axis radius of \a radiusY. Default \a numSegments requests a conservative (high-quality but slow) number based on radius.
     void drawSolidEllipse( const vec2 &center, float radiusX, float radiusY, int numSegments = -1 ) const;
 
+    //! Draws a line between points a and b
+    void drawLine( const vec3 &a, const vec3 &b );
+    //! Draws a line between points a and b
+    void drawLine( const vec2 &a, const vec2 &b );
+
     //! Submits the current DrawContext on the app default RenderDevice and Immediate DeviceContext
     void submit( bool flushAfterSubmit = true );
     //! Submits the current DrawContext on a a\ RenderDevice and \a DeviceContext

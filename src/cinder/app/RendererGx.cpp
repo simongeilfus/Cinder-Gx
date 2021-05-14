@@ -137,23 +137,8 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         EngineCI.Features = mOptions.mDeviceFeatures;
         EngineCI.NumDeferredContexts = mOptions.mNumDeferredContexts;
 
-#    ifdef DILIGENT_DEVELOPMENT
-        EngineCI.DebugFlags |=
-            D3D11_DEBUG_FLAG_CREATE_DEBUG_DEVICE |
-            D3D11_DEBUG_FLAG_VERIFY_COMMITTED_SHADER_RESOURCES;
-#    endif
-#    ifdef DILIGENT_DEBUG
-        EngineCI.DebugFlags |= D3D11_DEBUG_FLAG_VERIFY_COMMITTED_RESOURCE_RELEVANCE;
-#    endif
-
-        if( mValidationLevel >= 1 ) {
-            EngineCI.DebugFlags =
-                D3D11_DEBUG_FLAG_CREATE_DEBUG_DEVICE |
-                D3D11_DEBUG_FLAG_VERIFY_COMMITTED_SHADER_RESOURCES |
-                D3D11_DEBUG_FLAG_VERIFY_COMMITTED_RESOURCE_RELEVANCE;
-        }
-        else if( mValidationLevel == 0 ) {
-            EngineCI.DebugFlags = D3D11_DEBUG_FLAG_NONE;
+        if( mValidationLevel >= 0 ) {
+            EngineCI.SetValidationLevel( static_cast<VALIDATION_LEVEL>( mValidationLevel ) );
         }
 
         if( const auto &fn = mOptions.getPrepareEngineFn() ) {
@@ -216,16 +201,8 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         EngineCI.Features = mOptions.mDeviceFeatures;
         EngineCI.NumDeferredContexts = mOptions.mNumDeferredContexts;
 
-#    ifdef DILIGENT_DEVELOPMENT
-        EngineCI.EnableDebugLayer = true;
-#    endif
-        if( mValidationLevel >= 1 ) {
-            EngineCI.EnableDebugLayer = true;
-            if( mValidationLevel >= 2 )
-                EngineCI.EnableGPUBasedValidation = true;
-        }
-        else if( mValidationLevel == 0 ) {
-            EngineCI.EnableDebugLayer = false;
+        if( mValidationLevel >= 0 ) {
+            EngineCI.SetValidationLevel( static_cast<VALIDATION_LEVEL>( mValidationLevel ) );
         }
 
         if( const auto &fn = mOptions.getPrepareEngineFn() ) {
@@ -315,11 +292,8 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
 #    endif
         EngineCI.ForceNonSeparablePrograms = mForceNonSeprblProgs;
 
-        if( mValidationLevel >= 1 ) {
-            EngineCI.CreateDebugContext = true;
-        }
-        else if( mValidationLevel == 0 ) {
-            EngineCI.CreateDebugContext = false;
+        if( mValidationLevel >= 0 ) {
+            EngineCI.SetValidationLevel( static_cast<VALIDATION_LEVEL>( mValidationLevel ) );
         }
 
         if( const auto &fn = mOptions.getPrepareEngineFn() ) {
@@ -355,11 +329,8 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
 #    ifdef DILIGENT_DEVELOPMENT
         EngVkAttribs.EnableValidation = true;
 #    endif
-        if( mValidationLevel >= 1 ) {
-            EngVkAttribs.EnableValidation = true;
-        }
-        else if( mValidationLevel == 0 ) {
-            EngVkAttribs.EnableValidation = false;
+        if( mValidationLevel >= 0 ) {
+            EngVkAttribs.SetValidationLevel( static_cast<VALIDATION_LEVEL>( mValidationLevel ) );
         }
 
         if( const auto &fn = mOptions.getPrepareEngineFn() ) {

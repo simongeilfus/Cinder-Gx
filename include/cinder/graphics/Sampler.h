@@ -56,15 +56,13 @@ struct SamplerDesc : public Diligent::SamplerDesc {
     SamplerDesc& maxLOD( float maxLOD ) { MaxLOD = maxLOD; return *this; }
 
     SamplerDesc() noexcept {}
-    SamplerDesc( FILTER_TYPE _MinFilter, FILTER_TYPE _MagFilter, FILTER_TYPE _MipFilter, TEXTURE_ADDRESS_MODE _AddressU = SamplerDesc{}.AddressU, TEXTURE_ADDRESS_MODE _AddressV = SamplerDesc{}.AddressV, TEXTURE_ADDRESS_MODE _AddressW = SamplerDesc{}.AddressW, 
-    Float32 _MipLODBias = SamplerDesc{}.MipLODBias, Uint32 _MaxAnisotropy = SamplerDesc{}.MaxAnisotropy, COMPARISON_FUNCTION  _ComparisonFunc = SamplerDesc{}.ComparisonFunc, float _MinLOD = SamplerDesc{}.MinLOD, float _MaxLOD = SamplerDesc{}.MaxLOD  ) 
-        : Diligent::SamplerDesc( _MinFilter, _MagFilter, _MipFilter, _AddressU, _AddressV, _AddressW, _MipLODBias, _MaxAnisotropy, _ComparisonFunc, _MinLOD, _MaxLOD )
-    {
-    }
+    SamplerDesc( const Diligent::SamplerDesc &other );
+    SamplerDesc( FILTER_TYPE minFilter, FILTER_TYPE magFilter, FILTER_TYPE mipFilter, TEXTURE_ADDRESS_MODE addressU = SamplerDesc {}.AddressU, TEXTURE_ADDRESS_MODE addressV = SamplerDesc {}.AddressV, TEXTURE_ADDRESS_MODE addressW = SamplerDesc {}.AddressW,
+        Float32 mipLODBias = SamplerDesc {}.MipLODBias, Uint32 maxAnisotropy = SamplerDesc {}.MaxAnisotropy, COMPARISON_FUNCTION  comparisonFunc = SamplerDesc {}.ComparisonFunc, float minLOD = SamplerDesc {}.MinLOD, float maxLOD = SamplerDesc {}.MaxLOD );
 };
 
 //! Creates a new Sampler object using the default RenderDevice
-CI_API SamplerRef createSampler( const Diligent::SamplerDesc &desc );
+CI_API SamplerRef createSampler( const SamplerDesc &desc );
 
 }
 

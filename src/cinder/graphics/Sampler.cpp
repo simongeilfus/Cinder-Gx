@@ -29,6 +29,17 @@ using namespace ci::app;
 
 namespace cinder { namespace graphics {
 
+SamplerDesc::SamplerDesc( const Diligent::SamplerDesc &other )
+	: SamplerDesc( other.MinFilter, other.MagFilter, other.MipFilter, other.AddressU, other.AddressV, other.AddressW, other.MipLODBias, other.MaxAnisotropy, other.ComparisonFunc, other.MinLOD, other.MaxLOD )
+{
+	memcpy( &BorderColor, &other.BorderColor, sizeof( Float32 ) * 4 );
+}
+
+SamplerDesc::SamplerDesc( FILTER_TYPE minFilter, FILTER_TYPE magFilter, FILTER_TYPE mipFilter, TEXTURE_ADDRESS_MODE addressU, TEXTURE_ADDRESS_MODE addressV, TEXTURE_ADDRESS_MODE addressW, Float32 mipLODBias, Uint32 maxAnisotropy, COMPARISON_FUNCTION  comparisonFunc, float minLOD, float maxLOD )
+	: Diligent::SamplerDesc( minFilter, magFilter, mipFilter, addressU, addressV, addressW, mipLODBias, maxAnisotropy, comparisonFunc, minLOD, maxLOD )
+{
+}
+
 SamplerRef createSampler( const Diligent::SamplerDesc &desc )
 {
 	SamplerRef sampler;
