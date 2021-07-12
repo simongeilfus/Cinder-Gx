@@ -76,6 +76,7 @@ class CI_API RendererGx : public Renderer {
 	};
 
 	RendererGx( const Options &options = Options() );
+	~RendererGx();
 
 	static RendererGxRef	create( const Options &options = Options() ){ return RendererGxRef( new RendererGx( options ) ); }
 	RendererRef				clone() const override						{ return RendererGxRef( new RendererGx( *this ) ); }

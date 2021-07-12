@@ -201,14 +201,14 @@ void executeCommandLists( uint32_t NumCommandLists, ICommandList* const* ppComma
     getImmediateContext()->ExecuteCommandLists( NumCommandLists, ppCommandLists );
 }
 
-void signalFence( IFence* pFence, uint64_t Value )
+void enqueueSignal( IFence* pFence, uint64_t value )
 {
-    getImmediateContext()->SignalFence( pFence, Value );
+	getImmediateContext()->EnqueueSignal( pFence, value );
 }
 
-void waitForFence( IFence* pFence, uint64_t Value, bool FlushContext )
+void deviceWaitForFence( IFence* pFence, uint64_t Value )
 {
-    getImmediateContext()->WaitForFence( pFence, Value, FlushContext );
+    getImmediateContext()->DeviceWaitForFence( pFence, Value );
 }
 
 void waitForIdle()
@@ -418,14 +418,14 @@ ShaderBindingTableRef createSBT( const Diligent::ShaderBindingTableDesc &desc )
 	return sbt;
 }
 
-const DeviceCaps& getDeviceCaps()
+const GraphicsAdapterInfo& getAdapterInfo()
 {
-	return getRenderDevice()->GetDeviceCaps();
+	return getRenderDevice()->GetAdapterInfo();
 }
 
-const DeviceProperties& getDeviceProperties()
+const RenderDeviceInfo& getDeviceInfo()
 {
-	return getRenderDevice()->GetDeviceProperties();
+	return getRenderDevice()->GetDeviceInfo();
 }
 
 const TextureFormatInfo& getTextureFormatInfo( TEXTURE_FORMAT texFormat )

@@ -345,7 +345,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 	}
 	// Verify device features if not done previously
 	if( mVerifyDeviceFeatures ) {
-		mBindlessResources = device->GetDeviceCaps().Features.BindlessResources;
+		mBindlessResources = device->GetDeviceInfo().Features.BindlessResources;
 		mVerifyDeviceFeatures = false;
 	}
 	// make sure the base texture is initialized

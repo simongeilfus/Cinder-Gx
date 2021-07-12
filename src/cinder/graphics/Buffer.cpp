@@ -43,7 +43,7 @@ BufferDesc::BufferDesc( const BufferDesc &other )
 	CPUAccessFlags = other.CPUAccessFlags;
 	Mode = other.Mode;
 	ElementByteStride = other.ElementByteStride;
-	CommandQueueMask = other.CommandQueueMask;
+	ImmediateContextMask = other.ImmediateContextMask;
 
 	updatePtrs();
 }
@@ -77,7 +77,7 @@ void BufferDesc::swap( BufferDesc &other ) noexcept
 	std::swap( CPUAccessFlags, other.CPUAccessFlags );
 	std::swap( Mode, other.Mode );
 	std::swap( ElementByteStride, other.ElementByteStride );
-	std::swap( CommandQueueMask, other.CommandQueueMask );
+	std::swap( ImmediateContextMask, other.ImmediateContextMask );
 
 	std::swap( mName, other.mName );
 }

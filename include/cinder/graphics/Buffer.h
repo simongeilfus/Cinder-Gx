@@ -42,8 +42,8 @@ struct CI_API BufferDesc : public Diligent::BufferDesc {
     BufferDesc& mode( BUFFER_MODE mode ) { Mode = mode; return *this; }
     //! Buffer element stride, in bytes.
     BufferDesc& elementByteStride( uint32_t elementByteStride ) { ElementByteStride = elementByteStride; return *this; }
-    //! Defines which command queues this buffer can be used with
-    BufferDesc& commandQueueMask( uint64_t commandQueueMask ) { CommandQueueMask = commandQueueMask; return *this; }
+    //! Defines which immediate contexts are allowed to execute commands that use this buffer.
+    BufferDesc& immediateContextMask( uint64_t immediateContextMask ) { ImmediateContextMask = immediateContextMask; return *this; }
     //! Specifies the object's name.
     BufferDesc& name( const char* name ) { Name = name; return *this; }
 

@@ -102,9 +102,9 @@ namespace {
     void debugMessageCallback( enum DEBUG_MESSAGE_SEVERITY severity, const Diligent::Char* message, const Diligent::Char* function, const Diligent::Char* file, int line )
     {
         if( severity >= sDebugLogSeverity ) {
-            log::Level    level    = severityToLevel( severity );
+          /*  log::Level    level    = severityToLevel( severity );
             log::Location location = log::Location( function ? function : "", file ? file : "", line );
-            log::Entry( level, location ) << message;
+            log::Entry( level, location ) << message;*/
             /*Diligent::String formatedMessage = BasicPlatformDebug::FormatDebugMessage( severity, message, function, file, line );
             app::console() << formatedMessage;
             app::console().flush();*/
@@ -152,10 +152,10 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         auto* pFactoryD3D11 = GetEngineFactoryD3D11();
         mEngineFactory = pFactoryD3D11;
         Uint32 NumAdapters = 0;
-        pFactoryD3D11->EnumerateAdapters( EngineCI.MinimumFeatureLevel, NumAdapters, 0 );
+        pFactoryD3D11->EnumerateAdapters( EngineCI.GraphicsAPIVersion, NumAdapters, 0 );
         std::vector<GraphicsAdapterInfo> Adapters( NumAdapters );
         if( NumAdapters > 0 ) {
-            pFactoryD3D11->EnumerateAdapters( EngineCI.MinimumFeatureLevel, NumAdapters, Adapters.data() );
+            pFactoryD3D11->EnumerateAdapters( EngineCI.GraphicsAPIVersion, NumAdapters, Adapters.data() );
         }
         else {
             LOG_ERROR_AND_THROW( "Failed to find Direct3D11-compatible hardware adapters" );
@@ -174,9 +174,9 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         mAdapterAttribs = Adapters[mAdapterId];
         if( mAdapterType != ADAPTER_TYPE_SOFTWARE ) {
             Uint32 NumDisplayModes = 0;
-            pFactoryD3D11->EnumerateDisplayModes( EngineCI.MinimumFeatureLevel, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, nullptr );
+            pFactoryD3D11->EnumerateDisplayModes( EngineCI.GraphicsAPIVersion, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, nullptr );
             mDisplayModes.resize( NumDisplayModes );
-            pFactoryD3D11->EnumerateDisplayModes( EngineCI.MinimumFeatureLevel, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, mDisplayModes.data() );
+            pFactoryD3D11->EnumerateDisplayModes( EngineCI.GraphicsAPIVersion, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, mDisplayModes.data() );
         }
 
         EngineCI.AdapterId = mAdapterId;
@@ -188,7 +188,7 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         }
 
         if( pWindow != nullptr )
-            pFactoryD3D11->CreateSwapChainD3D11( mDevice, ppContexts[0], mSwapChainInitDesc, FullScreenModeDesc{}, *pWindow, &mSwapChain );
+            pFactoryD3D11->CreateSwapChainD3D11( mDevice, ppContexts[0], mSwapChainInitDesc, FullScreenModeDesc {}, *pWindow, &mSwapChain );
     }
     break;
 #endif
@@ -220,10 +220,10 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
 
         mEngineFactory = pFactoryD3D12;
         Uint32 NumAdapters = 0;
-        pFactoryD3D12->EnumerateAdapters( EngineCI.MinimumFeatureLevel, NumAdapters, 0 );
+        pFactoryD3D12->EnumerateAdapters( EngineCI.GraphicsAPIVersion, NumAdapters, 0 );
         std::vector<GraphicsAdapterInfo> Adapters( NumAdapters );
         if( NumAdapters > 0 ) {
-            pFactoryD3D12->EnumerateAdapters( EngineCI.MinimumFeatureLevel, NumAdapters, Adapters.data() );
+            pFactoryD3D12->EnumerateAdapters( EngineCI.GraphicsAPIVersion, NumAdapters, Adapters.data() );
         }
         else {
 #    if D3D11_SUPPORTED
@@ -249,9 +249,9 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         mAdapterAttribs = Adapters[mAdapterId];
         if( mAdapterType != ADAPTER_TYPE_SOFTWARE ) {
             Uint32 NumDisplayModes = 0;
-            pFactoryD3D12->EnumerateDisplayModes( EngineCI.MinimumFeatureLevel, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, nullptr );
+            pFactoryD3D12->EnumerateDisplayModes( EngineCI.GraphicsAPIVersion, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, nullptr );
             mDisplayModes.resize( NumDisplayModes );
-            pFactoryD3D12->EnumerateDisplayModes( EngineCI.MinimumFeatureLevel, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, mDisplayModes.data() );
+            pFactoryD3D12->EnumerateDisplayModes( EngineCI.GraphicsAPIVersion, mAdapterId, 0, TEX_FORMAT_RGBA8_UNORM_SRGB, NumDisplayModes, mDisplayModes.data() );
         }
 
         EngineCI.AdapterId = mAdapterId;
@@ -287,10 +287,9 @@ void RendererGx::initializeDiligentEngine( const Diligent::NativeWindow* pWindow
         EngineCI.NumDeferredContexts = mOptions.mNumDeferredContexts;
         EngineCI.Window = *pWindow;
 
-#    ifdef DILIGENT_DEVELOPMENT
-        EngineCI.CreateDebugContext = true;
-#    endif
-        EngineCI.ForceNonSeparablePrograms = mForceNonSeprblProgs;
+        if( mForceNonSeprblProgs ) {
+            EngineCI.Features.SeparablePrograms = DEVICE_FEATURE_STATE_DISABLED;
+        }
 
         if( mValidationLevel >= 0 ) {
             EngineCI.SetValidationLevel( static_cast<VALIDATION_LEVEL>( mValidationLevel ) );
@@ -433,6 +432,29 @@ HWND RendererGx::getHwnd() const
 HDC RendererGx::getDc() const
 {
 	return mWindowImpl->getDc();
+}
+
+RendererGx::~RendererGx()
+{
+    if( ! mDeferredContexts.empty() ) {
+        for( auto &context : mDeferredContexts ) {
+            context->Flush();
+        }
+        mDeferredContexts.clear();
+    }
+    if( mImmediateContext ) {
+        mImmediateContext->Flush();
+        mImmediateContext.Release();
+    }
+    if( mShaderSourceInputStreamFactory ) {
+        mShaderSourceInputStreamFactory.Release();
+    }
+    if( mSwapChain ) {
+        mSwapChain.Release();
+    }
+    if( mDevice ) {
+        mDevice.Release();
+    }
 }
 
 void RendererGx::kill()

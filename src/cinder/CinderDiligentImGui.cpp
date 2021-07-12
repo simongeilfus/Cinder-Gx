@@ -579,13 +579,13 @@ void ImGuiDiligentRenderer::CreateDeviceObjects()
     ShaderCI.UseCombinedTextureSamplers = true;
     ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_DEFAULT;
 
-    const auto& deviceCaps = m_pDevice->GetDeviceCaps();
+    const auto& deviceInfo = m_pDevice->GetDeviceInfo();
 
     RefCntAutoPtr<IShader> pVS;
     {
         ShaderCI.Desc.ShaderType = SHADER_TYPE_VERTEX;
         ShaderCI.Desc.Name = "Imgui VS";
-        switch( deviceCaps.DevType ) {
+        switch( deviceInfo.Type ) {
         case RENDER_DEVICE_TYPE_VULKAN:
             ShaderCI.ByteCode = VertexShader_SPIRV;
             ShaderCI.ByteCodeSize = sizeof( VertexShader_SPIRV );
@@ -616,7 +616,7 @@ void ImGuiDiligentRenderer::CreateDeviceObjects()
     {
         ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
         ShaderCI.Desc.Name = "Imgui PS";
-        switch( deviceCaps.DevType ) {
+        switch( deviceInfo.Type ) {
         case RENDER_DEVICE_TYPE_VULKAN:
             ShaderCI.ByteCode = FragmentShader_SPIRV;
             ShaderCI.ByteCodeSize = sizeof( FragmentShader_SPIRV );

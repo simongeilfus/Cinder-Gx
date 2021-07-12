@@ -217,8 +217,8 @@ struct CI_API GraphicsPipelineCreateInfo {
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
     GraphicsPipelineCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
-    //! Defines which command queues this pipeline state can be used with
-    GraphicsPipelineCreateInfo& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
+    //! Defines which immediate contexts are allowed to execute commands that use this pipeline state.
+    GraphicsPipelineCreateInfo& immediateContextMask( uint64_t immediateContextMask ) { mPSODesc.ImmediateContextMask = immediateContextMask; return *this; }
 
     //! Pipeline layout description
     GraphicsPipelineCreateInfo& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }
@@ -283,8 +283,8 @@ struct CI_API ComputePipelineCreateInfo {
 
     //! Shader resource binding allocation granularity. This member defines allocation granularity for internal resources required by the shader resource binding object instances.
     ComputePipelineCreateInfo& srbAllocationGranularity( uint32_t srbAllocationGranularity ) { mPSODesc.SRBAllocationGranularity = srbAllocationGranularity; return *this; }
-    //! Defines which command queues this pipeline state can be used with
-    ComputePipelineCreateInfo& commandQueueMask( uint64_t commandQueueMask ) { mPSODesc.CommandQueueMask = commandQueueMask; return *this; }
+    //! Defines which immediate contexts are allowed to execute commands that use this pipeline state.
+    ComputePipelineCreateInfo& immediateContextMask( uint64_t immediateContextMask ) { mPSODesc.ImmediateContextMask = immediateContextMask; return *this; }
 
     //! Pipeline layout description
     ComputePipelineCreateInfo& resourceLayout( Diligent::PipelineResourceLayoutDesc resourceLayout ) { mPSODesc.ResourceLayout = resourceLayout; return *this; }

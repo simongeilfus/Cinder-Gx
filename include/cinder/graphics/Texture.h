@@ -73,8 +73,8 @@ struct CI_API TextureDesc : public Diligent::TextureDesc {
     TextureDesc& miscFlags( MISC_TEXTURE_FLAGS miscFlags ) { MiscFlags = miscFlags; return *this; }
     //! Optimized clear value
     TextureDesc& clearValue( OptimizedClearValue clearValue ) { ClearValue = clearValue; return *this; }
-    //! Defines which command queues this texture can be used with
-    TextureDesc& commandQueueMask( uint64_t commandQueueMask ) { CommandQueueMask = commandQueueMask; return *this; }
+    //! Defines which immediate contexts are allowed to execute commands that use this texture.
+    TextureDesc& immediateContextMask( uint64_t immediateContextMask ) { ImmediateContextMask = immediateContextMask; return *this; }
     //! Specifies the object's name.
     TextureDesc& name( const std::string &name ) { mName = name; Name = mName.c_str(); return *this; }
 

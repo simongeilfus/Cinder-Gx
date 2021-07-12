@@ -199,9 +199,9 @@ CI_API void finishCommandList( ICommandList** ppCommandList );
 //! Submits an array of recorded command lists for execution.
 CI_API void executeCommandLists( uint32_t NumCommandLists, ICommandList* const* ppCommandLists );
 //! Tells the GPU to set a fence to a specified value after all previous work has completed.
-CI_API void signalFence( IFence* pFence, uint64_t Value );
+CI_API void enqueueSignal( IFence* pFence, uint64_t Value );
 //! Waits until the specified fence reaches or exceeds the specified value, on the host.
-CI_API void waitForFence( IFence* pFence, uint64_t Value, bool FlushContext );
+CI_API void deviceWaitForFence( IFence* pFence, uint64_t Value );
 //! Submits all outstanding commands for execution to the GPU and waits until they are complete.
 CI_API void waitForIdle();
 //! Marks the beginning of a query.
@@ -278,10 +278,10 @@ CI_API TopLevelASRef createTLAS( const Diligent::TopLevelASDesc &desc );
 //! Creates a shader resource binding table object (SBT) using the default RenderDevice.
 CI_API ShaderBindingTableRef createSBT( const Diligent::ShaderBindingTableDesc &desc );
 
-//! Gets the default device capabilities, see Diligent::DeviceCaps for details
-CI_API const DeviceCaps& getDeviceCaps();
-//! Gets the default device properties, see Diligent::DeviceProperties for details
-CI_API const DeviceProperties& getDeviceProperties();
+//! Returns the device information, see Diligent::RenderDeviceInfo for details.
+CI_API const RenderDeviceInfo& getDeviceInfo();
+//! Returns the graphics adapter information, see Diligent::GraphicsAdapterInfo for details.
+CI_API const GraphicsAdapterInfo& getAdapterInfo();
 //! Returns the basic texture format information.
 CI_API const TextureFormatInfo& getTextureFormatInfo( TEXTURE_FORMAT texFormat );
 //! Returns the extended texture format information.

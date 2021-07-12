@@ -97,7 +97,7 @@ void TextureDesc::swap( TextureDesc &other ) noexcept
 	std::swap( CPUAccessFlags, other.CPUAccessFlags );
 	std::swap( MiscFlags, other.MiscFlags );
 	std::swap( ClearValue, other.ClearValue );
-	std::swap( CommandQueueMask, other.CommandQueueMask );
+	std::swap( ImmediateContextMask, other.ImmediateContextMask );
 }
 
 void TextureDesc::updatePtrs() noexcept
