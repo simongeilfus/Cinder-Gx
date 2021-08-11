@@ -1080,9 +1080,7 @@ void DrawContext::popScissor( bool forceRestore )
 std::pair<ivec2, ivec2> DrawContext::getScissor()
 {
 	if( mScissorStack.empty() ) {
-		ivec2 size( app::getSwapChain()->GetDesc().Width, app::getSwapChain()->GetDesc().Height );
-		mScissorStack.push_back( std::pair<ivec2, ivec2>( ivec2( 0, 0 ), size ) );
-		mScissorStack.push_back( std::pair<ivec2, ivec2>( ivec2( 0, 0 ), size ) );
+		return getViewport();
 	}
 
 	return mScissorStack.back();
