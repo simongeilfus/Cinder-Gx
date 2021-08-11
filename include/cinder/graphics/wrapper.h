@@ -251,6 +251,16 @@ CI_API void writeTLASCompactedSize( const WriteTLASCompactedSizeAttribs &Attribs
 //! Executes a trace rays command.
 CI_API void traceRays( const TraceRaysAttribs &Attribs );
 
+//! Begins a debug group with name and color. External debug tools may use this information when displaying context commands.
+CI_API void beginDebugGroup( const std::string &name, const float* pColor = nullptr );
+//! Begins a debug group with name and color. External debug tools may use this information when displaying context commands.
+CI_API void beginDebugGroup( const char* name, const float* pColor = nullptr );
+//! Ends a debug group that was previously started with IDeviceContext::BeginDebugGroup.
+CI_API void endDebugGroup();
+//! Inserts a debug label with name and color. External debug tools may use this information when displaying context commands.
+CI_API void insertDebugLabel( const std::string &label, const float* pColor = nullptr );
+//! Inserts a debug label with name and color. External debug tools may use this information when displaying context commands.
+CI_API void insertDebugLabel( const char* label, const float* pColor = nullptr );
 
 CI_API void enableVerticalSync( bool enable = true );
 CI_API bool isVerticalSyncEnabled();

@@ -331,6 +331,31 @@ void traceRays( const TraceRaysAttribs &Attribs )
     getImmediateContext()->TraceRays( Attribs );
 }
 
+void beginDebugGroup( const std::string &name, const float* pColor )
+{
+	getImmediateContext()->BeginDebugGroup( name.c_str(), pColor );
+}
+
+void beginDebugGroup( const char* name, const float* pColor )
+{
+	getImmediateContext()->BeginDebugGroup( name, pColor );
+}
+
+void endDebugGroup()
+{
+	getImmediateContext()->EndDebugGroup();
+}
+
+void insertDebugLabel( const std::string &label, const float* pColor )
+{
+	getImmediateContext()->InsertDebugLabel( label.c_str(), pColor );
+}
+
+void insertDebugLabel( const char* label, const float* pColor )
+{
+	getImmediateContext()->InsertDebugLabel( label, pColor );
+}
+
 void enableVerticalSync( bool enable )
 {
 	std::static_pointer_cast<RendererGx>( app::App::get()->getRenderer() )->enableVerticalSync( enable );
