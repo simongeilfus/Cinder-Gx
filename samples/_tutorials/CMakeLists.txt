@@ -1,2 +1,3 @@
 
 add_subdirectory(Tutorial01_HelloTriangle)
+add_subdirectory(Tutorial02_Cube)

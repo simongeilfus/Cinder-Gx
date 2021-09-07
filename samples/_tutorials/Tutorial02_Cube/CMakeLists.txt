@@ -1,8 +1,8 @@
 cmake_minimum_required( VERSION 3.10 FATAL_ERROR )
 set( CMAKE_VERBOSE_MAKEFILE ON )
 
-project( Tutorial01_HelloTriangle )
-set( APP_TARGET "Tutorial01_HelloTriangle" )
+project( Tutorial02_Cube )
+set( APP_TARGET "Tutorial02_Cube" )
 
 message( "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -14,7 +14,7 @@ include( "${CINDER_PATH}/proj/cmake/modules/cinderMakeApp.cmake" )
 
 ci_make_app(
     APP_NAME    ${APP_TARGET}
-    SOURCES     ${APP_PATH}/src/HelloTriangleApp.cpp
+    SOURCES     ${APP_PATH}/src/CubeApp.cpp
     CINDER_PATH ${CINDER_PATH}
 )
 
