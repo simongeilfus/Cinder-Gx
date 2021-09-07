@@ -4,6 +4,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # setup the project
 project(cinder-gx)
 
+option(CINDER_GX_BUILD_SAMPLES "Build Samples" ON)
+
 # change runtime library
 if(MSVC)
   add_compile_options($<$<CONFIG:Release>:/MT> # Runtime library: Multi-threaded
@@ -24,7 +26,7 @@ add_library(cinder-gx STATIC ${SOURCES})
 message( "executing find_package( cinder ... )" )
 
 if( NOT CINDER_PATH )
-  get_filename_component( CINDER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cinder/" ABSOLUTE )
+  get_filename_component( CINDER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../" ABSOLUTE )
 endif()
 
 include( "${CINDER_PATH}/proj/cmake/configure.cmake" )
@@ -114,3 +116,8 @@ set_property( TARGET cinder-gx PROPERTY FOLDER "third_party" )
 # move DiligentCore folder to the third_party folder
 include(third_party/DiligentCore/BuildUtils.cmake)
 set_directory_root_folder(third_party/DiligentCore "third_party")
+
+# add sample projects
+if(CINDER_GX_BUILD_SAMPLES)
+  add_subdirectory(samples/_tutorials)
+endif()
