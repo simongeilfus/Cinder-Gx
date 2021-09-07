@@ -20,6 +20,20 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/
 file(GLOB SOURCES "src/cinder/*.cpp" "src/cinder/graphics/*.cpp" "src/cinder/app/*.cpp" "include/cinder/*.h" "include/cinder/graphics/*.h" "include/cinder/app/*.h")
 add_library(cinder-gx STATIC ${SOURCES})
 
+# pull in cinder's exported configuration
+message( "executing find_package( cinder ... )" )
+
+if( NOT CINDER_PATH )
+  get_filename_component( CINDER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cinder/" ABSOLUTE )
+endif()
+
+include( "${CINDER_PATH}/proj/cmake/configure.cmake" )
+
+find_package( cinder REQUIRED PATHS
+  "${CINDER_PATH}/${CINDER_LIB_DIRECTORY}"
+  "$ENV{CINDER_PATH}/${CINDER_LIB_DIRECTORY}"
+)
+
 # and setup include and linker settings
 target_include_directories( cinder-gx PUBLIC ${INCLUDE_DIR} )
 target_compile_definitions( cinder-gx PRIVATE ENGINE_DLL=1)
