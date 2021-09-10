@@ -22,9 +22,8 @@ get_supported_backends(DILIGENT_ENGINE_LIBRARIES)
 
 # from DiligentEngine\DiligentSamples\SampleBase\CMakeLists.txt
 target_link_libraries( ${APP_TARGET}
-PRIVATE 
-    Diligent-BuildSettings
 PUBLIC
+    Diligent-PublicBuildSettings
     Diligent-Common
     Diligent-GraphicsTools
     Diligent-TargetPlatform
@@ -32,6 +31,14 @@ PUBLIC
 )
 
 target_link_libraries( ${APP_TARGET} PRIVATE cinder-gx )
+
+
+# DiligentCore is causing /GR- flag to be added in the Release builds, we currently need this for running cinder
+string(FIND "${CMAKE_CXX_FLAGS}" "/GR-" MSVC_HAS_NO_GR)
+if(MSVC_HAS_NO_GR)
+    message(WARNING "CMAKE_CXX_FLAGS contains '/GR-' flag (no RTTI), removing.")
+    string(REGEX REPLACE "/GR-" "/GR" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+endif()
 
 copy_required_dlls( ${APP_TARGET} )
 
