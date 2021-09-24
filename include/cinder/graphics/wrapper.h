@@ -102,7 +102,7 @@ CI_API void invalidateState();
 //! Binds vertex buffers to the pipeline.
 CI_API void setVertexBuffer( Buffer* buffer, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags );
 //! Binds vertex buffers to the pipeline.
-CI_API void setVertexBuffers( uint32_t startSlot, uint32_t numBuffersSet, Buffer** ppBuffers, uint32_t* pOffsets, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags );
+CI_API void setVertexBuffers( uint32_t startSlot, uint32_t numBuffersSet, Buffer** ppBuffers, uint64_t* pOffsets, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags );
 //! Binds an index buffer to the pipeline.
 CI_API void setIndexBuffer( Buffer* indexBuffer, uint32_t byteOffset, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode );
 
@@ -177,7 +177,7 @@ CI_API void drawMeshIndirect( const Diligent::DrawMeshIndirectAttribs &attribs )
 //! Executes a dispatch compute command.
 CI_API void dispatchCompute( const DispatchComputeAttribs &Attribs );
 //! Executes an indirect dispatch compute command.
-CI_API void dispatchComputeIndirect( const DispatchComputeIndirectAttribs &Attribs, Buffer* pAttribsBuffer );
+CI_API void dispatchComputeIndirect( const DispatchComputeIndirectAttribs &Attribs );
 
 //! Clears a render target view and depth-stencil view
 CI_API void clear( const ColorA &color = ColorA::black(), bool clearDepthBuffer = true );

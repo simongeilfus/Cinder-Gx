@@ -31,7 +31,7 @@ namespace cinder { namespace graphics {
 //! Buffer description
 struct CI_API BufferDesc : public Diligent::BufferDesc {
     //! Size of the buffer, in bytes. For a uniform buffer, this must be multiple of 16.
-    BufferDesc& sizeInBytes( uint32_t sizeInBytes ) { uiSizeInBytes = sizeInBytes; return *this; }
+    BufferDesc& size( uint32_t sizeInBytes ) { Size = sizeInBytes; return *this; }
     //! Buffer bind flags, see Diligent::BIND_FLAGS for details
     BufferDesc& bindFlags( BIND_FLAGS bindFlags ) { BindFlags = bindFlags; return *this; }
     //! Buffer usage, see Diligent::USAGE for details
