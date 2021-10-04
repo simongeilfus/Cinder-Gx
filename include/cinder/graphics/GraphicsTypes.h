@@ -64,8 +64,6 @@ struct DeviceFeatures : Diligent::DeviceFeatures {
     DeviceFeatures& separablePrograms( DEVICE_FEATURE_STATE state ) { SeparablePrograms = state; return *this; }
     //! Indicates if device supports resource queries from shader objects.
     DeviceFeatures& shaderResourceQueries( DEVICE_FEATURE_STATE state ) { ShaderResourceQueries = state; return *this; }
-    //! Indicates if device supports indirect draw commands
-    DeviceFeatures& indirectRendering( DEVICE_FEATURE_STATE state ) { IndirectRendering = state; return *this; }
     //! Indicates if device supports wireframe fill mode
     DeviceFeatures& wireframeFill( DEVICE_FEATURE_STATE state ) { WireframeFill = state; return *this; }
     //! Indicates if device supports multithreaded resource creation
@@ -78,12 +76,12 @@ struct DeviceFeatures : Diligent::DeviceFeatures {
     DeviceFeatures& tessellation( DEVICE_FEATURE_STATE state ) { Tessellation = state; return *this; }
     //! Indicates if device supports mesh and amplification shaders
     DeviceFeatures& meshShaders( DEVICE_FEATURE_STATE state ) { MeshShaders = state; return *this; }
-    //! Indicates if device supports ray tracing shaders
-    DeviceFeatures& rayTracing( DEVICE_FEATURE_STATE state ) { RayTracing = state; return *this; }
+    //! Indicates if device supports ray tracing. See Diligent::RayTracingProperties for more information.
+    DeviceFeatures& rayTracing( DEVICE_FEATURE_STATE state ) { RayTracing= state; return *this; }
     //! Indicates if device supports bindless resources
     DeviceFeatures& bindlessResources( DEVICE_FEATURE_STATE state ) { BindlessResources = state; return *this; }
     //! Indicates if device supports occlusion queries (see Diligent::QUERY_TYPE_OCCLUSION).
-    DeviceFeatures& occlusionQueries( DEVICE_FEATURE_STATE state ) { OcclusionQueries = state; return *this; }
+    DeviceFeatures& occlusionQueries( DEVICE_FEATURE_STATE state ) { OcclusionQueries  = state; return *this; }
     //! Indicates if device supports binary occlusion queries (see Diligent::QUERY_TYPE_BINARY_OCCLUSION).
     DeviceFeatures& binaryOcclusionQueries( DEVICE_FEATURE_STATE state ) { BinaryOcclusionQueries = state; return *this; }
     //! Indicates if device supports timestamp queries (see Diligent::QUERY_TYPE_TIMESTAMP).
@@ -110,7 +108,7 @@ struct DeviceFeatures : Diligent::DeviceFeatures {
     DeviceFeatures& pixelUAVWritesAndAtomics( DEVICE_FEATURE_STATE state ) { PixelUAVWritesAndAtomics = state; return *this; }
     //! Specifies whether all the extended UAV texture formats are available in shader code.
     DeviceFeatures& textureUAVExtendedFormats( DEVICE_FEATURE_STATE state ) { TextureUAVExtendedFormats = state; return *this; }
-    //! Indicates if device supports native 16-bit float operations. Note that there are separate features that indicate if device supports loading 16-bit floats from buffers and passing them between shader stages. 
+    //! Indicates if device supports native 16-bit float operations. Note that there are separate features that indicate if device supports loading 16-bit floats from buffers and passing them between shader stages.
     DeviceFeatures& shaderFloat16( DEVICE_FEATURE_STATE state ) { ShaderFloat16 = state; return *this; }
     //! Indicates if device supports reading and writing 16-bit floats and ints from buffers bound as shader resource or unordered access views.
     DeviceFeatures& resourceBuffer16BitAccess( DEVICE_FEATURE_STATE state ) { ResourceBuffer16BitAccess = state; return *this; }
@@ -119,11 +117,25 @@ struct DeviceFeatures : Diligent::DeviceFeatures {
     //! Indicates if 16-bit floats and ints can be used as input/output of a shader entry point.
     DeviceFeatures& shaderInputOutput16( DEVICE_FEATURE_STATE state ) { ShaderInputOutput16 = state; return *this; }
     //! Indicates if device supports native 8-bit integer operations.
-    DeviceFeatures& shaderInt8( DEVICE_FEATURE_STATE state ) { ShaderInt8 = state; return *this; }
+    DeviceFeatures& shaderInt8( DEVICE_FEATURE_STATE state ) { ShaderInt8  = state; return *this; }
     //! Indicates if device supports reading and writing 8-bit types from buffers bound as shader resource or unordered access views.
     DeviceFeatures& resourceBuffer8BitAccess( DEVICE_FEATURE_STATE state ) { ResourceBuffer8BitAccess = state; return *this; }
     //! Indicates if device supports reading 8-bit types from uniform buffers.
     DeviceFeatures& uniformBuffer8BitAccess( DEVICE_FEATURE_STATE state ) { UniformBuffer8BitAccess = state; return *this; }
+    //! Indicates if device supports runtime-sized shader arrays (e.g. arrays without a specific size).
+    DeviceFeatures& shaderResourceRuntimeArray( DEVICE_FEATURE_STATE state ) { ShaderResourceRuntimeArray = state; return *this; }
+    //! Indicates if device supports wave ops (Direct3D12) or subgroups (Vulkan).
+    DeviceFeatures& waveOp( DEVICE_FEATURE_STATE state ) { WaveOp = state; return *this; }
+    //! Indicates if device supports instance data step rates other than 1.
+    DeviceFeatures& instanceDataStepRate( DEVICE_FEATURE_STATE state ) { InstanceDataStepRate = state; return *this; }
+    //! Indicates if device natively supports fence with Uint64 counter.
+    DeviceFeatures& nativeFence( DEVICE_FEATURE_STATE state ) { NativeFence = state; return *this; }
+    //! Indicates if device supports tile shaders.
+    DeviceFeatures& tileShaders( DEVICE_FEATURE_STATE state ) { TileShaders = state; return *this; }
+    //! Indicates if device supports timestamp and duration queries in transfer queues.
+    DeviceFeatures& transferQueueTimestampQueries( DEVICE_FEATURE_STATE state ) { TransferQueueTimestampQueries = state; return *this; }
+    //! Indicates if device supports variable rate shading.
+    DeviceFeatures& variableRateShading( DEVICE_FEATURE_STATE state ) { VariableRateShading = state; return *this; }
 };
 
 }

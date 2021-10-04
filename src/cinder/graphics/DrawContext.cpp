@@ -391,7 +391,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 				.usage( geomImmutable ? USAGE_IMMUTABLE : USAGE_DYNAMIC )
 				.bindFlags( BIND_VERTEX_BUFFER )
 				.cpuAccessFlags( geomImmutable ? CPU_ACCESS_NONE : CPU_ACCESS_WRITE )
-				.sizeInBytes( geomImmutable ? vertexCount * sizeof( Vertex ) : mVertexBufferSize * sizeof( Vertex ) ),
+				.size( geomImmutable ? vertexCount * sizeof( Vertex ) : mVertexBufferSize * sizeof( Vertex ) ),
 				geomImmutable ? &data : nullptr, &mVertexBuffer );
 		}
 		// Check index buffer size and grow if needed or re-initialized if its type changed
@@ -407,7 +407,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 				.usage( geomImmutable ? USAGE_IMMUTABLE : USAGE_DYNAMIC )
 				.bindFlags( BIND_INDEX_BUFFER )
 				.cpuAccessFlags( geomImmutable ? CPU_ACCESS_NONE : CPU_ACCESS_WRITE )
-				.sizeInBytes( geomImmutable ? indexCount * sizeof( Index ) : mIndexBufferSize * sizeof( Index ) ),
+				.size( geomImmutable ? indexCount * sizeof( Index ) : mIndexBufferSize * sizeof( Index ) ),
 				geomImmutable ? &data : nullptr, &mIndexBuffer );
 		}
 
@@ -438,7 +438,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 				.bindFlags( BIND_SHADER_RESOURCE )
 				.mode( BUFFER_MODE_STRUCTURED )
 				.cpuAccessFlags( constantsImmutable ? CPU_ACCESS_NONE : CPU_ACCESS_WRITE )
-				.sizeInBytes( mConstantCount * sizeof( Constants ) )
+				.size( mConstantCount * sizeof( Constants ) )
 				.elementByteStride( sizeof( Constants ) ),
 				constantsImmutable ? &data : nullptr, &mConstantsBuffer );
 			mConstantsBufferSRV = mConstantsBuffer->GetDefaultView( BUFFER_VIEW_SHADER_RESOURCE );
@@ -524,7 +524,7 @@ void DrawContext::submit( RenderDevice* device, DeviceContext* context, bool flu
 			context->CommitShaderResources( pipeline.srb, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );
 		}
 
-		uint32_t offsets[] = { /*command.vertexOffset*/0 };
+		uint64_t offsets[] = { /*command.vertexOffset*/0 };
 		Buffer* buffers[] = { mVertexBuffer };
 		context->SetVertexBuffers( 0, 1, buffers, offsets, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, gx::SET_VERTEX_BUFFERS_FLAG_RESET );
 

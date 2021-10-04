@@ -63,12 +63,12 @@ void invalidateState()
 
 void setVertexBuffer( Buffer* buffer, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags )
 {
-	uint32_t offset = 0;
+	uint64_t offset = 0;
 	Buffer* buffers[] = { buffer };
 	getImmediateContext()->SetVertexBuffers( 0, 1, buffers, &offset, stateTransitionMode, flags );
 }
 
-void setVertexBuffers( uint32_t startSlot, uint32_t numBuffersSet, Buffer** ppBuffers, uint32_t* pOffsets, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags )
+void setVertexBuffers( uint32_t startSlot, uint32_t numBuffersSet, Buffer** ppBuffers, uint64_t* pOffsets, RESOURCE_STATE_TRANSITION_MODE stateTransitionMode, SET_VERTEX_BUFFERS_FLAGS flags )
 {
 	getImmediateContext()->SetVertexBuffers( startSlot, numBuffersSet, ppBuffers, pOffsets, stateTransitionMode, flags );
 }
@@ -138,9 +138,9 @@ void dispatchCompute( const DispatchComputeAttribs &Attribs )
     getImmediateContext()->DispatchCompute( Attribs );
 }
 
-void dispatchComputeIndirect( const DispatchComputeIndirectAttribs &Attribs, Buffer* pAttribsBuffer )
+void dispatchComputeIndirect( const DispatchComputeIndirectAttribs &Attribs )
 {
-    getImmediateContext()->DispatchComputeIndirect( Attribs, pAttribsBuffer );
+    getImmediateContext()->DispatchComputeIndirect( Attribs );
 }
 
 void clear( const ColorA& color, bool clearDepthBuffer )

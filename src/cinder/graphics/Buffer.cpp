@@ -37,7 +37,7 @@ BufferDesc::BufferDesc()
 BufferDesc::BufferDesc( const BufferDesc &other )
 	: mName( other.mName )
 {
-	uiSizeInBytes = other.uiSizeInBytes;
+	Size = other.Size;
 	BindFlags = other.BindFlags;
 	Usage = other.Usage;
 	CPUAccessFlags = other.CPUAccessFlags;
@@ -71,7 +71,7 @@ BufferDesc& BufferDesc::operator=( BufferDesc &&other ) noexcept
 
 void BufferDesc::swap( BufferDesc &other ) noexcept
 {
-	std::swap( uiSizeInBytes, other.uiSizeInBytes );
+	std::swap( Size, other.Size );
 	std::swap( BindFlags, other.BindFlags );
 	std::swap( Usage, other.Usage );
 	std::swap( CPUAccessFlags, other.CPUAccessFlags );

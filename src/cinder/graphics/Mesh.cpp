@@ -178,7 +178,7 @@ void MeshGeomTarget::copyIndices( geom::Primitive /*primitive*/, const uint32_t 
 			.usage( USAGE_IMMUTABLE )
 			.bindFlags( BIND_INDEX_BUFFER )
 			.cpuAccessFlags( CPU_ACCESS_NONE )
-			.sizeInBytes( mMesh->mNumIndices * sizeof( uint16_t ) ),
+			.size( mMesh->mNumIndices * sizeof( uint16_t ) ),
 			&data, &mMesh->mIndices );
 	}
 	else {
@@ -193,7 +193,7 @@ void MeshGeomTarget::copyIndices( geom::Primitive /*primitive*/, const uint32_t 
 			.usage( USAGE_IMMUTABLE )
 			.bindFlags( BIND_INDEX_BUFFER )
 			.cpuAccessFlags( CPU_ACCESS_NONE )
-			.sizeInBytes( mMesh->mNumIndices * sizeof( uint32_t ) ),
+			.size( mMesh->mNumIndices * sizeof( uint32_t ) ),
 			&data, &mMesh->mIndices );
 	}
 }
@@ -343,7 +343,7 @@ Mesh::Mesh( RenderDevice* device, const geom::Source &source, const std::vector<
 				.usage( bufferData.mInfo.mUsage )
 				.bindFlags( bufferData.mInfo.mBindFlags )
 				.cpuAccessFlags( bufferData.mInfo.mCPUAccessFlags )
-				.sizeInBytes( static_cast<uint32_t>( bufferData.mDataSize ) ),
+				.size( static_cast<uint32_t>( bufferData.mDataSize ) ),
 			&data, &buffer );
 		mVertexBuffers.push_back( buffer );
 		mVertexBuffersInfos.push_back( bufferData.mInfo );
@@ -372,7 +372,7 @@ namespace {
 			.name( bufferInfo.getName().c_str() )
 			.usage( bufferInfo.getUsage() )
 			.bindFlags( bufferInfo.getBindFlags() )
-			.sizeInBytes( vertexDataSize ),
+			.size( vertexDataSize ),
 			&data, &buffer
 		);
 
@@ -397,7 +397,7 @@ namespace {
 			.name( "Mesh index buffer" )
 			.usage( gx::USAGE_IMMUTABLE )
 			.bindFlags( gx::BIND_INDEX_BUFFER )
-			.sizeInBytes( size ),
+			.size( size ),
 			&data, &buffer
 		);
 
@@ -499,7 +499,7 @@ void Mesh::draw( DeviceContext* context, const DrawAttribs &attribs ) const
 			i++;
 		}
 	}
-	vector<uint32_t> offsets( buffers.size(), 0 );
+	vector<uint64_t> offsets( buffers.size(), 0 );
 
 	context->SetVertexBuffers( 0, static_cast<uint32_t>( buffers.size() ), &buffers[0], &offsets[0], attribs.mVertexBuffersTransitionMode, attribs.mVertexBuffersFlags );
 
