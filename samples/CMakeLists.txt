@@ -1,6 +1,6 @@
-
 cmake_minimum_required( VERSION 3.10 )
 
+# Utility function to configure samples with cinder + cinder-gx / DiligentEngine
 function( gx_add_sample APP_TARGET APP_PATH SOURCES )
 
 	get_filename_component( ASSETS_PATH "${APP_PATH}/assets" ABSOLUTE )
@@ -44,12 +44,25 @@ function( gx_add_sample APP_TARGET APP_PATH SOURCES )
 	copy_required_dlls( ${APP_TARGET} )
 
 	set_target_properties( ${APP_TARGET} PROPERTIES
-	    FOLDER samplesYEA/tutorials
+	    FOLDER samples
 	)
 
 endfunction()
 
-# ---------------------------------------------
+# ----------------------------------------------------------------------
+# Add tutorials
 
-add_subdirectory(Tutorial01_HelloTriangle)
-add_subdirectory(Tutorial02_Cube)
+add_subdirectory( _tutorials/Tutorial01_HelloTriangle )
+add_subdirectory( _tutorials/Tutorial02_Cube )
+add_subdirectory( _tutorials/Tutorial03_Texturing )
+add_subdirectory( _tutorials/Tutorial04_Instancing )
+add_subdirectory( _tutorials/Tutorial05_TextureArray )
+add_subdirectory( _tutorials/Tutorial06_Multithreading )
+
+# add_subdirectory( _tutorials/Tutorial07_GeometryShader )
+# add_subdirectory( _tutorials/Tutorial08_Tessellation )
+# add_subdirectory( _tutorials/Tutorial11_ResourceUpdates )
+# add_subdirectory( _tutorials/Tutorial12_RenderTarget )
+# add_subdirectory( _tutorials/Tutorial13_ShadowMap )
+# add_subdirectory( _tutorials/Tutorial14_ComputeShader )
+# add_subdirectory( _tutorials/Tutorial18_Queries )

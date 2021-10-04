@@ -119,5 +119,5 @@ set_directory_root_folder(third_party/DiligentCore "third_party")
 
 # add sample projects
 if(CINDER_GX_BUILD_SAMPLES)
-  add_subdirectory(samples/_tutorials)
+  add_subdirectory(samples)
 endif()
