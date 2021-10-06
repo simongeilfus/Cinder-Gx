@@ -12,4 +12,3 @@ set(SOURCES
 
 gx_add_sample( "${APP_TARGET}" "${APP_PATH}" "${SOURCES}" )
 
-target_include_directories( ${APP_TARGET} PUBLIC "${APP_PATH}/../common/" )
