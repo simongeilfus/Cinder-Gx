@@ -97,8 +97,8 @@ void MultithreadingApp::setup()
     mCubeVertexBuffer = TexturedCube::createVertexBuffer( getRenderDevice() );
     mCubeIndexBuffer = TexturedCube::createIndexBuffer( getRenderDevice() );
     // Explicitly transition vertex and index buffers to required states
-    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, true );
-    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, true );
+    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
     loadTextures( barriers );
 
     // Execute all barriers
@@ -143,8 +143,8 @@ void MultithreadingApp::createPipelineState( std::vector<gx::StateTransitionDesc
     );
 
     // Explicitly transition the buffers to RESOURCE_STATE_CONSTANT_BUFFER state
-    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
-    barriers.emplace_back( mInstanceConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
+    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mInstanceConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     // Since we did not explcitly specify the type for 'Constants' and 'InstanceData' variables,
     // default type (SHADER_RESOURCE_VARIABLE_TYPE_STATIC) will be used. Static variables

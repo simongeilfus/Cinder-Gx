@@ -76,7 +76,7 @@ void ShadowMapApp::setup()
     );
     
     std::vector<gx::StateTransitionDesc> barriers;
-    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
+    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     createCubePSO();
     createPlanePSO();
@@ -88,13 +88,13 @@ void ShadowMapApp::setup()
     // Load index buffer
     mCubeIndexBuffer = TexturedCube::createIndexBuffer( getRenderDevice() );
     // Explicitly transition vertex and index buffers to required states
-    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, true );
-    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, true );
+    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
     // Load texture
     auto CubeTexture = TexturedCube::loadTexture( getRenderDevice(), getAssetPath( "DGLogo.png" ) );
     mCubeSRB->GetVariableByName( gx::SHADER_TYPE_PIXEL, "g_Texture" )->Set( CubeTexture->GetDefaultView( gx::TEXTURE_VIEW_SHADER_RESOURCE ) );
     // Transition the texture to shader resource state
-    barriers.emplace_back( CubeTexture, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_SHADER_RESOURCE, true );
+    barriers.emplace_back( CubeTexture, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_SHADER_RESOURCE, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     createShadowMap();
 
