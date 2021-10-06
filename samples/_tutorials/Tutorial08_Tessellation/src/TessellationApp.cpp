@@ -80,7 +80,7 @@ void TessellationApp::setup()
 
 void TessellationApp::createPipelineStates()
 {
-    const bool bWireframeSupported = getRenderDevice()->GetDeviceCaps().Features.GeometryShaders;
+    const bool bWireframeSupported = getRenderDevice()->GetDeviceInfo().Features.GeometryShaders;
     
     // Create a vertex shader
     gx::ShaderRef pVS = gx::createShader( gx::ShaderCreateInfo()
@@ -172,7 +172,7 @@ void TessellationApp::createPipelineStates()
         // Enable depth testing
         .depthStencilDesc( gx::DepthStencilStateDesc().depthEnable( true ) )
         // Cull back faces
-        .rasterizerStateDesc( gx::RasterizerStateDesc().cullMode( getRenderDevice()->GetDeviceCaps().IsGLDevice() ? gx::CULL_MODE_FRONT : gx::CULL_MODE_BACK ) )
+        .rasterizerStateDesc( gx::RasterizerStateDesc().cullMode( getRenderDevice()->GetDeviceInfo().IsGLDevice() ? gx::CULL_MODE_FRONT : gx::CULL_MODE_BACK ) )
         // Primitive topology type defines what kind of primitives will be rendered by this pipeline state
         .primitiveTopology( gx::PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST );
 

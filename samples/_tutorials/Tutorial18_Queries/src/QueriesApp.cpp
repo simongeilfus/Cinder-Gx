@@ -62,7 +62,7 @@ void QueriesApp::setup()
     mCubeSRB->GetVariableByName( gx::SHADER_TYPE_PIXEL, "g_Texture" )->Set( mCubeTextureSRV );
 
     // Check query support
-    const auto& features = getRenderDevice()->GetDeviceCaps().Features;
+    const auto& features = getRenderDevice()->GetDeviceInfo().Features;
     if( features.PipelineStatisticsQueries ) {
         mPipelineStatsQuery.reset( new gx::ScopedQueryHelper{ getRenderDevice(), gx::QueryDesc()
             .type( gx::QUERY_TYPE_PIPELINE_STATISTICS )

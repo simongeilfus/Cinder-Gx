@@ -149,7 +149,7 @@ void ShadowMapApp::createCubePSO()
         //.pixelShader( nullptr )
         .inputLayout( layoutElems );
 
-    if( getRenderDevice()->GetDeviceCaps().Features.DepthClamp ) {
+    if( getRenderDevice()->GetDeviceInfo().Features.DepthClamp ) {
         // Disable depth clipping to render objects that are closer than near
         // clipping plane. This is not required for this tutorial, but real applications
         // will most likely want to do this.
@@ -396,8 +396,8 @@ void ShadowMapApp::renderShadowMap()
     vec3 f3MaxXYZ      = f3SceneCenter + vec3( SceneRadius, SceneRadius, SceneRadius * 5 );
     vec3 f3SceneExtent = f3MaxXYZ - f3MinXYZ;
 
-    const auto& DevCaps = getRenderDevice()->GetDeviceCaps();
-    const bool  IsGL    = DevCaps.IsGLDevice();
+    const auto& DevInfo = getRenderDevice()->GetDeviceInfo();
+    const bool  IsGL    = DevInfo.IsGLDevice();
     vec4      f4LightSpaceScale;
     f4LightSpaceScale.x = 2.f / f3SceneExtent.x;
     f4LightSpaceScale.y = 2.f / f3SceneExtent.y;
@@ -418,7 +418,7 @@ void ShadowMapApp::renderShadowMap()
     // Adjust the world to light space transformation matrix
     mat4 WorldToLightProjSpaceMatr = ShadowProjMatr * WorldToLightViewSpaceMatr;
 
-    const auto& NDCAttribs    = DevCaps.GetNDCAttribs();
+    const auto& NDCAttribs    = DevInfo.GetNDCAttribs();
     mat4    ProjToUVScale = glm::scale( vec3( 0.5f, NDCAttribs.YtoVScale, NDCAttribs.ZtoDepthScale ) );
     mat4    ProjToUVBias  = glm::translate( vec3( 0.5f, 0.5f, NDCAttribs.GetZtoDepthBias() ) );
 

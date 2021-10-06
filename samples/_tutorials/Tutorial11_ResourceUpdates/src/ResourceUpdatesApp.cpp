@@ -398,7 +398,7 @@ void ResourceUpdatesApp::update()
     }
 
     static constexpr const double mapTexturePeriod = 0.05;
-    const auto&                   deviceType       = getRenderDevice()->GetDeviceCaps().DevType;
+    const auto&                   deviceType       = getRenderDevice()->GetDeviceInfo().Type;
     if( getElapsedSeconds() - mLastMapTime > mapTexturePeriod * ( deviceType == gx::RENDER_DEVICE_TYPE_D3D11 ? 10.f : 1.f ) ) {
         mLastMapTime = getElapsedSeconds();
         if( deviceType == gx::RENDER_DEVICE_TYPE_D3D11 ||
