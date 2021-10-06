@@ -179,7 +179,7 @@ void TessellationApp::createPipelineStates()
     // Create dynamic uniform buffer that will store shader constants
     mShaderConstants = gx::createBuffer( gx::BufferDesc()
         .name( "Global shader constants CB" )
-        .sizeInBytes( sizeof( GlobalConstants ) )
+        .size( sizeof( GlobalConstants ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )

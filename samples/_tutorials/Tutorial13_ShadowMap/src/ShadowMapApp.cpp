@@ -69,7 +69,7 @@ void ShadowMapApp::setup()
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) * 2 + sizeof( vec4 ) )
+        .size( sizeof( mat4 ) * 2 + sizeof( vec4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
@@ -296,7 +296,7 @@ void ShadowMapApp::createVertexBuffer()
         .name( "Cube vertex buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_VERTEX_BUFFER )
-        .sizeInBytes( sizeof( cubeVerts ) ),
+        .size( sizeof( cubeVerts ) ),
         &cubeVerts, sizeof( cubeVerts )
     );
 }
