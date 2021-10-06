@@ -10,5 +10,5 @@ set(SOURCES
     ${APP_PATH}/../common/TexturedCube.cpp
 )
 
-gx_add_sample( ${APP_TARGET} ${APP_PATH} ${SOURCES} )
+gx_add_sample( "${APP_TARGET}" "${APP_PATH}" "${SOURCES}" )
 
