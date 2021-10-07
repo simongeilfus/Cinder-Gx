@@ -73,7 +73,7 @@ void InstancingApp::createUniformBuffer()
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) * 2 )
+        .size( sizeof( mat4 ) * 2 )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
@@ -123,7 +123,7 @@ void InstancingApp::createInstanceBuffer()
         // Use default usage as this buffer will only be updated when grid size changes
         .usage( gx::USAGE_DEFAULT )
         .bindFlags( gx::BIND_VERTEX_BUFFER )
-        .sizeInBytes( sizeof( mat4 ) * sMaxInstances )
+        .size( sizeof( mat4 ) * sMaxInstances )
     );
     populateInstanceBuffer();
 }
@@ -204,7 +204,7 @@ void InstancingApp::draw()
     }
 
     // Bind vertex, instance and index buffers
-    uint32_t offsets[] = { 0, 0 };
+    uint64_t offsets[] = { 0, 0 };
     gx::Buffer* buffers[] = { mCubeVertexBuffer, mInstanceBuffer };
     gx::setVertexBuffers( 0, 2, buffers, offsets, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION, gx::SET_VERTEX_BUFFERS_FLAG_RESET );
     gx::setIndexBuffer( mCubeIndexBuffer, 0, gx::RESOURCE_STATE_TRANSITION_MODE_TRANSITION );

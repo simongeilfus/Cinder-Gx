@@ -170,7 +170,7 @@ void ComputeShaderApp::createParticleBuffers()
             .bindFlags( gx::BIND_SHADER_RESOURCE | gx::BIND_UNORDERED_ACCESS )
             .mode( gx::BUFFER_MODE_STRUCTURED )
             .elementByteStride( sizeof( ParticleAttribs ) )
-            .sizeInBytes( sizeof( ParticleAttribs ) * mNumParticles ), 
+            .size( sizeof( ParticleAttribs ) * mNumParticles ), 
         particleData.data(), sizeof( ParticleAttribs ) * static_cast<uint32_t>( particleData.size() ) );
 
     gx::BufferView* pParticleAttribsBufferSRV = mParticleAttribsBuffer->GetDefaultView( gx::BUFFER_VIEW_SHADER_RESOURCE );
@@ -182,7 +182,7 @@ void ComputeShaderApp::createParticleBuffers()
         .bindFlags( gx::BIND_SHADER_RESOURCE | gx::BIND_UNORDERED_ACCESS )
         .mode( gx::BUFFER_MODE_FORMATTED )
         .elementByteStride( sizeof( int ) )
-        .sizeInBytes( sizeof( int ) * mNumParticles ), nullptr );
+        .size( sizeof( int ) * mNumParticles ), nullptr );
 
     mParticleListsBuffer = gx::createBuffer( gx::BufferDesc()
         .name( "Particle lists buffer" )
@@ -190,7 +190,7 @@ void ComputeShaderApp::createParticleBuffers()
         .bindFlags( gx::BIND_SHADER_RESOURCE | gx::BIND_UNORDERED_ACCESS )
         .mode( gx::BUFFER_MODE_FORMATTED )
         .elementByteStride( sizeof( int ) )
-        .sizeInBytes( sizeof( int ) * mNumParticles ), nullptr );
+        .size( sizeof( int ) * mNumParticles ), nullptr );
 
     gx::BufferViewRef pParticleListHeadsBufferUAV;
     gx::BufferViewRef pParticleListsBufferUAV;
@@ -238,7 +238,7 @@ void ComputeShaderApp::createConsantBuffer()
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
-        .sizeInBytes( sizeof( mat4 ) * 2 ), nullptr );
+        .size( sizeof( mat4 ) * 2 ), nullptr );
 }
 
 void ComputeShaderApp::updateUI()

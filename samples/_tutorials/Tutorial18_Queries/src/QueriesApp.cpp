@@ -62,7 +62,7 @@ void QueriesApp::setup()
     mCubeSRB->GetVariableByName( gx::SHADER_TYPE_PIXEL, "g_Texture" )->Set( mCubeTextureSRV );
 
     // Check query support
-    const auto& features = getRenderDevice()->GetDeviceCaps().Features;
+    const auto& features = getRenderDevice()->GetDeviceInfo().Features;
     if( features.PipelineStatisticsQueries ) {
         mPipelineStatsQuery.reset( new gx::ScopedQueryHelper{ getRenderDevice(), gx::QueryDesc()
             .type( gx::QUERY_TYPE_PIPELINE_STATISTICS )
@@ -94,7 +94,7 @@ void QueriesApp::createCubePSO()
     // Dynamic buffers can be frequently updated by the CPU
     mCubeVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) )
+        .size( sizeof( mat4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )

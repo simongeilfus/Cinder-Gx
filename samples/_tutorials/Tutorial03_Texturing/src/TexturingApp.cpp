@@ -49,7 +49,7 @@ void TexturingApp::createUniformBuffer()
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) )
+        .size( sizeof( mat4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
@@ -166,7 +166,7 @@ void TexturingApp::createVertexBuffer()
         .name( "Cube vertex buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_VERTEX_BUFFER )
-        .sizeInBytes( sizeof( cubeVerts ) ),
+        .size( sizeof( cubeVerts ) ),
         &data
     );
 }
@@ -187,7 +187,7 @@ void TexturingApp::createIndexBuffer()
         .name( "Cube index buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_INDEX_BUFFER )
-        .sizeInBytes( sizeof( indices ) ),
+        .size( sizeof( indices ) ),
         &data
     );
 }

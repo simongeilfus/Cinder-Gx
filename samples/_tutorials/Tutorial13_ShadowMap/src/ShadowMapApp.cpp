@@ -69,14 +69,14 @@ void ShadowMapApp::setup()
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) * 2 + sizeof( vec4 ) )
+        .size( sizeof( mat4 ) * 2 + sizeof( vec4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
     );
     
     std::vector<gx::StateTransitionDesc> barriers;
-    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
+    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     createCubePSO();
     createPlanePSO();
@@ -88,13 +88,13 @@ void ShadowMapApp::setup()
     // Load index buffer
     mCubeIndexBuffer = TexturedCube::createIndexBuffer( getRenderDevice() );
     // Explicitly transition vertex and index buffers to required states
-    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, true );
-    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, true );
+    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
     // Load texture
     auto CubeTexture = TexturedCube::loadTexture( getRenderDevice(), getAssetPath( "DGLogo.png" ) );
     mCubeSRB->GetVariableByName( gx::SHADER_TYPE_PIXEL, "g_Texture" )->Set( CubeTexture->GetDefaultView( gx::TEXTURE_VIEW_SHADER_RESOURCE ) );
     // Transition the texture to shader resource state
-    barriers.emplace_back( CubeTexture, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_SHADER_RESOURCE, true );
+    barriers.emplace_back( CubeTexture, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_SHADER_RESOURCE, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     createShadowMap();
 
@@ -149,7 +149,7 @@ void ShadowMapApp::createCubePSO()
         //.pixelShader( nullptr )
         .inputLayout( layoutElems );
 
-    if( getRenderDevice()->GetDeviceCaps().Features.DepthClamp ) {
+    if( getRenderDevice()->GetDeviceInfo().Features.DepthClamp ) {
         // Disable depth clipping to render objects that are closer than near
         // clipping plane. This is not required for this tutorial, but real applications
         // will most likely want to do this.
@@ -296,7 +296,7 @@ void ShadowMapApp::createVertexBuffer()
         .name( "Cube vertex buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_VERTEX_BUFFER )
-        .sizeInBytes( sizeof( cubeVerts ) ),
+        .size( sizeof( cubeVerts ) ),
         &cubeVerts, sizeof( cubeVerts )
     );
 }
@@ -396,8 +396,8 @@ void ShadowMapApp::renderShadowMap()
     vec3 f3MaxXYZ      = f3SceneCenter + vec3( SceneRadius, SceneRadius, SceneRadius * 5 );
     vec3 f3SceneExtent = f3MaxXYZ - f3MinXYZ;
 
-    const auto& DevCaps = getRenderDevice()->GetDeviceCaps();
-    const bool  IsGL    = DevCaps.IsGLDevice();
+    const auto& DevInfo = getRenderDevice()->GetDeviceInfo();
+    const bool  IsGL    = DevInfo.IsGLDevice();
     vec4      f4LightSpaceScale;
     f4LightSpaceScale.x = 2.f / f3SceneExtent.x;
     f4LightSpaceScale.y = 2.f / f3SceneExtent.y;
@@ -418,7 +418,7 @@ void ShadowMapApp::renderShadowMap()
     // Adjust the world to light space transformation matrix
     mat4 WorldToLightProjSpaceMatr = ShadowProjMatr * WorldToLightViewSpaceMatr;
 
-    const auto& NDCAttribs    = DevCaps.GetNDCAttribs();
+    const auto& NDCAttribs    = DevInfo.GetNDCAttribs();
     mat4    ProjToUVScale = glm::scale( vec3( 0.5f, NDCAttribs.YtoVScale, NDCAttribs.ZtoDepthScale ) );
     mat4    ProjToUVBias  = glm::translate( vec3( 0.5f, 0.5f, NDCAttribs.GetZtoDepthBias() ) );
 

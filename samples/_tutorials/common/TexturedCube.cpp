@@ -70,7 +70,7 @@ ci::gx::BufferRef createVertexBuffer( ci::gx::RenderDevice* renderDevice )
         .name( "Cube vertex buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_VERTEX_BUFFER )
-        .sizeInBytes( sizeof( cubeVerts ) ),
+        .size( sizeof( cubeVerts ) ),
         &data, &buffer
     );
     return buffer;
@@ -93,7 +93,7 @@ ci::gx::BufferRef createIndexBuffer( ci::gx::RenderDevice* renderDevice )
         .name( "Cube index buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_INDEX_BUFFER )
-        .sizeInBytes( sizeof( indices ) ),
+        .size( sizeof( indices ) ),
         &data, &buffer
     );
     return buffer;

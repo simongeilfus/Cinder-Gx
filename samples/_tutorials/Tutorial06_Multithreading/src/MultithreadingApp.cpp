@@ -97,8 +97,8 @@ void MultithreadingApp::setup()
     mCubeVertexBuffer = TexturedCube::createVertexBuffer( getRenderDevice() );
     mCubeIndexBuffer = TexturedCube::createIndexBuffer( getRenderDevice() );
     // Explicitly transition vertex and index buffers to required states
-    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, true );
-    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, true );
+    barriers.emplace_back( mCubeVertexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_VERTEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mCubeIndexBuffer, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_INDEX_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
     loadTextures( barriers );
 
     // Execute all barriers
@@ -129,22 +129,22 @@ void MultithreadingApp::createPipelineState( std::vector<gx::StateTransitionDesc
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) * 2 )
+        .size( sizeof( mat4 ) * 2 )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
     );
     mInstanceConstants = gx::createBuffer( gx::BufferDesc()
         .name( "Instance constants CB" )
-        .sizeInBytes( sizeof( mat4 ) )
+        .size( sizeof( mat4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
     );
 
     // Explicitly transition the buffers to RESOURCE_STATE_CONSTANT_BUFFER state
-    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
-    barriers.emplace_back( mInstanceConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, true );
+    barriers.emplace_back( mVSConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
+    barriers.emplace_back( mInstanceConstants, gx::RESOURCE_STATE_UNKNOWN, gx::RESOURCE_STATE_CONSTANT_BUFFER, gx::STATE_TRANSITION_FLAG_UPDATE_STATE );
 
     // Since we did not explcitly specify the type for 'Constants' and 'InstanceData' variables,
     // default type (SHADER_RESOURCE_VARIABLE_TYPE_STATIC) will be used. Static variables
@@ -320,7 +320,7 @@ void MultithreadingApp::renderSubset( gx::DeviceContext* pCtx, uint32_t subset )
     }
 
     // Bind vertex and index buffers. This must be done for every context
-    uint32_t   offsets[] = { 0, 0 };
+    uint64_t   offsets[] = { 0, 0 };
     gx::Buffer* buffers[] = { mCubeVertexBuffer };
     pCtx->SetVertexBuffers( 0, _countof( buffers ), buffers, offsets, gx::RESOURCE_STATE_TRANSITION_MODE_VERIFY, gx::SET_VERTEX_BUFFERS_FLAG_RESET );
     pCtx->SetIndexBuffer( mCubeIndexBuffer, 0, gx::RESOURCE_STATE_TRANSITION_MODE_VERIFY );

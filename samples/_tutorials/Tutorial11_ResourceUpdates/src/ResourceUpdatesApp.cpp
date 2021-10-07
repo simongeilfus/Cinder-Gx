@@ -136,7 +136,7 @@ void ResourceUpdatesApp::setup()
         // We do not really bind the buffer, but D3D11 wants at least one bind flag bit
         .bindFlags( gx::BIND_VERTEX_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
-        .sizeInBytes( sMaxUpdateRegionSize * sMaxUpdateRegionSize * 4 )
+        .size( sMaxUpdateRegionSize * sMaxUpdateRegionSize * 4 )
     );
 }
 
@@ -146,7 +146,7 @@ void ResourceUpdatesApp::createPipelineStates()
     // Dynamic buffers can be frequently updated by the CPU
     mVSConstants = gx::createBuffer( gx::BufferDesc()
         .name( "VS constants CB" )
-        .sizeInBytes( sizeof( mat4 ) )
+        .size( sizeof( mat4 ) )
         .usage( gx::USAGE_DYNAMIC )
         .bindFlags( gx::BIND_UNIFORM_BUFFER )
         .cpuAccessFlags( gx::CPU_ACCESS_WRITE )
@@ -208,7 +208,7 @@ void ResourceUpdatesApp::createVertexBuffers()
             .usage( i == 0 ? gx::USAGE_IMMUTABLE : i == 1 ? gx::USAGE_DEFAULT : gx::USAGE_DYNAMIC )
             .bindFlags( gx::BIND_VERTEX_BUFFER )
             .cpuAccessFlags( i > 1 ? gx::CPU_ACCESS_WRITE : gx::CPU_ACCESS_NONE )
-            .sizeInBytes( sizeof( cubeVerts ) ),
+            .size( sizeof( cubeVerts ) ),
             i < 2 ? &cubeVerts : nullptr, i < 2 ? sizeof( cubeVerts ) : 0
         );
     }
@@ -230,7 +230,7 @@ void ResourceUpdatesApp::createIndexBuffer()
         .name( "Cube index buffer" )
         .usage( gx::USAGE_IMMUTABLE )
         .bindFlags( gx::BIND_INDEX_BUFFER )
-        .sizeInBytes( sizeof( indices ) ),
+        .size( sizeof( indices ) ),
         &indices, sizeof( indices )
     );
 }
@@ -398,7 +398,7 @@ void ResourceUpdatesApp::update()
     }
 
     static constexpr const double mapTexturePeriod = 0.05;
-    const auto&                   deviceType       = getRenderDevice()->GetDeviceCaps().DevType;
+    const auto&                   deviceType       = getRenderDevice()->GetDeviceInfo().Type;
     if( getElapsedSeconds() - mLastMapTime > mapTexturePeriod * ( deviceType == gx::RENDER_DEVICE_TYPE_D3D11 ? 10.f : 1.f ) ) {
         mLastMapTime = getElapsedSeconds();
         if( deviceType == gx::RENDER_DEVICE_TYPE_D3D11 ||
